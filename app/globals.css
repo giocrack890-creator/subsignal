@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+/* ─── SubSignal Design System
+     Fusión: Fxology (neon green, pills) + Ape Terminal (terminal grid, bento, graffiti) ─── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fondos — negro profundo tipo terminal */
+  --background: #050505;
+  --background-elevated: #0c0c0c;
+  --foreground: #ffffff;
+  --foreground-muted: #a1a1aa;
+
+  /* Superficies glass / bento */
+  --card: rgba(255, 255, 255, 0.03);
+  --card-foreground: #ffffff;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #71717a;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Acento verde neón (Fxology) */
+  --primary: #39ff88;
+  --primary-dark: #14532d;
+  --primary-foreground: #050505;
+  --primary-glow: rgba(57, 255, 136, 0.3);
+  --primary-glow-strong: rgba(57, 255, 136, 0.5);
+
+  /* Acento chart (Ape Terminal — naranja/dorado en sparklines) */
+  --chart: #f59e0b;
+  --chart-glow: rgba(245, 158, 11, 0.35);
+
+  /* Semánticos */
+  --accent: #39ff88;
+  --success: #39ff88;
+  --warning: #fbbf24;
+  --destructive: #f87171;
+
+  /* Plataformas */
+  --platform-hn: #ff6600;
+  --platform-reddit: #ff4500;
+  --platform-twitter: #1da1f2;
+  --platform-ih: #6366f1;
+
+  /* Radios */
+  --radius-sm: 0.5rem;
+  --radius: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-pill: 9999px;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-chart: var(--chart);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --color-platform-hn: var(--platform-hn);
+  --color-platform-reddit: var(--platform-reddit);
+  --color-platform-twitter: var(--platform-twitter);
+  --color-platform-ih: var(--platform-ih);
+  --radius-sm: var(--radius-sm);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-pill: var(--radius-pill);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Utilidades ─── */
+
+.text-glow {
+  text-shadow:
+    0 0 30px var(--primary-glow),
+    0 0 80px rgba(57, 255, 136, 0.15);
+}
+
+.box-glow {
+  box-shadow:
+    0 0 24px var(--primary-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Grid superior con perspectiva (Ape Terminal) */
+.bg-grid-top {
+  background-image:
+    linear-gradient(rgba(57, 255, 136, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 136, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Grid lateral (Fxology) */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(57, 255, 136, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 136, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.bg-radial-glow {
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 50% 45%,
+      rgba(20, 83, 45, 0.35) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 40% 30% at 50% 55%,
+      rgba(57, 255, 136, 0.08) 0%,
+      transparent 60%
+    ),
+    var(--background);
+}
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(16px);
+}
+
+.bento-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pill-nav-active {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pill-dock {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* Patrón chevron para stat cards */
+.bg-chevron-pattern {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(57, 255, 136, 0.04) 8px,
+    rgba(57, 255, 136, 0.04) 9px
+  );
+}
+
+/* Watermark graffiti */
+.graffiti-watermark {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.025);
+  user-select: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 136, 0.2);
+  border-radius: 3px;
 }

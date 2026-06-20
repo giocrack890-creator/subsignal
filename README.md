@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SubSignal
 
-## Getting Started
+Plataforma de intent monitoring para founders SaaS. Monitorea Hacker News, Reddit y más; puntúa conversaciones por intención de compra y genera borradores de respuesta.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15** (App Router)
+- **Tailwind CSS 4**
+- **Supabase** (auth, DB, RLS)
+- **Anthropic Claude** (scoring y drafts)
+- **Vercel** (deploy + cron jobs)
+
+## Setup local
+
+### 1. Dependencias
+
+```bash
+npm install
+```
+
+### 2. Variables de entorno
+
+```bash
+cp .env.example .env.local
+```
+
+Completá las variables marcadas como "usar desde el día 1" en `.env.example`.
+
+### 3. Supabase
+
+**Opción A — Supabase Cloud**
+
+1. Creá un proyecto en [supabase.com](https://supabase.com)
+2. Ejecutá la migración en SQL Editor:
+
+```bash
+# Contenido de supabase/migrations/20250620000000_initial_schema.sql
+```
+
+**Opción B — Supabase local**
+
+```bash
+npx supabase start
+npx supabase db reset
+```
+
+### 4. Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Si ves errores de módulos webpack (`Cannot find module './611.js'`), limpiá el cache:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev:clean
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abrí [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+### 5. Auth (Supabase)
 
-To learn more about Next.js, take a look at the following resources:
+En el dashboard de Supabase → **Authentication → URL Configuration**:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Site URL: `http://localhost:3000`
+- Redirect URLs: `http://localhost:3000/callback`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Para Google OAuth: **Authentication → Providers → Google** (habilitar y configurar credenciales de Google Cloud Console).
 
-## Deploy on Vercel
+## Estructura del proyecto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+/app          → Rutas (marketing, auth, dashboard, API)
+/components   → UI y componentes por feature
+/lib          → Lógica de negocio (monitors, scoring, notificaciones, pagos)
+/types        → Tipos TypeScript compartidos
+/supabase     → Migraciones y config local
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+| Comando        | Descripción              |
+|----------------|--------------------------|
+| `npm run dev`  | Servidor de desarrollo   |
+| `npm run build`| Build de producción      |
+| `npm run start`| Servidor de producción   |
+| `npm run lint` | ESLint                   |
