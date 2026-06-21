@@ -1,4 +1,4 @@
-import { HeroBackground } from "@/components/marketing/hero-background";
+import { FxBackground } from "@/components/marketing/landing/fx-background";
 
 export default function AuthLayout({
   children,
@@ -7,8 +7,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
-      <HeroBackground />
-      <div className="relative z-10 w-full">{children}</div>
+      <FxBackground intensity="subtle" />
+      <div className="relative z-10 w-full max-w-sm">{children}</div>
     </div>
   );
 }

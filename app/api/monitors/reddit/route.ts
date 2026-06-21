@@ -1,8 +1,5 @@
-import { NextResponse } from "next/server";
+import { handleMonitorRequest } from "@/lib/monitors/api-handler";
 
-export async function GET() {
-  return NextResponse.json(
-    { message: "Reddit monitor — pendiente de definir método de fetch" },
-    { status: 501 }
-  );
+export async function GET(request: Request) {
+  return handleMonitorRequest(request, "reddit");
 }

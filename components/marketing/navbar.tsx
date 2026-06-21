@@ -58,10 +58,10 @@ export function MarketingNavbar() {
         ))}
       </nav>
 
-      {/* CTA outline con flecha (Ape Terminal) */}
-      <Link href="/signup">
+      {/* CTA */}
+      <Link href="/login">
         <Button variant="outline" size="md" showArrow>
-          Empezar gratis
+          Entrar
         </Button>
       </Link>
     </header>

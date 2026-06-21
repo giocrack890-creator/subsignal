@@ -1,11 +1,7 @@
-import { AuthForm } from "@/components/auth/auth-form";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default function SignupPage() {
-  return (
-    <main className="flex flex-col items-center">
-      <AuthForm mode="signup" />
-    </main>
-  );
+  redirect("/login");
 }

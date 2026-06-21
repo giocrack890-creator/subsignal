@@ -1,8 +1,5 @@
-import { NextResponse } from "next/server";
+import { handleMonitorRequest } from "@/lib/monitors/api-handler";
 
-export async function GET() {
-  return NextResponse.json(
-    { message: "Hacker News monitor — PASO 4" },
-    { status: 501 }
-  );
+export async function GET(request: Request) {
+  return handleMonitorRequest(request, "hn");
 }

@@ -5,186 +5,93 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/auth/urls";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface AuthFormProps {
-  mode: "login" | "signup";
+  errorMessage?: string | null;
 }
 
-export function AuthForm({ mode }: AuthFormProps) {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState<"google" | "email" | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const redirectTo = getAuthCallbackUrl();
+export function AuthForm({ errorMessage }: AuthFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(errorMessage ?? null);
 
   async function handleGoogleSignIn() {
-    setLoading("google");
+    setLoading(true);
     setError(null);
-    setMessage(null);
 
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
-        },
+        redirectTo: getAuthCallbackUrl(),
       },
     });
 
     if (authError) {
       setError(authError.message);
-      setLoading(null);
+      setLoading(false);
     }
-  }
-
-  async function handleMagicLink(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading("email");
-    setError(null);
-    setMessage(null);
-
-    if (!email.trim()) {
-      setError("Ingresá tu email");
-      setLoading(null);
-      return;
-    }
-
-    const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        emailRedirectTo: redirectTo,
-        shouldCreateUser: mode === "signup",
-      },
-    });
-
-    setLoading(null);
-
-    if (authError) {
-      setError(authError.message);
-      return;
-    }
-
-    setMessage("Te enviamos un link mágico. Revisá tu bandeja de entrada.");
   }
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       <div className="mb-8 text-center">
-        <Link href="/" className="inline-flex items-center gap-2">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
           <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
             SS
           </span>
           <span className="text-lg font-semibold text-foreground">SubSignal</span>
         </Link>
-        <h1 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
-          {mode === "login" ? "Bienvenido de vuelta" : "Creá tu cuenta gratis"}
-        </h1>
-        <p className="mt-2 text-sm text-foreground-muted">
-          {mode === "login"
-            ? "Ingresá para ver tus señales de intención"
-            : "Empezá a monitorear conversaciones en minutos"}
-        </p>
       </div>
 
-      <div className="bento-card rounded-2xl p-6">
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="w-full"
-          disabled={loading !== null}
-          onClick={handleGoogleSignIn}
-        >
-          {loading === "google" ? (
-            "Conectando..."
-          ) : (
-            <>
-              <GoogleIcon />
-              Continuar con Google
-            </>
-          )}
-        </Button>
+      <div className="border-glow-card rounded-2xl bg-background-card p-6 sm:p-8">
+        <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+          Entrá a SubSignal
+        </h1>
+        <p className="mt-3 text-center text-[15px] leading-relaxed text-foreground-secondary">
+          Un click con Google y empezás a monitorear señales de intención.
+        </p>
 
-        <div className="my-5 flex items-center gap-3">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-foreground-muted">o con magic link</span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
-
-        <form onSubmit={handleMagicLink} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-xs font-medium text-foreground-muted"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@startup.com"
-              autoComplete="email"
-              disabled={loading !== null}
-              className={cn(
-                "w-full rounded-xl border border-border bg-background-elevated px-4 py-2.5",
-                "text-sm text-foreground placeholder:text-muted-foreground",
-                "outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
-              )}
-            />
-          </div>
-
+        <div className="mt-8">
           <Button
-            type="submit"
+            type="button"
             variant="primary"
             size="lg"
-            className="w-full"
-            disabled={loading !== null}
+            className="w-full gap-3"
+            disabled={loading}
+            onClick={handleGoogleSignIn}
           >
-            {loading === "email"
-              ? "Enviando..."
-              : mode === "login"
-                ? "Enviar magic link"
-                : "Registrarme con email"}
+            {loading ? (
+              "Redirigiendo a Google..."
+            ) : (
+              <>
+                <GoogleIcon />
+                Continuar con Google
+              </>
+            )}
           </Button>
-        </form>
 
-        {message && (
-          <p className="mt-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
-            {message}
-          </p>
-        )}
+          {(error || errorMessage) && (
+            <p className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {error ?? errorMessage}
+            </p>
+          )}
 
-        {error && (
-          <p className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {error}
+          <p className="mt-4 text-center text-xs text-foreground-muted">
+            Si no tenés cuenta, se crea automáticamente al ingresar.
           </p>
-        )}
+        </div>
       </div>
 
-      <p className="mt-6 text-center text-sm text-foreground-muted">
-        {mode === "login" ? (
-          <>
-            ¿No tenés cuenta?{" "}
-            <Link href="/signup" className="text-primary hover:underline">
-              Registrate gratis
-            </Link>
-          </>
-        ) : (
-          <>
-            ¿Ya tenés cuenta?{" "}
-            <Link href="/login" className="text-primary hover:underline">
-              Iniciá sesión
-            </Link>
-          </>
-        )}
+      <p className="mt-6 text-center text-sm">
+        <Link
+          href="/"
+          className="text-foreground-muted transition-colors duration-200 hover:text-foreground"
+        >
+          ← Volver al inicio
+        </Link>
       </p>
     </div>
   );

@@ -271,18 +271,21 @@ export type Database = {
           id: string;
           platform: string;
           external_id: string;
+          user_id: string | null;
           processed_at: string;
         };
         Insert: {
           id?: string;
           platform: string;
           external_id: string;
+          user_id?: string | null;
           processed_at?: string;
         };
         Update: {
           id?: string;
           platform?: string;
           external_id?: string;
+          user_id?: string | null;
           processed_at?: string;
         };
         Relationships: [];
