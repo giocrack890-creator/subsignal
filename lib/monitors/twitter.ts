@@ -1,55 +1,129 @@
-/**
- * Monitor de Twitter/X — adapter stub (PASO 6)
- *
- * DECISIÓN PENDIENTE: evaluar costo/beneficio de la API de X antes de implementar.
- *
- * Cuando se implemente, el flujo esperado es:
- * 1. Buscar tweets recientes que contengan la keyword (últimas 24h)
- * 2. Priorizar replies a threads de alta intención y preguntas directas
- * 3. Normalizar a RawPost con postType: "tweet" | "thread"
- * 4. Activar "twitter" en ACTIVE_PLATFORMS
- *
- * Referencia de implementación futura (API v2):
- *   GET https://api.twitter.com/2/tweets/search/recent?query={keyword}
- *   Headers: Authorization: Bearer {X_API_BEARER_TOKEN}
- *
- * NOTA: desde 2023 la API básica tiene límites muy restrictivos.
- * Considerar posponer hasta validar tracción en HN + Reddit.
- */
+/** Monitor de Twitter/X vía API v2 (requiere TWITTER_BEARER_TOKEN) */
 
-import { createStubMonitor } from "./create-stub-monitor";
+import { withRetry } from "@/lib/utils/retry";
 import { PLATFORM_META } from "./status";
-import type { PlatformConfig } from "./types";
+import type { PlatformConfig, PlatformMonitor, RawPost } from "./types";
 
 const TWITTER_LOOKBACK_HOURS = 24;
-const MAX_QUERY_LENGTH = 512;
+const SEARCH_URL = "https://api.twitter.com/2/tweets/search/recent";
 
-export function validateTwitterConfig(config?: PlatformConfig): string | null {
-  void config;
+interface TwitterUser {
+  id: string;
+  username: string;
+}
+
+interface TwitterTweet {
+  id: string;
+  text: string;
+  author_id?: string;
+  conversation_id?: string;
+  created_at?: string;
+}
+
+interface TwitterSearchResponse {
+  data?: TwitterTweet[];
+  includes?: {
+    users?: TwitterUser[];
+  };
+  errors?: Array<{ message: string }>;
+}
+
+function getTwitterBearerToken(): string {
+  const token = process.env.TWITTER_BEARER_TOKEN?.trim();
+  if (!token) {
+    throw new Error(
+      "Twitter/X no configurado. Definí TWITTER_BEARER_TOKEN (developer.x.com → App → Bearer Token)."
+    );
+  }
+  return token;
+}
+
+function buildTwitterQuery(keyword: string): string {
+  const escaped = keyword.trim().replace(/"/g, "");
+  return `${escaped} -is:retweet lang:en`;
+}
+
+function tweetToRawPost(tweet: TwitterTweet, usersById: Map<string, TwitterUser>): RawPost {
+  const author = tweet.author_id
+    ? (usersById.get(tweet.author_id)?.username ?? null)
+    : null;
+
+  const isThread =
+    tweet.conversation_id && tweet.conversation_id !== tweet.id;
+
+  return {
+    externalId: tweet.id,
+    title: null,
+    body: tweet.text,
+    author,
+    url: `https://x.com/i/status/${tweet.id}`,
+    createdAt: tweet.created_at ?? new Date().toISOString(),
+    postType: isThread ? "thread" : "tweet",
+  };
+}
+
+async function searchTwitterPosts(
+  keyword: string,
+  config?: PlatformConfig
+): Promise<RawPost[]> {
+  const trimmed = keyword.trim();
+  if (!trimmed) return [];
+
+  const bearer = getTwitterBearerToken();
+  const maxResults = Math.min(config?.maxResults ?? 20, 100);
+  const startTime = new Date(
+    Date.now() - TWITTER_LOOKBACK_HOURS * 3600 * 1000
+  ).toISOString();
+
+  const url = new URL(SEARCH_URL);
+  url.searchParams.set("query", buildTwitterQuery(trimmed));
+  url.searchParams.set("max_results", String(Math.max(10, maxResults)));
+  url.searchParams.set("start_time", startTime);
+  url.searchParams.set("tweet.fields", "created_at,author_id,conversation_id");
+  url.searchParams.set("expansions", "author_id");
+  url.searchParams.set("user.fields", "username");
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${bearer}`,
+      Accept: "application/json",
+    },
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Twitter API error: ${response.status} — ${body.slice(0, 200)}`);
+  }
+
+  const data = (await response.json()) as TwitterSearchResponse;
+
+  if (data.errors?.length) {
+    throw new Error(`Twitter API: ${data.errors[0]?.message ?? "error desconocido"}`);
+  }
+
+  const usersById = new Map<string, TwitterUser>();
+  for (const user of data.includes?.users ?? []) {
+    usersById.set(user.id, user);
+  }
+
+  return (data.data ?? [])
+    .map((tweet) => tweetToRawPost(tweet, usersById))
+    .slice(0, maxResults);
+}
+
+export function validateTwitterConfig(_config?: PlatformConfig): string | null {
   return null;
 }
 
-/**
- * Pseudocódigo del fetch real — NO implementado.
- *
- * async function searchTwitterPosts(
- *   keyword: string,
- *   config: PlatformConfig
- * ): Promise<RawPost[]> {
- *   const query = buildTwitterQuery(keyword); // escapar operadores, añadir -is:retweet
- *   const maxResults = config.maxResults ?? 20;
- *
- *   // GET /2/tweets/search/recent con start_time = now - TWITTER_LOOKBACK_HOURS
- *   // Mapear: externalId = id, body = text, author = username, url = twitter.com/i/status/{id}
- *   // postType = conversation_id !== id ? "thread" : "tweet"
- *
- *   return posts.slice(0, maxResults);
- * }
- */
-void TWITTER_LOOKBACK_HOURS;
-void MAX_QUERY_LENGTH;
-
-export const twitterMonitor = createStubMonitor({
+export const twitterMonitor: PlatformMonitor = {
+  platform: "twitter",
   meta: PLATFORM_META.twitter,
   validateConfig: validateTwitterConfig,
-});
+
+  async fetchNewPosts(keyword, config) {
+    return withRetry(() => searchTwitterPosts(keyword, config), {
+      label: `Twitter search "${keyword.trim()}"`,
+    });
+  },
+};

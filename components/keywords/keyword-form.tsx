@@ -64,7 +64,7 @@ export function KeywordForm({
         />
       </div>
 
-      <PlatformSelector plan={plan} />
+      <PlatformSelector plan={plan} showSubreddits />
 
       <KeywordPreview term={term} />
 

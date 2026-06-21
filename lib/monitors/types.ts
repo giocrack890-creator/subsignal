@@ -54,10 +54,10 @@ export const PLATFORM_LABELS: Record<Platform, string> = {
 };
 
 /** Plataformas con monitor implementado y operativo en el pipeline */
-export const ACTIVE_PLATFORMS: Platform[] = ["hn"];
+export const ACTIVE_PLATFORMS: Platform[] = ["hn", "reddit", "twitter", "ih"];
 
 /** Plataformas planificadas pero aún no implementadas */
-export const COMING_SOON_PLATFORMS: Platform[] = ["reddit", "twitter", "ih"];
+export const COMING_SOON_PLATFORMS: Platform[] = [];
 
 export function isPlatformActive(platform: Platform): boolean {
   return ACTIVE_PLATFORMS.includes(platform);

@@ -1,46 +1,124 @@
-/**
- * Monitor de Indie Hackers — adapter stub (PASO 6)
- *
- * DECISIÓN PENDIENTE: Indie Hackers no tiene API pública.
- * Hay que elegir entre scraping, RSS limitado o servicio externo.
- *
- * Cuando se implemente, el flujo esperado es:
- * 1. Obtener posts recientes del feed / búsqueda por keyword
- * 2. Filtrar por relevancia e intención (preguntas, búsqueda de herramientas)
- * 3. Normalizar a RawPost con url de indiehackers.com/post/{slug}
- * 4. Activar "ih" en ACTIVE_PLATFORMS
- *
- * Referencia de implementación futura (scraping — frágil):
- *   - Fetch https://www.indiehackers.com/search?q={keyword}
- *   - Parsear HTML/JSON embebido del listado de posts
- *   - Respetar robots.txt y rate limits agresivos
- *
- * Alternativa: monitorear RSS del blog IH si cubre el nicho del usuario.
- */
+/** Monitor de Indie Hackers vía Algolia (search-only key pública del sitio) */
 
-import { createStubMonitor } from "./create-stub-monitor";
+import { withRetry } from "@/lib/utils/retry";
+import { dedupePostsByExternalId } from "./dedupe";
 import { PLATFORM_META } from "./status";
+import type { PlatformConfig, PlatformMonitor, RawPost } from "./types";
 
 const IH_LOOKBACK_HOURS = 48;
+const IH_ALGOLIA_APP_ID = "N86T1R3OWZ";
+/** Search-only key expuesta en el frontend de indiehackers.com */
+const IH_ALGOLIA_SEARCH_KEY = "5140dac5e87f47346abbda1a34ee70c3";
+const IH_ALGOLIA_INDEX = "Post";
+const IH_ALGOLIA_URL = `https://${IH_ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/${IH_ALGOLIA_INDEX}/query`;
 
-/**
- * Pseudocódigo del fetch real — NO implementado.
- *
- * async function searchIndieHackersPosts(
- *   keyword: string,
- *   config: PlatformConfig
- * ): Promise<RawPost[]> {
- *   const since = Date.now() - IH_LOOKBACK_HOURS * 3600 * 1000;
- *
- *   // Opción A: scraping del search/listing page
- *   // Opción B: RSS feed filtrado por keyword en título/descripción
- *   // Opción C: webhook/manual import (fuera del cron automático)
- *
- *   return posts.filter(p => new Date(p.createdAt).getTime() >= since);
- * }
- */
-void IH_LOOKBACK_HOURS;
+interface IndieHackersHit {
+  objectID: string;
+  title?: string | null;
+  body?: string | null;
+  description?: string | null;
+  username?: string | null;
+  path?: string | null;
+  url?: string | null;
+  createdAt?: number | null;
+  createdAtMs?: number | null;
+  publishedAt?: number | null;
+}
 
-export const indieHackersMonitor = createStubMonitor({
+interface IndieHackersSearchResponse {
+  hits: IndieHackersHit[];
+}
+
+function hitTimestampMs(hit: IndieHackersHit): number | null {
+  if (typeof hit.createdAtMs === "number") return hit.createdAtMs;
+  if (typeof hit.createdAt === "number") {
+    return hit.createdAt > 1_000_000_000_000
+      ? hit.createdAt
+      : hit.createdAt * 1000;
+  }
+  if (typeof hit.publishedAt === "number") {
+    return hit.publishedAt > 1_000_000_000_000
+      ? hit.publishedAt
+      : hit.publishedAt * 1000;
+  }
+  return null;
+}
+
+function hitToRawPost(hit: IndieHackersHit): RawPost | null {
+  if (!hit.objectID) return null;
+
+  const timestampMs = hitTimestampMs(hit);
+  const path = hit.path ?? hit.url;
+  const url = path
+    ? path.startsWith("http")
+      ? path
+      : `https://www.indiehackers.com${path.startsWith("/") ? path : `/${path}`}`
+    : `https://www.indiehackers.com/post/${hit.objectID}`;
+
+  const body = hit.body ?? hit.description ?? null;
+
+  return {
+    externalId: hit.objectID,
+    title: hit.title ?? null,
+    body,
+    author: hit.username ?? null,
+    url,
+    createdAt: timestampMs
+      ? new Date(timestampMs).toISOString()
+      : new Date().toISOString(),
+    postType: "story",
+  };
+}
+
+async function searchIndieHackersPosts(
+  keyword: string,
+  config?: PlatformConfig
+): Promise<RawPost[]> {
+  const trimmed = keyword.trim();
+  if (!trimmed) return [];
+
+  const maxResults = config?.maxResults ?? 20;
+  const sinceMs = Date.now() - IH_LOOKBACK_HOURS * 3600 * 1000;
+
+  const params = new URLSearchParams({
+    query: trimmed,
+    hitsPerPage: String(maxResults),
+  });
+
+  const response = await fetch(IH_ALGOLIA_URL, {
+    method: "POST",
+    headers: {
+      "X-Algolia-Application-Id": IH_ALGOLIA_APP_ID,
+      "X-Algolia-API-Key": IH_ALGOLIA_SEARCH_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ params: params.toString() }),
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Indie Hackers Algolia error: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data = (await response.json()) as IndieHackersSearchResponse;
+
+  const posts = data.hits
+    .map(hitToRawPost)
+    .filter((post): post is RawPost => post !== null)
+    .filter((post) => new Date(post.createdAt).getTime() >= sinceMs);
+
+  return dedupePostsByExternalId(posts).slice(0, maxResults);
+}
+
+export const indieHackersMonitor: PlatformMonitor = {
+  platform: "ih",
   meta: PLATFORM_META.ih,
-});
+
+  async fetchNewPosts(keyword, config) {
+    return withRetry(() => searchIndieHackersPosts(keyword, config), {
+      label: `Indie Hackers search "${keyword.trim()}"`,
+    });
+  },
+};

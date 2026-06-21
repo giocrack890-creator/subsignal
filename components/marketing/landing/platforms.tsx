@@ -16,25 +16,25 @@ const PLATFORMS = [
     name: "Reddit",
     color: "text-platform-reddit",
     dot: "bg-platform-reddit",
-    status: "Próximamente",
-    active: false,
-    desc: "Subreddits relevantes para tu nicho, en el roadmap.",
+    status: "Activo",
+    active: true,
+    desc: "Subreddits de startups y SaaS. Requiere app OAuth en Reddit.",
   },
   {
     name: "Twitter / X",
     color: "text-platform-twitter",
     dot: "bg-platform-twitter",
-    status: "Próximamente",
-    active: false,
-    desc: "Menciones y threads con intención de compra.",
+    status: "Activo",
+    active: true,
+    desc: "Tweets recientes con intención de compra. Requiere Bearer Token.",
   },
   {
     name: "Indie Hackers",
     color: "text-platform-ih",
     dot: "bg-platform-ih",
-    status: "Próximamente",
-    active: false,
-    desc: "Conversaciones de founders buscando soluciones.",
+    status: "Activo",
+    active: true,
+    desc: "Posts de founders buscando herramientas y soluciones.",
   },
 ];
 
@@ -49,7 +49,7 @@ export function LandingPlatforms() {
         <SectionHeading
           id="platforms-heading"
           title="Dónde te escuchamos"
-          subtitle="Empezamos donde la intención es más clara. Más plataformas en camino."
+          subtitle="Monitoreamos HN, Reddit, X e Indie Hackers donde tu ICP ya está preguntando."
         />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

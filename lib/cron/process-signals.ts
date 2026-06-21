@@ -28,6 +28,7 @@ interface KeywordRow {
   product_id: string;
   term: string;
   platforms: Platform[];
+  subreddits: string[] | null;
   is_active: boolean;
   profiles: {
     email: string | null;
@@ -245,6 +246,7 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
       product_id,
       term,
       platforms,
+      subreddits,
       is_active,
       profiles!inner (
         email,
@@ -286,7 +288,10 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
 
       try {
         const monitor = getMonitor(platform);
-        posts = await monitor.fetchNewPosts(keyword.term, { maxResults: 15 });
+        posts = await monitor.fetchNewPosts(keyword.term, {
+          maxResults: 15,
+          subreddits: keyword.subreddits ?? undefined,
+        });
         result.postsFetched += posts.length;
       } catch (error) {
         if (isPlatformNotImplementedError(error)) {
