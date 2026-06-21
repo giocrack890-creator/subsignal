@@ -87,7 +87,7 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
                 </div>
                 {plan === "free" && kw.platforms.length === 1 && kw.platforms[0] === "hn" && (
                   <p className="mt-2 text-xs text-foreground-muted">
-                    Monitoreo HN · escaneo cada 15 min
+                    Monitoreo HN · escaneo diario
                   </p>
                 )}
               </div>

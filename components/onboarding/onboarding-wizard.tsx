@@ -110,7 +110,7 @@ export function OnboardingWizard({
       </div>
 
       <p className="mt-6 text-center text-xs text-foreground-muted">
-        Paso {step} de 2 · El cron escanea HN cada 15 minutos
+        Paso {step} de 2 · El cron escanea HN una vez al día
       </p>
     </div>
   );

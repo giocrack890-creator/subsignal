@@ -25,7 +25,7 @@ export function SignalsList({ signals, hasKeywords }: SignalsListProps) {
       <EmptyState
         icon={Radar}
         title="Todavía no encontramos señales"
-        description="Estamos monitoreando Hacker News cada 15 minutos buscando tus keywords. Las conversaciones con score alto van a aparecer acá."
+        description="Estamos monitoreando Hacker News una vez al día con tus keywords. Las conversaciones con score alto van a aparecer acá."
       />
     );
   }
