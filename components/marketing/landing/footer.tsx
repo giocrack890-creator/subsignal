@@ -2,17 +2,24 @@ import Link from "next/link";
 
 const FOOTER_LINKS = [
   { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/pricing", label: "Precios" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/#plataformas", label: "Plataformas" },
   { href: "/#faq", label: "FAQ" },
   { href: "/login", label: "Login" },
+];
+
+const LEGAL_LINKS = [
+  { href: "/pricing", label: "Pricing" },
+  { href: "/terms", label: "Términos" },
+  { href: "/privacy", label: "Privacidad" },
+  { href: "/refunds", label: "Reembolsos" },
 ];
 
 export function LandingFooter() {
   return (
     <footer className="border-t border-[#27272A] py-12">
       <div className="mx-auto max-w-[1100px] px-6 lg:px-10">
-        <div className="grid gap-10 sm:grid-cols-3">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <span className="flex items-center gap-2 font-extrabold text-[#FAFAFA]">
               <span className="sf-dot-pulse" />
@@ -30,6 +37,24 @@ export function LandingFooter() {
             </p>
             <ul className="mt-4 space-y-2">
               {FOOTER_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-[#A1A1AA] transition-colors hover:text-[#FAFAFA]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
+              Legal
+            </p>
+            <ul className="mt-4 space-y-2">
+              {LEGAL_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
