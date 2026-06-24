@@ -7,10 +7,14 @@ function isCreemTestMode(): boolean {
   return process.env.CREEM_TEST_MODE !== "false";
 }
 
+export function getCreemStarterProductId(): string | undefined {
+  return process.env.CREEM_PRODUCT_STARTER ?? process.env.CREEM_PRODUCT_SECRET;
+}
+
 export function isCreemConfigured(): boolean {
   return Boolean(
     process.env.CREEM_API_KEY &&
-      process.env.CREEM_PRODUCT_STARTER &&
+      getCreemStarterProductId() &&
       process.env.CREEM_PRODUCT_PRO
   );
 }
@@ -30,7 +34,7 @@ export function getCreemClient(): Creem {
 export function getCreemProductId(plan: CreemCheckoutPlan): string {
   const productId =
     plan === "starter"
-      ? process.env.CREEM_PRODUCT_STARTER
+      ? getCreemStarterProductId()
       : process.env.CREEM_PRODUCT_PRO;
 
   if (!productId) {
@@ -41,7 +45,7 @@ export function getCreemProductId(plan: CreemCheckoutPlan): string {
 }
 
 export function planFromCreemProductId(productId: string): CreemCheckoutPlan | null {
-  if (productId === process.env.CREEM_PRODUCT_STARTER) return "starter";
+  if (productId === getCreemStarterProductId()) return "starter";
   if (productId === process.env.CREEM_PRODUCT_PRO) return "pro";
   return null;
 }

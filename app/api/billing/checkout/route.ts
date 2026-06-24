@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   createCreemCheckoutSession,
+  getCreemStarterProductId,
   isCreemConfigured,
   parseCreemCheckoutPlan,
 } from "@/lib/payments/creem";
@@ -14,6 +15,16 @@ export async function GET(request: NextRequest) {
   }
 
   if (!isCreemConfigured()) {
+    console.error(
+      "[billing/checkout] Creem no configurado. Faltan:",
+      [
+        !process.env.CREEM_API_KEY && "CREEM_API_KEY",
+        !getCreemStarterProductId() && "CREEM_PRODUCT_STARTER",
+        !process.env.CREEM_PRODUCT_PRO && "CREEM_PRODUCT_PRO",
+      ]
+        .filter(Boolean)
+        .join(", ") || "variables desconocidas"
+    );
     return NextResponse.redirect(new URL("/pricing?error=payments", request.url));
   }
 

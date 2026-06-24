@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { MarketingPlanGrid } from "@/components/marketing/pricing/marketing-plan-grid";
 
 const FAQ_ITEMS = [
@@ -78,10 +79,38 @@ function PricingFaqAccordion() {
   );
 }
 
+const CHECKOUT_ERROR_MESSAGES: Record<string, string> = {
+  payments:
+    "Los pagos no están disponibles en este momento. Volvé a intentar en unos minutos o contactanos si el problema continúa.",
+  checkout:
+    "No pudimos iniciar el checkout. Intentá de nuevo en unos minutos o contactanos si el problema persiste.",
+};
+
+function PricingCheckoutAlert() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  const message = error ? CHECKOUT_ERROR_MESSAGES[error] : null;
+
+  if (!message) return null;
+
+  return (
+    <div
+      role="alert"
+      className="mb-8 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm leading-relaxed text-red-200"
+    >
+      {message}
+    </div>
+  );
+}
+
 export function PricingPageContent() {
   return (
     <main id="main-content" className="pt-24 pb-20">
       <div className="mx-auto max-w-[1100px] px-6 lg:px-10">
+        <Suspense fallback={null}>
+          <PricingCheckoutAlert />
+        </Suspense>
+
         <header className="text-center">
           <p className="text-xs font-bold uppercase tracking-[1.5px] text-[#34D399]">
             Planes simples

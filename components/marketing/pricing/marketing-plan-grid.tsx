@@ -16,8 +16,13 @@ interface MarketingPlanGridProps {
   animated?: boolean;
 }
 
-function isExternalHref(href: string) {
-  return href.startsWith("http") || href === "#";
+/** Rutas API y URLs externas requieren navegación completa (no client-side Link). */
+function isFullPageHref(href: string) {
+  return (
+    href.startsWith("http") ||
+    href === "#" ||
+    href.startsWith("/api/")
+  );
 }
 
 function LandingFeatureRow({ feature }: { feature: MarketingPlanFeature }) {
@@ -84,10 +89,10 @@ function PageFeatureRow({ feature }: { feature: MarketingPlanFeature }) {
 
 function LandingPlanCard({ plan }: { plan: MarketingPlan }) {
   const isFeatured = plan.featured;
-  const external = isExternalHref(plan.cta.href);
+  const fullPage = isFullPageHref(plan.cta.href);
 
   const cta =
-    external ? (
+    fullPage ? (
       <a href={plan.cta.href} className="mt-8 block">
         <Button
           variant={plan.cta.variant === "accent" ? "accent" : "outline"}
@@ -141,14 +146,14 @@ function LandingPlanCard({ plan }: { plan: MarketingPlan }) {
 
 function PagePlanCard({ plan }: { plan: MarketingPlan }) {
   const isFeatured = plan.featured;
-  const external = isExternalHref(plan.cta.href);
+  const fullPage = isFullPageHref(plan.cta.href);
 
   const buttonClass =
     plan.cta.variant === "accent"
       ? "flex w-full items-center justify-center rounded-[10px] bg-[#34D399] px-5 py-3.5 text-sm font-bold text-black transition-colors hover:bg-[#2bb88a]"
       : "flex w-full items-center justify-center rounded-[10px] border border-white bg-transparent px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:border-[#34D399]";
 
-  const cta = external ? (
+  const cta = fullPage ? (
     <a href={plan.cta.href} className={buttonClass}>
       {plan.cta.label}
     </a>
