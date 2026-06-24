@@ -7,6 +7,10 @@ import {
   DRAFT_SYSTEM_PROMPT,
 } from "@/lib/claude/prompts";
 import { getDraftToneInstruction, type DraftTone } from "@/lib/claude/tone";
+import {
+  getAnonymousFounderInstruction,
+  getPlatformDraftInstruction,
+} from "@/lib/drafts/platform-templates";
 import { checkAiDraftLimit } from "@/lib/payments/checks";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { withRetry } from "@/lib/utils/retry";
@@ -79,10 +83,15 @@ export async function generateDraftReply(input: {
   product: ProductContext;
   tone?: DraftTone;
   previousDraft?: string;
+  anonymousMode?: boolean;
 }): Promise<string> {
   const client = getAnthropicClient();
   const toneInstruction = getDraftToneInstruction(input.tone ?? "conversational");
-  const system = `${DRAFT_SYSTEM_PROMPT}\n\nTONO: ${toneInstruction}`;
+  const platformInstruction = getPlatformDraftInstruction(input.post.platform);
+  const anonymousInstruction = input.anonymousMode
+    ? getAnonymousFounderInstruction()
+    : "";
+  const system = `${DRAFT_SYSTEM_PROMPT}\n\nTONO: ${toneInstruction}\n${platformInstruction}${anonymousInstruction ? `\n${anonymousInstruction}` : ""}`;
 
   const userPrompt = input.previousDraft
     ? buildRegenerateDraftUserPrompt(input.post, input.product, input.previousDraft)
@@ -241,11 +250,12 @@ export async function generateDraftForSignal(input: {
   try {
     const { data: profile } = await createAdminClient()
       .from("profiles")
-      .select("draft_tone")
+      .select("draft_tone, anonymous_draft_mode")
       .eq("id", userId)
       .single();
 
     const tone = (profile?.draft_tone ?? "conversational") as DraftTone;
+    const anonymousMode = profile?.anonymous_draft_mode === true;
 
     draft = await generateDraftReply({
       post: {
@@ -255,7 +265,8 @@ export async function generateDraftForSignal(input: {
         intent_reason: signal.intent_reason,
       },
       product,
-      tone,
+      tone: anonymousMode ? "conversational" : tone,
+      anonymousMode,
       previousDraft: regenerate ? signal.draft_reply ?? undefined : undefined,
     });
   } catch (error) {

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { deleteAccount, updateSettings } from "@/lib/actions/settings";
 import { DraftToneSection } from "@/components/settings/draft-tone-section";
+import { CancelSubscriptionButton } from "@/components/settings/cancel-subscription-button";
 import { RestartTourButton } from "@/components/settings/restart-tour-button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PlanBadge } from "@/components/dashboard/plan-badge";
@@ -294,6 +295,20 @@ export function SettingsForm({ profile, email, avatarUrl }: SettingsFormProps) {
             Upgrade plan
           </Button>
         </Link>
+        {profile.payment_subscription_id && <CancelSubscriptionButton />}
+        {!profile.payment_subscription_id &&
+          profile.trial_ends_at &&
+          new Date(profile.trial_ends_at) > new Date() && (
+            <p className="mt-4 text-sm text-foreground-secondary">
+              Trial Starter activo hasta{" "}
+              {new Date(profile.trial_ends_at).toLocaleDateString("es-AR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+              .
+            </p>
+          )}
       </section>
 
       <section className="dash-card p-6">

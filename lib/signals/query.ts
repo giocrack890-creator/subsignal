@@ -13,6 +13,10 @@ export interface SignalsSearchParams {
   q?: string;
   sort?: string;
   page?: string;
+  buyers?: string;
+  cluster?: string;
+  hot?: string;
+  focus?: string;
 }
 
 export type DraftFilter = "all" | "with" | "without";
@@ -23,7 +27,10 @@ export interface ParsedSignalsQuery {
   minScore: number | null;
   draft: DraftFilter;
   q: string;
-  sort: "date" | "score";
+  sort: "date" | "score" | "hot";
+  buyersOnly: boolean;
+  clusterOnly: boolean;
+  focusMode: boolean;
   page: number;
   limit: number;
   hasActiveFilters: boolean;
@@ -57,9 +64,13 @@ export function parseSignalsQuery(
     : "all";
 
   const q = params.q?.trim() ?? "";
-  const sort = params.sort === "score" ? "score" : "date";
+  const sort =
+    params.sort === "score" ? "score" : params.sort === "hot" ? "hot" : "date";
+  const buyersOnly = params.buyers === "1";
+  const clusterOnly = params.cluster === "1";
+  const focusMode = params.focus === "1";
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
-  const limit = page * SIGNALS_PAGE_SIZE;
+  const limit = focusMode ? 3 : page * SIGNALS_PAGE_SIZE;
 
   const hasActiveFilters =
     status !== "all" ||
@@ -67,9 +78,25 @@ export function parseSignalsQuery(
     minScore !== null ||
     draft !== "all" ||
     q.length > 0 ||
-    sort !== "date";
+    sort !== "date" ||
+    buyersOnly ||
+    clusterOnly ||
+    focusMode;
 
-  return { status, platform, minScore, draft, q, sort, page, limit, hasActiveFilters };
+  return {
+    status,
+    platform,
+    minScore,
+    draft,
+    q,
+    sort,
+    buyersOnly,
+    clusterOnly,
+    focusMode,
+    page,
+    limit,
+    hasActiveFilters,
+  };
 }
 
 function escapeIlike(term: string): string {
@@ -106,6 +133,14 @@ export async function fetchSignals(
     dbQuery = dbQuery.or("draft_reply.is.null,draft_reply.eq.");
   }
 
+  if (query.buyersOnly) {
+    dbQuery = dbQuery.eq("is_buyer_intent", true);
+  }
+
+  if (query.clusterOnly) {
+    dbQuery = dbQuery.not("cluster_id", "is", null);
+  }
+
   if (query.q) {
     const safe = query.q.replace(/[,().]/g, " ").trim();
     if (safe) {
@@ -114,7 +149,11 @@ export async function fetchSignals(
     }
   }
 
-  if (query.sort === "score") {
+  if (query.sort === "hot") {
+    dbQuery = dbQuery
+      .order("hot_score", { ascending: false, nullsFirst: false })
+      .order("intent_score", { ascending: false, nullsFirst: false });
+  } else if (query.sort === "score") {
     dbQuery = dbQuery
       .order("intent_score", { ascending: false, nullsFirst: false })
       .order("found_at", { ascending: false });

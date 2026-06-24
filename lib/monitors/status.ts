@@ -38,7 +38,7 @@ export const PLATFORM_META: Record<Platform, PlatformMeta> = {
     platform: "ih",
     label: "Indie Hackers",
     status: "active",
-    blockers: [],
+    blockers: ["Índice Algolia puede requerir actualización de credenciales"],
     optionsToEvaluate: [],
     implementationNotes:
       "Operativo vía Algolia (search-only key pública de indiehackers.com).",

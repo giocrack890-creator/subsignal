@@ -7,6 +7,7 @@ import { markSetupProductDone } from "@/lib/setup/progress";
 export interface ActionResult {
   success: boolean;
   error?: string;
+  message?: string;
   productId?: string;
 }
 

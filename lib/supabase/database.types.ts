@@ -35,6 +35,20 @@ export type Database = {
           guided_tour_completed: boolean;
           tooltips_dismissed: string[];
           setup_celebration_seen: boolean;
+          score_adjustment: number;
+          buyers_only_default: boolean;
+          language_filter: string;
+          focus_mode: boolean;
+          anonymous_draft_mode: boolean;
+          onboarding_vertical: string | null;
+          ui_theme: string;
+          api_webhook_url: string | null;
+          api_webhook_min_score: number;
+          referral_code: string | null;
+          referred_by: string | null;
+          ph_launch_mode_until: string | null;
+          sandbox_mode: boolean;
+          leaderboard_opt_in: boolean;
           created_at: string;
         };
         Insert: {
@@ -62,6 +76,20 @@ export type Database = {
           guided_tour_completed?: boolean;
           tooltips_dismissed?: string[];
           setup_celebration_seen?: boolean;
+          score_adjustment?: number;
+          buyers_only_default?: boolean;
+          language_filter?: string;
+          focus_mode?: boolean;
+          anonymous_draft_mode?: boolean;
+          onboarding_vertical?: string | null;
+          ui_theme?: string;
+          api_webhook_url?: string | null;
+          api_webhook_min_score?: number;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          ph_launch_mode_until?: string | null;
+          sandbox_mode?: boolean;
+          leaderboard_opt_in?: boolean;
           created_at?: string;
         };
         Update: {
@@ -89,6 +117,20 @@ export type Database = {
           guided_tour_completed?: boolean;
           tooltips_dismissed?: string[];
           setup_celebration_seen?: boolean;
+          score_adjustment?: number;
+          buyers_only_default?: boolean;
+          language_filter?: string;
+          focus_mode?: boolean;
+          anonymous_draft_mode?: boolean;
+          onboarding_vertical?: string | null;
+          ui_theme?: string;
+          api_webhook_url?: string | null;
+          api_webhook_min_score?: number;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          ph_launch_mode_until?: string | null;
+          sandbox_mode?: boolean;
+          leaderboard_opt_in?: boolean;
           created_at?: string;
         };
         Relationships: [];
@@ -143,6 +185,12 @@ export type Database = {
           platforms: string[];
           subreddits: string[] | null;
           is_active: boolean;
+          keyword_type: string;
+          exclude_terms: string[];
+          synonyms: string[];
+          language: string;
+          health_score: number | null;
+          last_signal_at: string | null;
           created_at: string;
         };
         Insert: {
@@ -153,6 +201,12 @@ export type Database = {
           platforms?: string[];
           subreddits?: string[] | null;
           is_active?: boolean;
+          keyword_type?: string;
+          exclude_terms?: string[];
+          synonyms?: string[];
+          language?: string;
+          health_score?: number | null;
+          last_signal_at?: string | null;
           created_at?: string;
         };
         Update: {
@@ -163,6 +217,12 @@ export type Database = {
           platforms?: string[];
           subreddits?: string[] | null;
           is_active?: boolean;
+          keyword_type?: string;
+          exclude_terms?: string[];
+          synonyms?: string[];
+          language?: string;
+          health_score?: number | null;
+          last_signal_at?: string | null;
           created_at?: string;
         };
         Relationships: [
@@ -206,6 +266,29 @@ export type Database = {
           found_at: string;
           alerted_at: string | null;
           author_meta: Record<string, unknown> | null;
+          cluster_id: string | null;
+          hot_score: number | null;
+          reply_window_ends_at: string | null;
+          reply_window_hours: number | null;
+          semantic_cluster: string | null;
+          intent_type: string | null;
+          is_buyer_intent: boolean;
+          detected_language: string | null;
+          geo_region: string | null;
+          lead_stage: string | null;
+          lead_notes: string | null;
+          assigned_to: string | null;
+          is_lead: boolean;
+          converted: boolean;
+          churn_detected: boolean;
+          competitor_mentioned: string | null;
+          previous_status: string | null;
+          replied_at: string | null;
+          follow_up_reminder_at: string | null;
+          engagement_velocity: number | null;
+          translated_title: string | null;
+          translated_body: string | null;
+          skip_reason: string | null;
         };
         Insert: {
           id?: string;
@@ -230,6 +313,29 @@ export type Database = {
           found_at?: string;
           alerted_at?: string | null;
           author_meta?: Record<string, unknown> | null;
+          cluster_id?: string | null;
+          hot_score?: number | null;
+          reply_window_ends_at?: string | null;
+          reply_window_hours?: number | null;
+          semantic_cluster?: string | null;
+          intent_type?: string | null;
+          is_buyer_intent?: boolean;
+          detected_language?: string | null;
+          geo_region?: string | null;
+          lead_stage?: string | null;
+          lead_notes?: string | null;
+          assigned_to?: string | null;
+          is_lead?: boolean;
+          converted?: boolean;
+          churn_detected?: boolean;
+          competitor_mentioned?: string | null;
+          previous_status?: string | null;
+          replied_at?: string | null;
+          follow_up_reminder_at?: string | null;
+          engagement_velocity?: number | null;
+          translated_title?: string | null;
+          translated_body?: string | null;
+          skip_reason?: string | null;
         };
         Update: {
           id?: string;
@@ -254,6 +360,29 @@ export type Database = {
           found_at?: string;
           alerted_at?: string | null;
           author_meta?: Record<string, unknown> | null;
+          cluster_id?: string | null;
+          hot_score?: number | null;
+          reply_window_ends_at?: string | null;
+          reply_window_hours?: number | null;
+          semantic_cluster?: string | null;
+          intent_type?: string | null;
+          is_buyer_intent?: boolean;
+          detected_language?: string | null;
+          geo_region?: string | null;
+          lead_stage?: string | null;
+          lead_notes?: string | null;
+          assigned_to?: string | null;
+          is_lead?: boolean;
+          converted?: boolean;
+          churn_detected?: boolean;
+          competitor_mentioned?: string | null;
+          previous_status?: string | null;
+          replied_at?: string | null;
+          follow_up_reminder_at?: string | null;
+          engagement_velocity?: number | null;
+          translated_title?: string | null;
+          translated_body?: string | null;
+          skip_reason?: string | null;
         };
         Relationships: [
           {
@@ -434,6 +563,150 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      author_history: {
+        Row: {
+          id: string;
+          user_id: string;
+          author: string;
+          platform: string;
+          mention_count: number;
+          topics: string[];
+          last_seen_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          author: string;
+          platform: string;
+          mention_count?: number;
+          topics?: string[];
+          last_seen_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          author?: string;
+          platform?: string;
+          mention_count?: number;
+          topics?: string[];
+          last_seen_at?: string;
+        };
+        Relationships: [];
+      };
+      winning_responses: {
+        Row: {
+          id: string;
+          user_id: string;
+          signal_id: string | null;
+          title: string | null;
+          body: string;
+          platform: string | null;
+          converted: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          signal_id?: string | null;
+          title?: string | null;
+          body: string;
+          platform?: string | null;
+          converted?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          signal_id?: string | null;
+          title?: string | null;
+          body?: string;
+          platform?: string | null;
+          converted?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      signal_clusters: {
+        Row: {
+          id: string;
+          user_id: string;
+          canonical_signal_id: string | null;
+          canonical_title: string | null;
+          semantic_topic: string | null;
+          platform_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          canonical_signal_id?: string | null;
+          canonical_title?: string | null;
+          semantic_topic?: string | null;
+          platform_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          canonical_signal_id?: string | null;
+          canonical_title?: string | null;
+          semantic_topic?: string | null;
+          platform_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      cluster_members: {
+        Row: {
+          id: string;
+          cluster_id: string;
+          signal_id: string;
+          platform: string;
+        };
+        Insert: {
+          id?: string;
+          cluster_id: string;
+          signal_id: string;
+          platform: string;
+        };
+        Update: {
+          id?: string;
+          cluster_id?: string;
+          signal_id?: string;
+          platform?: string;
+        };
+        Relationships: [];
+      };
+      api_keys: {
+        Row: {
+          id: string;
+          user_id: string;
+          key_hash: string;
+          label: string;
+          created_at: string;
+          last_used_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          key_hash: string;
+          label?: string;
+          created_at?: string;
+          last_used_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          key_hash?: string;
+          label?: string;
+          created_at?: string;
+          last_used_at?: string | null;
+        };
+        Relationships: [];
       };
       waitlist_reddit: {
         Row: {

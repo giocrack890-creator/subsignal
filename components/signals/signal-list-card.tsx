@@ -7,8 +7,11 @@ import { getScoreColor } from "@/components/dashboard/score-badge";
 import { useSignalPanelOptional } from "@/components/dashboard/signal-panel-context";
 import { Tooltip } from "@/components/ui/tooltip";
 import { PlatformBadge } from "@/components/ui/platform-badge";
+import { SignalIntelligenceBadges } from "@/components/signals/signal-intelligence-badges";
+import { UndoDismissButton } from "@/components/signals/undo-dismiss-button";
 import { formatRelativeTime, cn } from "@/lib/utils";
 import { assessShillRisk, shillRiskLabel } from "@/lib/shill/heuristics";
+import { getSignalOutboundUrl } from "@/lib/tracking/urls";
 import type { Plan, Platform, Signal } from "@/types";
 
 export type SignalListView = "list" | "cards";
@@ -68,12 +71,14 @@ export function SignalListCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
+  const outboundUrl = getSignalOutboundUrl(signal, plan);
+
   function openPanel() {
     if (panel) {
       panel.openSignal(signal);
       return;
     }
-    window.open(signal.url, "_blank", "noopener,noreferrer");
+    window.open(outboundUrl, "_blank", "noopener,noreferrer");
   }
 
   function handleDismiss(reason: string) {
@@ -192,6 +197,14 @@ export function SignalListCard({
               {bodyText.length > 120 ? "…" : ""}
             </p>
           )}
+          <div className="mt-1.5">
+            <SignalIntelligenceBadges signal={signal} compact={isList} />
+          </div>
+          {isDismissed && (
+            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+              <UndoDismissButton signalId={signal.id} />
+            </div>
+          )}
         </div>
 
         {/* Zona derecha */}
@@ -253,7 +266,7 @@ export function SignalListCard({
                   className="block w-full px-3.5 py-2 text-left text-sm text-[#B4B4B4] hover:bg-[#232323]"
                   onClick={() => {
                     setMenuOpen(false);
-                    window.open(signal.url, "_blank", "noopener,noreferrer");
+                    window.open(outboundUrl, "_blank", "noopener,noreferrer");
                   }}
                 >
                   Abrir original ↗

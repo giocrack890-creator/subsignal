@@ -33,17 +33,30 @@ const STATUS_OPTIONS = [
   { value: "dismissed", label: "Descartadas" },
 ] as const;
 
-const PLATFORM_OPTIONS: { value: Platform | "all"; label: string; disabled?: boolean }[] = [
+const PLATFORM_OPTIONS: { value: Platform | "all"; label: string }[] = [
+  { value: "all", label: "Todas" },
   { value: "hn", label: "HN" },
-  { value: "reddit", label: "Reddit", disabled: true },
-  { value: "twitter", label: "X", disabled: true },
-  { value: "ih", label: "IH", disabled: true },
+  { value: "reddit", label: "Reddit" },
+  { value: "twitter", label: "X" },
+  { value: "ih", label: "IH" },
 ];
 
 const SCORE_OPTIONS = [
   { value: "all", label: "Todo" },
   { value: "7", label: "7+" },
   { value: "9", label: "9+" },
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "date", label: "Recientes" },
+  { value: "score", label: "Score" },
+  { value: "hot", label: "🔥 Caliente" },
+] as const;
+
+const EXTRA_OPTIONS = [
+  { key: "buyers", label: "Compradores", param: "1" },
+  { key: "cluster", label: "Fusionadas", param: "1" },
+  { key: "focus", label: "Foco (3)", param: "1" },
 ] as const;
 
 const DRAFT_OPTIONS = [
@@ -121,6 +134,10 @@ export function SignalsToolbar({
     platform: searchParams.get("platform") ?? "all",
     minScore: searchParams.get("minScore") ?? "all",
     draft: searchParams.get("draft") ?? "all",
+    sort: searchParams.get("sort") ?? "date",
+    buyers: searchParams.get("buyers") === "1",
+    cluster: searchParams.get("cluster") === "1",
+    focus: searchParams.get("focus") === "1",
     q: searchParams.get("q") ?? "",
   };
 
@@ -159,6 +176,10 @@ export function SignalsToolbar({
       platform: current.platform !== "all" ? current.platform : undefined,
       minScore: current.minScore !== "all" ? current.minScore : undefined,
       draft: current.draft !== "all" ? current.draft : undefined,
+      sort: current.sort !== "date" ? current.sort : undefined,
+      buyers: current.buyers ? "1" : undefined,
+      cluster: current.cluster ? "1" : undefined,
+      focus: current.focus ? "1" : undefined,
       q: current.q || undefined,
     };
   }
@@ -254,16 +275,20 @@ export function SignalsToolbar({
         {PLATFORM_OPTIONS.map((opt) => (
           <FilterPill
             key={opt.value}
-            href={
-              opt.disabled
-                ? undefined
-                : pillHref({
-                    platform: current.platform === opt.value ? undefined : opt.value,
-                  })
+            href={pillHref({
+              platform:
+                opt.value === "all"
+                  ? undefined
+                  : current.platform === opt.value
+                    ? undefined
+                    : opt.value,
+            })}
+            active={
+              opt.value === "all"
+                ? current.platform === "all"
+                : current.platform === opt.value
             }
-            active={current.platform === opt.value}
-            disabled={opt.disabled}
-            tooltip={opt.disabled ? "Próximamente" : opt.label}
+            tooltip={opt.label}
           >
             {opt.label}
           </FilterPill>
@@ -298,6 +323,44 @@ export function SignalsToolbar({
             {opt.label}
           </FilterPill>
         ))}
+
+        <FilterSeparator />
+
+        {SORT_OPTIONS.map((opt) => (
+          <FilterPill
+            key={opt.value}
+            href={pillHref({
+              sort: current.sort === opt.value ? undefined : opt.value,
+            })}
+            active={current.sort === opt.value}
+            tooltip={`Orden: ${opt.label}`}
+          >
+            {opt.label}
+          </FilterPill>
+        ))}
+
+        <FilterSeparator />
+
+        {EXTRA_OPTIONS.map((opt) => {
+          const active =
+            opt.key === "buyers"
+              ? current.buyers
+              : opt.key === "cluster"
+                ? current.cluster
+                : current.focus;
+          return (
+            <FilterPill
+              key={opt.key}
+              href={pillHref({
+                [opt.key]: active ? undefined : opt.param,
+              })}
+              active={active}
+              tooltip={opt.label}
+            >
+              {opt.label}
+            </FilterPill>
+          );
+        })}
       </div>
     </div>
   );

@@ -110,6 +110,45 @@ export function KeywordForm({
           required
           minLength={2}
         />
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="keyword_type">Tipo</Label>
+            <select
+              id="keyword_type"
+              name="keyword_type"
+              defaultValue={keyword?.keyword_type ?? "product"}
+              className="mt-1 w-full rounded-lg border border-border-medio bg-nivel-3 px-3 py-2 text-sm"
+            >
+              <option value="product">Producto / tema</option>
+              <option value="competitor">Competidor (radar)</option>
+            </select>
+          </div>
+          <div>
+            <Label htmlFor="language">Idioma</Label>
+            <select
+              id="language"
+              name="language"
+              defaultValue={keyword?.language ?? "any"}
+              className="mt-1 w-full rounded-lg border border-border-medio bg-nivel-3 px-3 py-2 text-sm"
+            >
+              <option value="any">Cualquiera</option>
+              <option value="en">Solo inglés</option>
+              <option value="es">Solo español</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-3">
+          <Label htmlFor="exclude_terms">Keywords negativas (excluir)</Label>
+          <Input
+            id="exclude_terms"
+            name="exclude_terms"
+            defaultValue={keyword?.exclude_terms?.join(", ") ?? ""}
+            placeholder="Space Jam, película..."
+          />
+          <p className="mt-1 text-xs text-foreground-secondary">
+            Separadas por coma. Ej: excluir &quot;Space Jam&quot; cuando buscás SpaceX.
+          </p>
+        </div>
         {!isEdit && (
           <KeywordSuggestions
             productName={productName}

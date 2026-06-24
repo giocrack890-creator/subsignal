@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { LoadMoreSignals } from "@/components/dashboard/load-more-signals";
 import { SignalListCard } from "@/components/signals/signal-list-card";
+import { SignalChatPanel } from "@/components/signals/signal-chat-panel";
+import { SignalKeyboardNav } from "@/components/signals/signal-keyboard-nav";
+import { useSignalPanelOptional } from "@/components/dashboard/signal-panel-context";
 import {
   SignalsToolbar,
   type SignalsViewMode,
@@ -56,6 +59,21 @@ export function SignalsFeed({
     localStorage.setItem(VIEW_STORAGE_KEY, mode);
   }, []);
 
+  const panel = useSignalPanelOptional();
+
+  const handleOpen = useCallback(
+    (signal: Signal) => {
+      panel?.openSignal(signal);
+    },
+    [panel]
+  );
+
+  const handleCopyDraft = useCallback((signal: Signal) => {
+    if (signal.draft_reply) {
+      void navigator.clipboard.writeText(signal.draft_reply);
+    }
+  }, []);
+
   if (error) {
     return (
       <>
@@ -99,6 +117,12 @@ export function SignalsFeed({
 
   return (
     <>
+      <SignalChatPanel />
+      <SignalKeyboardNav
+        signals={signals}
+        onOpen={handleOpen}
+        onCopyDraft={handleCopyDraft}
+      />
       <SignalsToolbar
         viewMode={effectiveView}
         onViewModeChange={handleViewChange}

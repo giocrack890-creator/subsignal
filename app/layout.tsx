@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import { getAppUrl } from "@/lib/auth/urls";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -17,8 +18,10 @@ const SITE_NAME = "ThreadPulse";
 const DEFAULT_TITLE = `${SITE_NAME} — Intent monitoring para founders SaaS`;
 const DEFAULT_DESCRIPTION =
   "ThreadPulse monitorea Reddit, Hacker News y más. Encuentra conversaciones de alta intención y genera borradores de respuesta genuinos.";
+const OG_IMAGE = "/branding/wordmark-signal.png";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getAppUrl()),
   title: {
     default: DEFAULT_TITLE,
     template: `%s — ${SITE_NAME}`,
@@ -33,11 +36,13 @@ export const metadata: Metadata = {
     description: DEFAULT_DESCRIPTION,
     type: "website",
     siteName: SITE_NAME,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE],
   },
 };
 

@@ -72,7 +72,8 @@ export async function POST(request: Request) {
         break;
       }
 
-      case "subscription.expired": {
+      case "subscription.expired":
+      case "subscription.canceled": {
         const userId = extractCreemGrantPayload({
           metadata: event.object.metadata,
           product: event.object.product,

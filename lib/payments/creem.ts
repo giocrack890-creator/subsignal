@@ -199,6 +199,11 @@ export function extractCreemGrantPayload(input: {
   };
 }
 
+export async function cancelCreemSubscription(subscriptionId: string): Promise<void> {
+  const creem = getCreemClient();
+  await creem.subscriptions.cancel(subscriptionId, { mode: "scheduled" });
+}
+
 export function toAppPlan(plan: CreemCheckoutPlan): Plan {
   return plan;
 }

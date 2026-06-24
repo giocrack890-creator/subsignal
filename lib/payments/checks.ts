@@ -209,7 +209,7 @@ export function checkConversionTracking(input: { plan: Plan }): LimitCheckResult
     feature: "conversion_tracking",
     currentPlan: input.plan,
     recommendedPlan: getRecommendedPlan(input.plan, "conversion_tracking"),
-    message: "Conversion tracking está disponible desde el plan Growth.",
+    message: "Conversion tracking está disponible desde el plan Pro.",
   };
 }
 

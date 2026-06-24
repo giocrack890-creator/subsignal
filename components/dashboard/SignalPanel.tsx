@@ -13,7 +13,11 @@ import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { computeReplyWindow, isReplyWindowOpen } from "@/lib/intelligence/reply-window";
+import { getSignalOutboundUrl } from "@/lib/tracking/urls";
 import { formatRelativeTime } from "@/lib/utils";
+import { CrmLitePanel } from "@/components/signals/crm-lite-panel";
+import { SignalIntelligenceBadges } from "@/components/signals/signal-intelligence-badges";
 import type { Plan, Platform, Signal } from "@/types";
 
 interface SignalPanelProps {
@@ -45,6 +49,7 @@ export function SignalPanel({
   const [isPending, startTransition] = useTransition();
 
   const isPaid = plan !== "free";
+  const outboundUrl = signal ? getSignalOutboundUrl(signal, plan) : "";
   const hasDraft = Boolean(draftText.trim());
   const score = signal?.intent_score ?? 0;
 
@@ -144,11 +149,30 @@ export function SignalPanel({
           <h2 className="text-xl font-bold text-white">
             {signal.title ?? "Sin título"}
           </h2>
+          <div className="mt-2">
+            <SignalIntelligenceBadges signal={signal} />
+          </div>
+          {signal.reply_window_ends_at && (
+            <p
+              className={`mt-2 text-sm ${
+                isReplyWindowOpen(signal.reply_window_ends_at)
+                  ? "text-amber-400"
+                  : "text-[#6B6B6B]"
+              }`}
+            >
+              {computeReplyWindow(signal.platform, new Date(signal.found_at)).urgencyLabel}
+            </p>
+          )}
+          {signal.author_meta?.author_history_note && (
+            <p className="mt-2 text-sm text-yellow-400/90">
+              {signal.author_meta.author_history_note}
+            </p>
+          )}
           <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-[#B4B4B4]">
             {signal.body ?? signal.intent_reason ?? "Sin contenido"}
           </p>
           <a
-            href={signal.url}
+            href={outboundUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[#34D399] hover:underline"
@@ -252,6 +276,8 @@ export function SignalPanel({
               </ul>
             </div>
           )}
+
+          {isPaid && <CrmLitePanel signal={signal} />}
         </div>
 
         <div className="sticky bottom-0 border-t border-[#232323] bg-[#0D0D0D] px-5 py-4">
@@ -284,7 +310,7 @@ export function SignalPanel({
               variant="outline"
               size="sm"
               className="ml-auto gap-1 border-white/10"
-              onClick={() => window.open(signal.url, "_blank")}
+              onClick={() => window.open(outboundUrl, "_blank")}
             >
               <ExternalLink className="h-3 w-3" />
               Abrir

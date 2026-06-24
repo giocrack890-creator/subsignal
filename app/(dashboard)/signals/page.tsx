@@ -47,6 +47,9 @@ async function SignalsFeedLoader({
     draft: parsed.draft !== "all" ? parsed.draft : undefined,
     q: parsed.q || undefined,
     sort: parsed.sort !== "date" ? parsed.sort : undefined,
+    buyers: parsed.buyersOnly ? "1" : undefined,
+    cluster: parsed.clusterOnly ? "1" : undefined,
+    focus: parsed.focusMode ? "1" : undefined,
   };
 
   return (

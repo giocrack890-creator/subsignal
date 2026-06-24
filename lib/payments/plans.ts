@@ -57,7 +57,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     teamSeats: 1,
   },
   pro: {
-    maxKeywords: Infinity,
+    maxKeywords: 15,
     aiDraftsPerMonth: null,
     emailAlertsPerDay: null,
     conversionTracking: true,
@@ -83,44 +83,43 @@ export const PLAN_CATALOG: Record<Plan, PlanCatalogEntry> = {
   starter: {
     id: "starter",
     name: "Starter",
-    priceLabel: "$29",
-    priceMonthly: 29,
+    priceLabel: "$14.99",
+    priceMonthly: 14.99,
     periodLabel: "/ mes",
     features: [
       "5 keywords activas",
-      "Alertas email + Slack ilimitadas",
+      "Hacker News + Reddit + X (3 keywords)",
       "20 borradores IA / mes",
       "✓ Draft de respuesta listo para copiar",
-      "Todas las plataformas disponibles",
+      "Alertas email ilimitadas",
     ],
   },
   growth: {
     id: "growth",
     name: "Growth",
-    priceLabel: "$49",
-    priceMonthly: 49,
+    priceLabel: "$29.99",
+    priceMonthly: 29.99,
     periodLabel: "/ mes",
     highlight: true,
     features: [
       "15 keywords activas",
       "Borradores IA ilimitados",
-      "✓ Draft de respuesta listo para copiar",
       "Conversion tracking",
-      "Alertas ilimitadas",
+      "Todas las plataformas",
     ],
   },
   pro: {
     id: "pro",
     name: "Pro",
-    priceLabel: "$79",
-    priceMonthly: 79,
+    priceLabel: "$29.99",
+    priceMonthly: 29.99,
     periodLabel: "/ mes",
     features: [
-      "Keywords ilimitadas",
+      "15 keywords activas",
       "Borradores IA ilimitados",
       "✓ Draft de respuesta listo para copiar",
-      "Conversion tracking avanzado",
-      "API access + 3 seats",
+      "Conversion tracking",
+      "Todas las plataformas + API access",
     ],
   },
 };
@@ -161,6 +160,12 @@ const LIMIT_COPY: Record<
   },
 };
 
+export const SOLD_PLAN_IDS = ["free", "starter", "pro"] as const satisfies readonly Plan[];
+
+export function isSoldPlan(plan: Plan): boolean {
+  return (SOLD_PLAN_IDS as readonly string[]).includes(plan);
+}
+
 export function getPlanLimits(plan: Plan): PlanLimits {
   return PLAN_LIMITS[plan];
 }
@@ -181,19 +186,18 @@ export function isPlanAtLeast(current: Plan, required: Plan): boolean {
 export function getRecommendedPlan(current: Plan, feature: LimitFeature): Plan | null {
   if (feature === "keywords") {
     if (current === "free") return "starter";
-    if (current === "starter") return "growth";
-    if (current === "growth") return "pro";
+    if (current === "starter") return "pro";
     return null;
   }
 
   if (feature === "ai_drafts" || feature === "email_alerts" || feature === "platforms") {
     if (current === "free") return "starter";
-    if (current === "starter") return "growth";
+    if (current === "starter") return "pro";
     return null;
   }
 
   if (feature === "conversion_tracking") {
-    if (!PLAN_LIMITS[current].conversionTracking) return "growth";
+    if (!PLAN_LIMITS[current].conversionTracking) return "pro";
     return null;
   }
 

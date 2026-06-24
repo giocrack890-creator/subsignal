@@ -97,6 +97,12 @@ async function searchIndieHackersPosts(
   });
 
   if (!response.ok) {
+    if (response.status === 404) {
+      console.warn(
+        "[indiehackers] Algolia index no disponible (404) — omitiendo IH hasta actualizar credenciales"
+      );
+      return [];
+    }
     throw new Error(
       `Indie Hackers Algolia error: ${response.status} ${response.statusText}`
     );

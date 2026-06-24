@@ -9,7 +9,9 @@ import {
 } from "@/lib/payments/checks";
 import { filterPlatformsForPlan } from "@/lib/payments/platforms";
 import { markSetupKeywordDone } from "@/lib/setup/progress";
-import type { Plan, Platform } from "@/types";
+import { parseExcludeTerms } from "@/lib/intelligence/negative-keywords";
+import { expandSynonyms } from "@/lib/intelligence/synonyms";
+import type { KeywordType, LanguageFilter, Plan, Platform } from "@/types";
 import type { ActionResult } from "./product";
 
 const ALL_PLATFORMS: Platform[] = ["hn", "reddit", "twitter", "ih"];
@@ -20,6 +22,22 @@ function parseSubreddits(raw: string): string[] {
     .map((s) => s.trim().replace(/^r\//i, ""))
     .filter(Boolean)
     .slice(0, 10);
+}
+
+function parseKeywordType(formData: FormData): KeywordType {
+  const raw = (formData.get("keyword_type") as string)?.trim();
+  return raw === "competitor" ? "competitor" : "product";
+}
+
+function parseLanguage(formData: FormData): LanguageFilter {
+  const raw = (formData.get("language") as string)?.trim();
+  if (raw === "en" || raw === "es") return raw;
+  return "any";
+}
+
+function parseExcludeFromForm(formData: FormData): string[] {
+  const raw = (formData.get("exclude_terms") as string)?.trim() ?? "";
+  return parseExcludeTerms(raw);
 }
 
 function parseSelectedPlatforms(formData: FormData): Platform[] {
@@ -193,6 +211,10 @@ export async function createKeyword(formData: FormData): Promise<ActionResult> {
     platforms,
     subreddits,
     is_active: true,
+    keyword_type: parseKeywordType(formData),
+    exclude_terms: parseExcludeFromForm(formData),
+    synonyms: expandSynonyms(term),
+    language: parseLanguage(formData),
   });
 
   if (error) {
@@ -278,6 +300,10 @@ export async function updateKeyword(
       term,
       platforms,
       subreddits,
+      keyword_type: parseKeywordType(formData),
+      exclude_terms: parseExcludeFromForm(formData),
+      synonyms: expandSynonyms(term),
+      language: parseLanguage(formData),
     })
     .eq("id", keywordId)
     .eq("user_id", user.id);

@@ -13,6 +13,12 @@ import { markSetupSignalReceived } from "@/lib/setup/progress";
 import { sendPushToUser } from "@/lib/push/send";
 import { fetchRedditAuthorProfile } from "@/lib/monitors/reddit-author";
 import { buildAuthorMeta } from "@/lib/shill/heuristics";
+import { enrichSignalFromPost } from "@/lib/intelligence/enrich-signal";
+import { computeEffectiveMinScore } from "@/lib/intelligence/dynamic-threshold";
+import { matchesLanguageFilter } from "@/lib/intelligence/language-geo";
+import { upsertAuthorHistory, getAuthorHistorySummary } from "@/lib/intelligence/author-history";
+import { tryMergeIntoCluster } from "@/lib/intelligence/merge-clusters";
+import { fireOutboundWebhook } from "@/lib/webhooks/outbound";
 import { truncate } from "@/lib/utils";
 import { filterPlatformsForPlan } from "@/lib/payments/platforms";
 import type { Platform, Plan } from "@/types";
@@ -35,14 +41,22 @@ interface KeywordRow {
   platforms: Platform[];
   subreddits: string[] | null;
   is_active: boolean;
+  keyword_type: "product" | "competitor";
+  exclude_terms: string[] | null;
+  synonyms: string[] | null;
+  language: "any" | "en" | "es";
   profiles: {
     email: string | null;
     plan: Plan;
     min_intent_score: number;
-  notify_email: boolean;
-  notify_slack: boolean;
-  notify_push: boolean;
-  slack_webhook_url: string | null;
+    score_adjustment: number;
+    language_filter: "any" | "en" | "es";
+    sandbox_mode: boolean;
+    ph_launch_mode_until: string | null;
+    notify_email: boolean;
+    notify_slack: boolean;
+    notify_push: boolean;
+    slack_webhook_url: string | null;
   };
   user_products: {
     name: string;
@@ -134,7 +148,43 @@ async function processPostForKeyword(
 
   await markProcessed(keyword.user_id, platform, post.externalId);
 
-  if (scoreResult.score < keyword.profiles.min_intent_score) {
+  if (keyword.profiles.sandbox_mode) {
+    return;
+  }
+
+  const enriched = enrichSignalFromPost({
+    post,
+    platform,
+    keyword: {
+      term: keyword.term,
+      keywordType: keyword.keyword_type ?? "product",
+      excludeTerms: keyword.exclude_terms ?? [],
+      synonyms: keyword.synonyms ?? [],
+      language: keyword.language ?? "any",
+    },
+    scoreResult,
+  });
+
+  if ("skip" in enriched) {
+    return;
+  }
+
+  if (
+    !matchesLanguageFilter(
+      enriched.detected_language as "en" | "es" | "other",
+      keyword.profiles.language_filter ?? "any"
+    )
+  ) {
+    return;
+  }
+
+  const effectiveMin = computeEffectiveMinScore(
+    keyword.profiles.min_intent_score,
+    keyword.profiles.score_adjustment ?? 0,
+    0
+  );
+
+  if (enriched.intent_score < effectiveMin) {
     return;
   }
 
@@ -151,6 +201,24 @@ async function processPostForKeyword(
     authorProfile,
   });
 
+  if (post.author) {
+    await upsertAuthorHistory({
+      userId: keyword.user_id,
+      author: post.author,
+      platform,
+      text: `${post.title ?? ""} ${post.body ?? ""}`,
+    });
+    const historyNote = await getAuthorHistorySummary(
+      keyword.user_id,
+      post.author,
+      platform
+    );
+    if (historyNote && authorMeta) {
+      (authorMeta as Record<string, unknown>).author_history_note = historyNote;
+    }
+  }
+
+  const foundAt = new Date().toISOString();
   const supabase = createAdminClient();
   const { data: signal, error: insertError } = await supabase
     .from("signals")
@@ -164,10 +232,21 @@ async function processPostForKeyword(
       author: post.author,
       url: post.url,
       subreddit: post.subreddit ?? null,
-      intent_score: scoreResult.score,
-      intent_reason: scoreResult.reason,
+      intent_score: enriched.intent_score,
+      intent_reason: enriched.intent_reason,
+      intent_type: enriched.intent_type,
+      is_buyer_intent: enriched.is_buyer_intent,
+      semantic_cluster: enriched.semantic_cluster,
+      detected_language: enriched.detected_language,
+      geo_region: enriched.geo_region,
+      churn_detected: enriched.churn_detected,
+      competitor_mentioned: enriched.competitor_mentioned,
+      reply_window_ends_at: enriched.reply_window_ends_at,
+      reply_window_hours: enriched.reply_window_hours,
+      hot_score: enriched.hot_score,
       author_meta: authorMeta as Record<string, unknown> | null,
       status: "new",
+      found_at: foundAt,
     })
     .select("id")
     .single();
@@ -181,11 +260,33 @@ async function processPostForKeyword(
 
   result.signalsCreated++;
 
+  await supabase
+    .from("keywords")
+    .update({ last_signal_at: foundAt })
+    .eq("id", keyword.id);
+
+  void tryMergeIntoCluster({
+    userId: keyword.user_id,
+    signalId: signal.id,
+    title: post.title,
+    platform,
+    foundAt,
+  }).catch(() => undefined);
+
+  void fireOutboundWebhook({
+    userId: keyword.user_id,
+    signalId: signal.id,
+    score: enriched.intent_score,
+    title: post.title,
+    platform,
+    url: post.url,
+  }).catch(() => undefined);
+
   await markSetupSignalReceived(keyword.user_id);
 
-  if (scoreResult.score >= 9) {
+  if (enriched.intent_score >= 9) {
     void sendPushToUser(keyword.user_id, {
-      title: `🔥 Señal ${scoreResult.score}/10`,
+      title: `🔥 Señal ${enriched.intent_score}/10`,
       body: post.title ?? "Nueva señal de alta intención",
       signalId: signal.id,
     }).catch(() => undefined);
@@ -198,7 +299,7 @@ async function processPostForKeyword(
     signalId: signal.id,
     userId: keyword.user_id,
     plan: profile.plan,
-    score: scoreResult.score,
+    score: enriched.intent_score,
     post: {
       title: post.title,
       body: post.body,
@@ -228,7 +329,7 @@ async function processPostForKeyword(
     signalId: signal.id,
     title: post.title,
     platform,
-    score: scoreResult.score,
+    score: enriched.intent_score,
     excerpt,
     draftUrl,
     originalUrl: post.url,
@@ -274,10 +375,18 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
       platforms,
       subreddits,
       is_active,
+      keyword_type,
+      exclude_terms,
+      synonyms,
+      language,
       profiles!inner (
         email,
         plan,
         min_intent_score,
+        score_adjustment,
+        language_filter,
+        sandbox_mode,
+        ph_launch_mode_until,
         notify_email,
         notify_slack,
         notify_push,
@@ -317,8 +426,13 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
 
       try {
         const monitor = getMonitor(platform);
+        const maxResults =
+          keyword.profiles.ph_launch_mode_until &&
+          new Date(keyword.profiles.ph_launch_mode_until) > new Date()
+            ? 30
+            : 15;
         posts = await monitor.fetchNewPosts(keyword.term, {
-          maxResults: 15,
+          maxResults,
           subreddits: keyword.subreddits ?? undefined,
         });
         result.postsFetched += posts.length;

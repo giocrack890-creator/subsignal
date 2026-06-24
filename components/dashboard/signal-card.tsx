@@ -7,6 +7,7 @@ import { useSignalPanelOptional } from "@/components/dashboard/signal-panel-cont
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Button } from "@/components/ui/button";
 import { formatRelativeTime, truncate, cn } from "@/lib/utils";
+import { getSignalOutboundUrl } from "@/lib/tracking/urls";
 import type { Plan, Platform, Signal } from "@/types";
 
 interface SignalCardProps {
@@ -21,10 +22,12 @@ export function SignalCard({ signal, plan, className }: SignalCardProps) {
   const hasDraft = Boolean(signal.draft_reply?.trim());
   const bodyText = signal.body ?? signal.intent_reason ?? "";
 
+  const outboundUrl = getSignalOutboundUrl(signal, plan);
+
   function handleOpenPost(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    window.open(signal.url, "_blank", "noopener,noreferrer");
+    window.open(outboundUrl, "_blank", "noopener,noreferrer");
   }
 
   function handleCardClick() {
@@ -32,7 +35,7 @@ export function SignalCard({ signal, plan, className }: SignalCardProps) {
       panel.openSignal(signal);
       return;
     }
-    window.open(signal.url, "_blank", "noopener,noreferrer");
+    window.open(outboundUrl, "_blank", "noopener,noreferrer");
   }
 
   const isNew = signal.status === "new";
