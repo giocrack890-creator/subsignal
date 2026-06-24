@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Bell, X } from "lucide-react";
 
 const DECLINED_KEY = "push_declined";
 
@@ -69,17 +69,29 @@ export function PushNotificationBanner() {
   if (!visible) return null;
 
   return (
-    <div className="mb-6 flex flex-col gap-3 rounded-xl border border-[#232323] bg-[#111714] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-[#B4B4B4]">
-        🔔 Activá notificaciones para alertas de señales con alta intención en tiempo real.
-      </p>
-      <div className="flex gap-2">
-        <Button type="button" variant="accent" size="sm" onClick={handleEnable}>
+    <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-border-sutil bg-nivel-3/80 px-3 py-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Bell className="h-3.5 w-3.5 shrink-0 text-[#6B6B6B]" aria-hidden="true" />
+        <p className="text-[11px] text-[#6B6B6B]">
+          Alertas en tiempo real para señales de alta intención
+        </p>
+      </div>
+      <div className="flex shrink-0 items-center gap-1">
+        <button
+          type="button"
+          onClick={handleEnable}
+          className="cursor-pointer rounded-md bg-[rgba(52,211,153,0.12)] px-2 py-1 text-[11px] font-medium text-accent transition-colors hover:bg-[rgba(52,211,153,0.18)]"
+        >
           Activar
-        </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={handleDismiss}>
-          Ahora no
-        </Button>
+        </button>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          className="flex h-6 w-6 cursor-pointer items-center justify-center rounded text-[#4B4B4B] transition-colors hover:bg-nivel-4 hover:text-[#B4B4B4]"
+          aria-label="Ahora no"
+        >
+          <X className="h-3.5 w-3.5" aria-hidden="true" />
+        </button>
       </div>
     </div>
   );

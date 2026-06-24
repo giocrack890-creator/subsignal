@@ -38,7 +38,7 @@ export function PageHeaderSkeleton({
 
 export function StatsCardsSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-3">
+    <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
@@ -55,19 +55,25 @@ export function StatsCardsSkeleton({ count = 3 }: { count?: number }) {
 export function DashboardPageSkeleton() {
   return (
     <div className="p-6 lg:p-8">
-      <PageHeaderSkeleton />
-      <StatsCardsSkeleton />
-      <div className="mt-10 animate-pulse">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="animate-pulse border-b border-border-sutil pb-6">
+        <div className="h-3 w-24 rounded bg-white/10" />
+        <div className="mt-3 flex justify-between">
           <div>
-            <div className="h-5 w-32 rounded bg-white/10" />
-            <div className="mt-2 h-4 w-48 rounded bg-white/10" />
+            <div className="h-8 w-48 rounded bg-white/10" />
+            <div className="mt-2 h-4 w-64 rounded bg-white/10" />
           </div>
-          <div className="h-9 w-72 rounded-full bg-white/10" />
+          <div className="h-12 w-20 rounded bg-white/10" />
         </div>
-        <div className="mt-6">
-          <DashboardFeedSkeleton />
-        </div>
+      </div>
+      <div className="mt-5 flex gap-2">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-8 w-28 rounded-full bg-white/10" />
+        ))}
+      </div>
+      <StatsCardsSkeleton count={4} />
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_240px]">
+        <DashboardFeedSkeleton />
+        <div className="hidden h-64 animate-pulse rounded-[10px] border border-border bg-white/5 lg:block" />
       </div>
     </div>
   );

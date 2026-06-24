@@ -1,18 +1,24 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { GuidedTourWrapper } from "@/components/onboarding/guided-tour-wrapper";
-import { FilterBar, type SignalFilter } from "@/components/dashboard/filter-bar";
-import { PageHeader } from "@/components/dashboard/page-header";
-import { StatCard } from "@/components/dashboard/stat-card";
-import { SignalsList } from "@/components/dashboard/signals-list";
+import { DashboardHomeHeader } from "@/components/dashboard/dashboard-home-header";
+import { DashboardHomeActions } from "@/components/dashboard/dashboard-home-actions";
+import { DashboardStatsBar } from "@/components/dashboard/dashboard-stats-bar";
+import { DashboardNicheStrip } from "@/components/dashboard/dashboard-niche-strip";
+import {
+  DashboardHomeFeed,
+  type DashboardSignalFilter,
+} from "@/components/dashboard/dashboard-home-feed";
+import { DashboardQuickActions } from "@/components/dashboard/dashboard-quick-actions";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
 import { UpgradeTopBanner } from "@/components/dashboard/upgrade-top-banner";
 import { SetupProgress } from "@/components/dashboard/SetupProgress";
-import { NicheWeekCard } from "@/components/dashboard/niche-week-card";
 import { PushNotificationBanner } from "@/components/dashboard/push-notification-banner";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { createClient } from "@/lib/supabase/server";
+import { fetchDashboardHomeStats } from "@/lib/dashboard/home-stats";
 import { fetchNicheWeekInsights } from "@/lib/dashboard/niche-week";
+import { fetchSignalsEmptyContext } from "@/lib/signals/page-stats";
 import { syncSetupProgress } from "@/lib/setup/progress";
 import type { Plan, Signal, SignalStatus } from "@/types";
 
@@ -22,10 +28,15 @@ interface DashboardPageProps {
   searchParams: Promise<{ welcome?: string; status?: string }>;
 }
 
-function parseFilter(status?: string): SignalFilter {
-  const allowed: SignalFilter[] = ["all", "new", "viewed", "replied", "dismissed"];
-  if (status && allowed.includes(status as SignalFilter)) {
-    return status as SignalFilter;
+function parseFilter(status?: string): DashboardSignalFilter {
+  const allowed: DashboardSignalFilter[] = [
+    "all",
+    "new",
+    "replied",
+    "dismissed",
+  ];
+  if (status && allowed.includes(status as DashboardSignalFilter)) {
+    return status as DashboardSignalFilter;
   }
   return "all";
 }
@@ -37,7 +48,7 @@ async function DashboardFeed({
   preserveParams = {},
 }: {
   userId: string;
-  filter: SignalFilter;
+  filter: DashboardSignalFilter;
   plan: Plan;
   preserveParams?: Record<string, string>;
 }) {
@@ -56,7 +67,7 @@ async function DashboardFeed({
     query = query.eq("status", filter as SignalStatus);
   }
 
-  const [{ data: signals, error }, { count: last24hCount }, { count: keywordCount }] =
+  const [{ data: signals, error }, { count: last24hCount }, emptyContext] =
     await Promise.all([
       query,
       supabase
@@ -64,50 +75,30 @@ async function DashboardFeed({
         .select("*", { count: "exact", head: true })
         .eq("user_id", userId)
         .gte("found_at", since24h),
-      supabase
-        .from("keywords")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userId)
-        .eq("is_active", true),
+      fetchSignalsEmptyContext(supabase, userId, plan),
     ]);
 
   if (error) {
     return (
-      <section className="mt-10">
-        <ErrorMessage
-          title="No pudimos cargar las señales"
-          message={error.message}
-        />
-      </section>
+      <ErrorMessage
+        title="No pudimos cargar las señales"
+        message={error.message}
+      />
     );
   }
 
-  const hasKeywords = (keywordCount ?? 0) > 0;
+  const hasKeywords = emptyContext.activeKeywords > 0;
 
   return (
-    <section className="mt-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="dash-section-title">Feed de señales</h2>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            {last24hCount ?? 0} señales en las últimas 24 hs
-          </p>
-        </div>
-        <FilterBar
-          basePath="/dashboard"
-          current={filter}
-          preserveParams={preserveParams}
-        />
-      </div>
-
-      <div className="mt-6">
-        <SignalsList
-          signals={(signals as Signal[]) ?? []}
-          hasKeywords={hasKeywords}
-          plan={plan}
-        />
-      </div>
-    </section>
+    <DashboardHomeFeed
+      signals={(signals as Signal[]) ?? []}
+      plan={plan}
+      hasKeywords={hasKeywords}
+      filter={filter}
+      preserveParams={preserveParams}
+      last24hCount={last24hCount ?? 0}
+      emptyContext={emptyContext}
+    />
   );
 }
 
@@ -123,25 +114,24 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const showTour = params.welcome === "1";
   const filter = parseFilter(params.status);
 
-  const [{ count: newCount }, { count: keywordCount }, { data: profile }, setupState, nicheInsights] =
-    await Promise.all([
+  const [
+    { data: profile },
+    setupState,
+    nicheInsights,
+  ] = await Promise.all([
     supabase
-      .from("signals")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("status", "new"),
-    supabase
-      .from("keywords")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("is_active", true),
-    supabase.from("profiles").select("plan").eq("id", user.id).single(),
+      .from("profiles")
+      .select("plan, full_name, email")
+      .eq("id", user.id)
+      .single(),
     syncSetupProgress(supabase, user.id),
     fetchNicheWeekInsights(supabase, user.id),
   ]);
 
   const plan = (profile?.plan ?? "free") as Plan;
-
+  const homeStats = await fetchDashboardHomeStats(supabase, user.id, plan);
+  const displayName =
+    profile?.full_name ?? profile?.email ?? user.email ?? "Usuario";
   const preserveParams: Record<string, string> = showTour ? { welcome: "1" } : {};
 
   return (
@@ -155,54 +145,42 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         <PushNotificationBanner />
 
         {showTour && (
-          <div className="dash-welcome-toast mb-6">
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-border-activo bg-[rgba(52,211,153,0.06)] px-3 py-2 text-[12px] text-[#B4B4B4]">
             <span className="dash-live-dot shrink-0" aria-hidden="true" />
             ¡Listo! Tu monitoreo está configurado. Te mostramos un tour rápido.
           </div>
         )}
 
-        <PageHeader
-          title="Dashboard"
-          subtitle={
-            user.email ? `Bienvenido, ${user.email}` : "Bienvenido."
-          }
+        <DashboardHomeHeader
+          displayName={displayName}
+          keywordCount={homeStats.keywordCount}
+          totalSignals={homeStats.totalSignals}
+          plan={plan}
         />
 
+        <DashboardHomeActions plan={plan} newCount={homeStats.newCount} />
+
+        <DashboardStatsBar stats={homeStats} plan={plan} />
+
         <SetupProgress state={setupState} />
-        <NicheWeekCard insights={nicheInsights} />
+        <DashboardNicheStrip insights={nicheInsights} />
 
-        <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <StatCard
-            value={newCount ?? 0}
-            label="Señales nuevas — con respuesta lista para copiar"
-            locked={plan === "free"}
-            description={
-              plan === "free"
-                ? "Disponible en Starter — los drafts se generan automáticamente para señales con score ≥ 7"
-                : undefined
-            }
-            footerLink={
-              plan === "free"
-                ? { label: "Activar drafts →", href: "/pricing" }
-                : undefined
-            }
-          />
-          <StatCard
-            value={keywordCount ?? 0}
-            label="Keywords activas"
-            accent
-          />
-          <StatCard value="HN" label="Plataforma activa" />
-        </div>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_240px]">
+          <Suspense fallback={<DashboardFeedSkeleton />}>
+            <DashboardFeed
+              userId={user.id}
+              filter={filter}
+              plan={plan}
+              preserveParams={preserveParams}
+            />
+          </Suspense>
 
-        <Suspense fallback={<DashboardFeedSkeleton />}>
-          <DashboardFeed
-            userId={user.id}
-            filter={filter}
+          <DashboardQuickActions
             plan={plan}
-            preserveParams={preserveParams}
+            keywordCount={homeStats.keywordCount}
+            newCount={homeStats.newCount}
           />
-        </Suspense>
+        </div>
       </div>
     </>
   );

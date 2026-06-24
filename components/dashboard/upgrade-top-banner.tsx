@@ -33,40 +33,25 @@ export function UpgradeTopBanner({ plan }: UpgradeTopBannerProps) {
   }
 
   return (
-    <div
-      className="-mx-6 -mt-6 mb-6 flex items-center justify-between gap-4 border-b px-6 py-2.5 lg:-mx-8 lg:-mt-8"
-      style={{
-        backgroundColor: "rgba(52, 211, 153, 0.06)",
-        borderColor: "rgba(52, 211, 153, 0.2)",
-      }}
-    >
-      <div className="flex min-w-0 flex-1 items-center gap-3">
-        <Zap
-          className="h-4 w-4 shrink-0 text-[#34D399]"
-          aria-hidden="true"
-        />
-        <p className="text-sm leading-snug text-[#B4B4B4]">
-          Estás en el plan Free — los drafts de respuesta y más plataformas están
-          disponibles en Starter ($14.99/mes)
+    <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-border-sutil bg-nivel-3/80 px-3 py-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Zap className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden="true" />
+        <p className="text-[11px] leading-snug text-[#6B6B6B]">
+          Plan Free — drafts y Reddit en{" "}
+          <Link href="/pricing" className="text-accent hover:underline">
+            Starter
+          </Link>
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
-        <Link
-          href="/pricing"
-          className="rounded-full bg-[#34D399] px-3.5 py-1.5 text-xs font-bold text-black transition-colors hover:bg-[#2bb88a]"
-        >
-          Ver planes
-        </Link>
-        <button
-          type="button"
-          onClick={handleDismiss}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-[#6B6B6B] transition-colors hover:bg-white/5 hover:text-[#B4B4B4]"
-          aria-label="Cerrar banner"
-        >
-          <X className="h-4 w-4" aria-hidden="true" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleDismiss}
+        className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded text-[#4B4B4B] transition-colors hover:bg-nivel-4 hover:text-[#B4B4B4]"
+        aria-label="Cerrar banner"
+      >
+        <X className="h-3.5 w-3.5" aria-hidden="true" />
+      </button>
     </div>
   );
 }
