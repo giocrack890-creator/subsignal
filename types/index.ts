@@ -10,6 +10,8 @@ export type IntentType =
   | "comparing"
   | "other";
 
+export type DraftTone = "technical" | "conversational" | "formal";
+
 export interface Profile {
   id: string;
   email: string | null;
@@ -19,6 +21,9 @@ export interface Profile {
   slack_webhook_url: string | null;
   notify_email: boolean;
   notify_slack: boolean;
+  notify_push: boolean;
+  weekly_digest: boolean;
+  draft_tone: DraftTone;
   min_intent_score: number;
   payment_customer_id: string | null;
   payment_subscription_id: string | null;
@@ -64,6 +69,8 @@ export interface Signal {
   draft_reply: string | null;
   draft_copied: boolean;
   draft_copied_at: string | null;
+  draft_regenerations: number;
+  dismiss_reason: string | null;
   reply_url: string | null;
   found_at: string;
   alerted_at: string | null;

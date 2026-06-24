@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { generateDraftForSignal as generateDraft } from "@/lib/drafts";
 import { createClient } from "@/lib/supabase/server";
+import { markSetupDraftCopied } from "@/lib/setup/progress";
 import type { Plan, SignalStatus } from "@/types";
 import type { ActionResult } from "./product";
 
@@ -43,6 +44,39 @@ export async function updateSignalStatus(
 
 export async function dismissSignal(signalId: string): Promise<ActionResult> {
   return updateSignalStatus(signalId, "dismissed");
+}
+
+export async function dismissSignalWithReason(
+  signalId: string,
+  reason: string
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "No autenticado" };
+  }
+
+  const { error } = await supabase
+    .from("signals")
+    .update({
+      status: "dismissed",
+      dismiss_reason: reason,
+    })
+    .eq("id", signalId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/signals");
+  revalidatePath("/drafts");
+  revalidatePath("/analytics");
+  return { success: true };
 }
 
 export async function markSignalViewed(signalId: string): Promise<ActionResult> {
@@ -195,6 +229,8 @@ export async function markDraftCopied(
   if (error) {
     return { success: false, error: error.message };
   }
+
+  await markSetupDraftCopied(user.id);
 
   revalidatePath("/dashboard");
   revalidatePath("/signals");

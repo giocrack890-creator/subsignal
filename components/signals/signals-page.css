@@ -1,0 +1,54 @@
+@keyframes signals-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes signals-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes signals-score-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.2);
+  }
+}
+
+.signals-shimmer {
+  background: linear-gradient(90deg, #1a1a1a 25%, #232323 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: signals-shimmer 1.5s ease-in-out infinite;
+}
+
+.signals-card-enter {
+  animation: signals-fade-in-up 0.35s ease-out both;
+}
+
+.signals-score-glow {
+  animation: signals-score-glow 3s ease-in-out infinite;
+}
+
+.signals-filter-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.signals-filter-scroll::-webkit-scrollbar {
+  display: none;
+}
