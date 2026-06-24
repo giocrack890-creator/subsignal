@@ -3,12 +3,46 @@ import type { Plan } from "@/types";
 
 export type CreemCheckoutPlan = Extract<Plan, "starter" | "pro">;
 
-function isCreemTestMode(): boolean {
+export function isCreemTestMode(): boolean {
   const flag = process.env.CREEM_TEST_MODE?.trim().toLowerCase();
   if (flag === "true") return true;
   if (flag === "false") return false;
-  // En Vercel producción usar API live salvo que se fuerce test.
   return process.env.NODE_ENV !== "production";
+}
+
+function parseCreemErrorBody(body: string | undefined): {
+  message?: string;
+  error?: string;
+  code?: string;
+} {
+  if (!body) return {};
+  try {
+    const parsed = JSON.parse(body) as {
+      message?: string;
+      error?: string;
+      code?: string;
+    };
+    return parsed;
+  } catch {
+    return { message: body };
+  }
+}
+
+function isAccountNotReadyError(error: unknown): boolean {
+  const text = formatCreemErrorForLog(error).toLowerCase();
+  const accountHints = [
+    "verification",
+    "payout",
+    "review",
+    "not enabled",
+    "not approved",
+    "account",
+    "kyc",
+    "kyb",
+    "live payments",
+    "merchant",
+  ];
+  return accountHints.some((hint) => text.includes(hint));
 }
 
 export function getCreemStarterProductId(): string | undefined {
@@ -55,10 +89,14 @@ export function planFromCreemProductId(productId: string): CreemCheckoutPlan | n
 }
 
 export function getCreemCheckoutErrorCode(error: unknown): string {
+  if (isAccountNotReadyError(error)) return "checkout_account";
+
   if (error && typeof error === "object" && "statusCode" in error) {
     const statusCode = (error as { statusCode: number }).statusCode;
     if (statusCode === 401) return "checkout_auth";
+    if (statusCode === 403) return "checkout_account";
     if (statusCode === 404) return "checkout_product";
+    if (statusCode === 400) return "checkout_invalid";
   }
   return "checkout";
 }
@@ -66,10 +104,14 @@ export function getCreemCheckoutErrorCode(error: unknown): string {
 export function formatCreemErrorForLog(error: unknown): string {
   if (error && typeof error === "object") {
     const creemError = error as { message?: string; statusCode?: number; body?: string };
+    const parsedBody = parseCreemErrorBody(creemError.body);
     const parts = [
       creemError.message,
+      parsedBody.message,
+      parsedBody.error,
+      parsedBody.code,
       creemError.statusCode ? `status=${creemError.statusCode}` : null,
-      creemError.body ? `body=${creemError.body}` : null,
+      creemError.body && !parsedBody.message ? `body=${creemError.body}` : null,
     ].filter(Boolean);
     if (parts.length > 0) return parts.join(" | ");
   }
@@ -122,6 +164,7 @@ export async function createCreemCheckoutSession(input: {
 
   const checkout = await creem.checkouts.create({
     productId: getCreemProductId(input.plan),
+    requestId: `subsignal_${input.userId}_${input.plan}`,
     successUrl: `${appUrl}/billing/success`,
     customer: input.email ? { email: input.email } : undefined,
     metadata: {

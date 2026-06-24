@@ -1,7 +1,7 @@
 import { LandingNavbar } from "@/components/marketing/landing/navbar";
 import { LandingHero } from "@/components/marketing/landing/hero";
 import { LandingProductPreview } from "@/components/marketing/landing/product-preview";
-import { LandingSteps } from "@/components/marketing/landing/steps";
+import { ProcessFlow } from "@/components/marketing/ProcessFlow";
 import { LandingPlatforms } from "@/components/marketing/landing/platforms";
 import { LandingFeatures } from "@/components/marketing/landing/features";
 import { LandingPricing } from "@/components/marketing/landing/pricing";
@@ -17,7 +17,7 @@ export default function HomePage() {
       <main id="main-content">
         <LandingHero />
         <LandingProductPreview />
-        <LandingSteps />
+        <ProcessFlow />
         <LandingPlatforms />
         <LandingFeatures />
         <LandingPricing />

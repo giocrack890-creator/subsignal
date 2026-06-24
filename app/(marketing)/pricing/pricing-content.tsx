@@ -85,9 +85,13 @@ const CHECKOUT_ERROR_MESSAGES: Record<string, string> = {
   checkout:
     "No pudimos iniciar el checkout. Intentá de nuevo en unos minutos o contactanos si el problema persiste.",
   checkout_auth:
-    "Error de autenticación con Creem. Verificá que CREEM_API_KEY coincida con el entorno: en producción usá CREEM_TEST_MODE=false y la API key live.",
+    "Error de autenticación con Creem. Verificá que CREEM_API_KEY coincida con el entorno (test vs live) y que CREEM_TEST_MODE esté bien configurado.",
   checkout_product:
-    "No encontramos el producto en Creem. Verificá que CREEM_PRODUCT_STARTER y CREEM_PRODUCT_PRO sean los IDs correctos para tu entorno (test vs live).",
+    "No encontramos el producto en Creem. Verificá que CREEM_PRODUCT_STARTER y CREEM_PRODUCT_PRO sean los IDs del mismo entorno que tu API key.",
+  checkout_invalid:
+    "Creem rechazó la solicitud de checkout. Revisá que los productos estén activos y que la URL de éxito sea válida.",
+  checkout_account:
+    "Tu cuenta de Creem todavía no está habilitada para cobros en vivo. Completá la verificación en Creem → Balance → Payout Account. Mientras tanto, podés probar el flujo con CREEM_TEST_MODE=true y la API key de test.",
 };
 
 function PricingCheckoutAlert() {

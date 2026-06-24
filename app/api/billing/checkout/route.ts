@@ -3,8 +3,10 @@ import {
   createCreemCheckoutSession,
   formatCreemErrorForLog,
   getCreemCheckoutErrorCode,
+  getCreemProductId,
   getCreemStarterProductId,
   isCreemConfigured,
+  isCreemTestMode,
   parseCreemCheckoutPlan,
 } from "@/lib/payments/creem";
 import { createClient } from "@/lib/supabase/server";
@@ -54,7 +56,10 @@ export async function GET(request: NextRequest) {
     console.error(
       "[billing/checkout] Error creando checkout Creem:",
       formatCreemErrorForLog(error),
-      `testMode=${process.env.CREEM_TEST_MODE ?? "auto"} NODE_ENV=${process.env.NODE_ENV}`
+      `plan=${plan}`,
+      `productId=${getCreemProductId(plan)}`,
+      `server=${isCreemTestMode() ? "test" : "prod"}`,
+      `CREEM_TEST_MODE=${process.env.CREEM_TEST_MODE ?? "auto"}`
     );
     return NextResponse.redirect(new URL(`/pricing?error=${errorCode}`, request.url));
   }
