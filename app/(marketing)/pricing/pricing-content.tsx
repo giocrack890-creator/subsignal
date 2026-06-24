@@ -1,96 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-
-// TODO: reemplazar con URL de checkout CREEM cuando esté creado el producto Starter
-const CREEM_CHECKOUT_STARTER = "#";
-
-// TODO: reemplazar con URL de checkout CREEM cuando esté creado el producto Pro
-const CREEM_CHECKOUT_PRO = "#";
-
-type FeatureTone = "muted" | "green" | "white";
-
-interface PlanFeature {
-  text: string;
-  included: boolean;
-  tone?: FeatureTone;
-}
-
-interface Plan {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  cta: { label: string; href: string; variant: "ghost" | "accent" };
-  featured?: boolean;
-  features: PlanFeature[];
-}
-
-const PLANS: Plan[] = [
-  {
-    id: "free",
-    name: "Free",
-    price: "$0",
-    description: "Para explorar SubSignal",
-    cta: { label: "Empezar gratis", href: "/signup", variant: "ghost" },
-    features: [
-      { text: "2 keywords activas", included: true, tone: "muted" },
-      { text: "Solo Hacker News", included: true, tone: "muted" },
-      { text: "5 alertas por día", included: true, tone: "muted" },
-      { text: "Drafts de respuesta", included: false },
-      { text: "Slack alerts", included: false },
-      { text: "Conversion tracking", included: false },
-    ],
-  },
-  {
-    id: "starter",
-    name: "Starter",
-    price: "$14.99",
-    description: "Para founders que quieren clientes reales",
-    featured: true,
-    cta: {
-      label: "Empezar con Starter",
-      href: CREEM_CHECKOUT_STARTER,
-      variant: "accent",
-    },
-    features: [
-      { text: "5 keywords activas", included: true, tone: "green" },
-      { text: "Hacker News + Reddit", included: true, tone: "green" },
-      { text: "Alertas ilimitadas", included: true, tone: "green" },
-      { text: "20 drafts de respuesta por mes", included: true, tone: "green" },
-      { text: "Respuesta lista para copiar", included: true, tone: "green" },
-      { text: "Email alerts", included: true, tone: "green" },
-      { text: "Slack alerts", included: false },
-      { text: "Conversion tracking", included: false },
-    ],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "$29.99",
-    description: "Para founders que escalan",
-    cta: {
-      label: "Empezar con Pro",
-      href: CREEM_CHECKOUT_PRO,
-      variant: "ghost",
-    },
-    features: [
-      { text: "15 keywords activas", included: true, tone: "white" },
-      {
-        text: "Todas las plataformas (HN + Reddit + Twitter + Indie Hackers)",
-        included: true,
-        tone: "white",
-      },
-      { text: "Alertas ilimitadas", included: true, tone: "white" },
-      { text: "Drafts ilimitados", included: true, tone: "white" },
-      { text: "Respuesta lista para copiar", included: true, tone: "white" },
-      { text: "Email + Slack alerts", included: true, tone: "white" },
-      { text: "Conversion tracking", included: true, tone: "white" },
-      { text: "Soporte prioritario", included: true, tone: "white" },
-    ],
-  },
-];
+import { MarketingPlanGrid } from "@/components/marketing/pricing/marketing-plan-grid";
 
 const FAQ_ITEMS = [
   {
@@ -120,86 +31,6 @@ const FAQ_ITEMS = [
   },
 ];
 
-function FeatureRow({ feature }: { feature: PlanFeature }) {
-  if (!feature.included) {
-    return (
-      <li className="flex items-start gap-2.5 text-sm text-[#6B6B6B]">
-        <span className="mt-0.5 shrink-0" aria-hidden>
-          ✗
-        </span>
-        <span className="line-through">{feature.text}</span>
-      </li>
-    );
-  }
-
-  const color =
-    feature.tone === "green"
-      ? "text-[#34D399]"
-      : feature.tone === "white"
-        ? "text-white"
-        : "text-[#6B6B6B]";
-
-  return (
-    <li className={`flex items-start gap-2.5 text-sm ${color}`}>
-      <span className="mt-0.5 shrink-0 text-[#34D399]" aria-hidden>
-        ✓
-      </span>
-      <span>{feature.text}</span>
-    </li>
-  );
-}
-
-function PlanCard({ plan }: { plan: Plan }) {
-  const isFeatured = plan.featured;
-  const isExternal = plan.cta.href.startsWith("http") || plan.cta.href === "#";
-
-  const buttonClass =
-    plan.cta.variant === "accent"
-      ? "flex w-full items-center justify-center rounded-[10px] bg-[#34D399] px-5 py-3.5 text-sm font-bold text-black transition-colors hover:bg-[#2bb88a]"
-      : "flex w-full items-center justify-center rounded-[10px] border border-white bg-transparent px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:border-[#34D399]";
-
-  const ctaButton = isExternal ? (
-    <a href={plan.cta.href} className={buttonClass}>
-      {plan.cta.label}
-    </a>
-  ) : (
-    <Link href={plan.cta.href} className={buttonClass}>
-      {plan.cta.label}
-    </Link>
-  );
-
-  return (
-    <article
-      className={`relative flex flex-col rounded-[14px] p-6 md:p-8 ${
-        isFeatured
-          ? "border border-[rgba(52,211,153,0.4)] bg-[#111714] shadow-[0_0_40px_rgba(52,211,153,0.12)]"
-          : "border border-[#232323] bg-[#111714]"
-      }`}
-    >
-      {isFeatured && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#34D399] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-black">
-          Más popular
-        </span>
-      )}
-
-      <h2 className="text-lg font-semibold text-white">{plan.name}</h2>
-      <div className="mt-3 flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-white">{plan.price}</span>
-        <span className="text-sm text-[#6B6B6B]">/mes</span>
-      </div>
-      <p className="mt-2 text-sm text-[#B4B4B4]">{plan.description}</p>
-
-      <div className="mt-6">{ctaButton}</div>
-
-      <ul className="mt-8 flex flex-col gap-3">
-        {plan.features.map((feature) => (
-          <FeatureRow key={feature.text} feature={feature} />
-        ))}
-      </ul>
-    </article>
-  );
-}
-
 function PricingFaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -222,8 +53,7 @@ function PricingFaqAccordion() {
                 {item.question}
               </span>
               <span
-                className="shrink-0 text-2xl font-light text-[#6B6B6B] transition-transform duration-300"
-                style={{ transform: isOpen ? "rotate(0deg)" : "rotate(0deg)" }}
+                className="shrink-0 text-2xl font-light text-[#6B6B6B]"
                 aria-hidden
               >
                 {isOpen ? "−" : "+"}
@@ -265,10 +95,8 @@ export function PricingPageContent() {
           </p>
         </header>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3 lg:gap-5">
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} />
-          ))}
+        <div className="mt-14">
+          <MarketingPlanGrid variant="page" />
         </div>
 
         <p className="mt-10 text-center text-sm text-[#6B6B6B]">

@@ -1,28 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { FadeIn } from "@/components/marketing/landing/motion";
 import { SectionHeading } from "@/components/marketing/landing/section-heading";
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "Dejé de scrollear HN a mano. SubSignal me avisa cuando alguien pregunta exactamente lo que resuelvo.",
-    author: "Founder, SaaS B2B",
-    role: "Early adopter",
-  },
-  {
-    quote:
-      "El scoring filtra el ruido. Solo veo conversaciones donde tiene sentido responder.",
-    author: "Indie hacker",
-    role: "Plan Starter",
-  },
-  {
-    quote:
-      "Los borradores son un punto de partida honesto — los edito y suenan como yo, no como un bot.",
-    author: "Solo founder",
-    role: "Plan Growth",
-  },
-];
+import { Button } from "@/components/ui/button";
 
 export function LandingSocialProof() {
   return (
@@ -34,36 +15,28 @@ export function LandingSocialProof() {
       <div className="container-marketing px-6">
         <SectionHeading
           id="social-heading"
-          title="Construido por founders, para founders"
-          subtitle="Estamos en beta temprana. Estos son los primeros feedbacks de quienes ya monitorean señales."
+          title="Estamos en beta — y eso es una ventaja para vos"
+          subtitle="Los primeros usuarios dan forma al producto. Tu feedback directo llega al founder, no a un equipo de soporte."
         />
 
-        <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-border bg-background-card px-6 py-4 text-center">
-          <p className="text-sm text-foreground-secondary">
-            Monitoreando keywords activamente en Hacker News
-          </p>
-          <p className="mt-1 text-2xl font-bold text-primary">Beta privada</p>
-        </div>
+        <FadeIn className="mx-auto mt-10 max-w-2xl">
+          <div className="rounded-2xl border border-primary/30 bg-[#111714] px-6 py-8 text-center md:px-10 md:py-10">
+            <p className="text-base leading-relaxed text-foreground-secondary md:text-lg">
+              Somos un producto nuevo y estamos construyendo esto junto a los
+              primeros founders que lo usan. Si querés ser de los primeros en dar
+              feedback y aparecer acá, empezá gratis hoy.
+            </p>
+            <Link href="/signup" className="mt-6 inline-block">
+              <Button variant="accent" size="md">
+                Unirme a la beta
+              </Button>
+            </Link>
+          </div>
+        </FadeIn>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {TESTIMONIALS.map((item, i) => (
-            <FadeIn key={item.author} delay={i * 0.08}>
-              <blockquote className="landing-card h-full rounded-2xl p-6">
-                <p className="text-[15px] leading-relaxed text-foreground-secondary">
-                  &ldquo;{item.quote}&rdquo;
-                </p>
-                <footer className="mt-4 border-t border-border pt-4">
-                  <cite className="not-italic">
-                    <span className="block text-sm font-semibold text-foreground">
-                      {item.author}
-                    </span>
-                    <span className="text-xs text-foreground-muted">{item.role}</span>
-                  </cite>
-                </footer>
-              </blockquote>
-            </FadeIn>
-          ))}
-        </div>
+        <p className="mt-6 text-center text-sm text-foreground-muted">
+          Ya hay founders monitoreando señales en Hacker News.
+        </p>
       </div>
     </section>
   );

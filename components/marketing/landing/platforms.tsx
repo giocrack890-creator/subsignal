@@ -9,34 +9,78 @@ const PLATFORMS = [
     color: "text-platform-hn",
     dot: "bg-platform-hn",
     status: "Activo",
-    active: true,
+    badge: "active" as const,
     desc: "Monitoreo en vivo con scoring de intención y borradores.",
   },
   {
     name: "Reddit",
     color: "text-platform-reddit",
     dot: "bg-platform-reddit",
-    status: "Activo",
-    active: true,
+    status: "En desarrollo",
+    badge: "development" as const,
     desc: "Subreddits de startups y SaaS. Requiere app OAuth en Reddit.",
   },
   {
     name: "Twitter / X",
     color: "text-platform-twitter",
     dot: "bg-platform-twitter",
-    status: "Activo",
-    active: true,
+    status: "En desarrollo",
+    badge: "development" as const,
     desc: "Tweets recientes con intención de compra. Requiere Bearer Token.",
   },
   {
     name: "Indie Hackers",
     color: "text-platform-ih",
     dot: "bg-platform-ih",
-    status: "Activo",
-    active: true,
+    status: "Próximamente",
+    badge: "soon" as const,
     desc: "Posts de founders buscando herramientas y soluciones.",
   },
 ];
+
+function PlatformBadge({
+  status,
+  badge,
+}: {
+  status: string;
+  badge: "active" | "development" | "soon";
+}) {
+  if (badge === "active") {
+    return (
+      <span className="rounded-full bg-primary-muted-bg px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+        {status}
+      </span>
+    );
+  }
+
+  if (badge === "development") {
+    return (
+      <span
+        className="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+        style={{
+          backgroundColor: "rgba(251, 191, 36, 0.15)",
+          color: "#FBBF24",
+          borderColor: "rgba(251, 191, 36, 0.3)",
+        }}
+      >
+        {status}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+      style={{
+        backgroundColor: "rgba(107, 114, 128, 0.15)",
+        color: "#9CA3AF",
+        borderColor: "rgba(107, 114, 128, 0.3)",
+      }}
+    >
+      {status}
+    </span>
+  );
+}
 
 export function LandingPlatforms() {
   return (
@@ -57,27 +101,28 @@ export function LandingPlatforms() {
             <FadeIn key={platform.name} delay={i * 0.06}>
               <article
                 className={`landing-card flex h-full flex-col rounded-2xl p-5 ${
-                  platform.active
+                  platform.badge === "active"
                     ? "border-primary/30"
-                    : "opacity-75"
+                    : "opacity-60"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className={`h-2.5 w-2.5 rounded-full ${platform.dot}`} />
-                    <h3 className={`font-semibold ${platform.active ? "text-foreground" : "text-foreground-secondary"}`}>
+                    <h3
+                      className={`font-semibold ${
+                        platform.badge === "active"
+                          ? "text-foreground"
+                          : "text-foreground-secondary"
+                      }`}
+                    >
                       {platform.name}
                     </h3>
                   </div>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                      platform.active
-                        ? "bg-primary-muted-bg text-primary"
-                        : "bg-muted text-foreground-muted"
-                    }`}
-                  >
-                    {platform.status}
-                  </span>
+                  <PlatformBadge
+                    status={platform.status}
+                    badge={platform.badge}
+                  />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-foreground-secondary">
                   {platform.desc}

@@ -9,16 +9,14 @@ const FOOTER_LINKS = [
 ];
 
 const LEGAL_LINKS = [
-  { href: "/pricing", label: "Pricing" },
   { href: "/terms", label: "Términos" },
   { href: "/privacy", label: "Privacidad" },
   { href: "/refunds", label: "Reembolsos" },
 ];
 
 const SOCIAL = [
-  { label: "X (Twitter)", href: "#", abbr: "X" },
-  { label: "Discord", href: "#", abbr: "D" },
-  { label: "LinkedIn", href: "#", abbr: "in" },
+  { label: "X (Twitter)", href: "https://x.com/subsignal", abbr: "X" },
+  { label: "LinkedIn", href: "https://linkedin.com/company/subsignal", abbr: "in" },
 ];
 
 export function LandingFooter() {
@@ -83,6 +81,8 @@ export function LandingFooter() {
                 <a
                   key={s.label}
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border text-xs font-medium text-foreground-muted transition-colors duration-200 hover:border-border-glow hover:text-foreground"
                 >

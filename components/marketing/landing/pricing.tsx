@@ -1,7 +1,9 @@
 "use client";
 
-import { PricingGrid } from "@/components/marketing/pricing/pricing-grid";
+import Link from "next/link";
+import { MarketingPlanGrid } from "@/components/marketing/pricing/marketing-plan-grid";
 import { SectionHeading } from "@/components/marketing/landing/section-heading";
+import { LANDING_PRICING_PLANS } from "@/lib/marketing/landing-pricing-plans";
 
 export function LandingPricing() {
   return (
@@ -14,18 +16,27 @@ export function LandingPricing() {
         <SectionHeading
           id="pricing-heading"
           title="Planes simples"
-          subtitle="Empezá gratis. Escalá cuando veas señales que valen la pena."
+          subtitle="Empezá gratis. Upgrades cuando lo necesitás. Sin contratos, cancelás cuando querés."
         />
 
         <div className="mt-14">
-          <PricingGrid highlightedPlan="growth" animated />
+          <MarketingPlanGrid
+            variant="landing"
+            plans={LANDING_PRICING_PLANS}
+            animated
+          />
         </div>
 
         <p className="mt-8 text-center text-sm text-foreground-muted">
+          Todos los planes incluyen cancelación inmediata. Sin preguntas, sin
+          períodos de aviso.
+        </p>
+
+        <p className="mt-4 text-center text-sm text-foreground-muted">
           ¿Necesitás comparar en detalle?{" "}
-          <a href="/pricing" className="text-primary hover:underline">
+          <Link href="/pricing" className="text-primary hover:underline">
             Ver página de pricing completa →
-          </a>
+          </Link>
         </p>
       </div>
     </section>
