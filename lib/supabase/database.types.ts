@@ -32,6 +32,9 @@ export type Database = {
           weekly_digest: boolean;
           onboarding_survey_completed: boolean;
           trial_ends_at: string | null;
+          guided_tour_completed: boolean;
+          tooltips_dismissed: string[];
+          setup_celebration_seen: boolean;
           created_at: string;
         };
         Insert: {
@@ -56,6 +59,9 @@ export type Database = {
           weekly_digest?: boolean;
           onboarding_survey_completed?: boolean;
           trial_ends_at?: string | null;
+          guided_tour_completed?: boolean;
+          tooltips_dismissed?: string[];
+          setup_celebration_seen?: boolean;
           created_at?: string;
         };
         Update: {
@@ -80,6 +86,9 @@ export type Database = {
           weekly_digest?: boolean;
           onboarding_survey_completed?: boolean;
           trial_ends_at?: string | null;
+          guided_tour_completed?: boolean;
+          tooltips_dismissed?: string[];
+          setup_celebration_seen?: boolean;
           created_at?: string;
         };
         Relationships: [];

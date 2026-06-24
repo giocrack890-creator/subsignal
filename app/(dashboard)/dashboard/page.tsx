@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fetchDashboardHomeStats } from "@/lib/dashboard/home-stats";
 import { fetchNicheWeekInsights } from "@/lib/dashboard/niche-week";
 import { fetchSignalsEmptyContext } from "@/lib/signals/page-stats";
+import { fetchOnboardingUiPreferences } from "@/lib/onboarding/preferences";
 import { syncSetupProgress } from "@/lib/setup/progress";
 import type { Plan, Signal, SignalStatus } from "@/types";
 
@@ -111,13 +112,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   if (!user) redirect("/login");
 
   const params = await searchParams;
-  const showTour = params.welcome === "1";
   const filter = parseFilter(params.status);
 
   const [
     { data: profile },
     setupState,
     nicheInsights,
+    onboardingUi,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -126,9 +127,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       .single(),
     syncSetupProgress(supabase, user.id),
     fetchNicheWeekInsights(supabase, user.id),
+    fetchOnboardingUiPreferences(supabase, user.id),
   ]);
 
   const plan = (profile?.plan ?? "free") as Plan;
+  const showTour =
+    params.welcome === "1" && !onboardingUi.guidedTourCompleted;
   const homeStats = await fetchDashboardHomeStats(supabase, user.id, plan);
   const displayName =
     profile?.full_name ?? profile?.email ?? user.email ?? "Usuario";
@@ -136,8 +140,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   return (
     <>
-      {showTour && user.id && (
-        <GuidedTourWrapper userId={user.id} forceShow />
+      {showTour && (
+        <GuidedTourWrapper
+          forceShow
+          tourCompleted={onboardingUi.guidedTourCompleted}
+        />
       )}
 
       <div className="p-6 lg:p-8">

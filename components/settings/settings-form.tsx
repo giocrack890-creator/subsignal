@@ -304,7 +304,7 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
           description="Recorré el producto de nuevo si querés refrescar."
         />
         <div className="mt-4">
-          <RestartTourButton userId={userId} />
+          <RestartTourButton />
         </div>
       </section>
 

@@ -3,18 +3,18 @@
 import { useRouter } from "next/navigation";
 import { Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { clearTourCompleted } from "@/lib/onboarding/tour";
 
-interface RestartTourButtonProps {
-  userId: string;
-}
-
-export function RestartTourButton({ userId }: RestartTourButtonProps) {
+export function RestartTourButton() {
   const router = useRouter();
 
-  function handleRestart() {
-    clearTourCompleted(userId);
+  async function handleRestart() {
+    await fetch("/api/onboarding/preferences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "reset_tour" }),
+    });
     router.push("/dashboard?welcome=1");
+    router.refresh();
   }
 
   return (
@@ -22,7 +22,7 @@ export function RestartTourButton({ userId }: RestartTourButtonProps) {
       type="button"
       variant="outline"
       size="sm"
-      onClick={handleRestart}
+      onClick={() => void handleRestart()}
       className="gap-1.5"
     >
       <Map className="h-3.5 w-3.5" aria-hidden="true" />

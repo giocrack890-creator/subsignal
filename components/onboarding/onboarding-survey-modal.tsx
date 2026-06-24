@@ -373,15 +373,32 @@ interface OnboardingSurveyGateProps {
 }
 
 export function OnboardingSurveyGate({ showSurvey }: OnboardingSurveyGateProps) {
+  const router = useRouter();
   const [dismissed, setDismissed] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [skipping, setSkipping] = useState(false);
 
-  const open = showSurvey && !dismissed && !completed;
+  const open = showSurvey && !dismissed && !completed && !skipping;
+
+  async function handleDismiss() {
+    setSkipping(true);
+    try {
+      await fetch("/api/onboarding/preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "skip_survey" }),
+      });
+      setDismissed(true);
+      router.refresh();
+    } catch {
+      setSkipping(false);
+    }
+  }
 
   return (
     <OnboardingSurveyModal
       open={open}
-      onDismiss={() => setDismissed(true)}
+      onDismiss={() => void handleDismiss()}
       onCompleted={() => setCompleted(true)}
     />
   );

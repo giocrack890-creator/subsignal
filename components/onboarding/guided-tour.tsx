@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  getTourStorageKey,
-  markTourCompleted,
-} from "@/lib/onboarding/tour";
+import { useOnboardingUiOptional } from "@/components/onboarding/onboarding-ui-provider";
 
 const STEPS = [
   {
@@ -41,24 +39,28 @@ const STEPS = [
 ];
 
 interface GuidedTourProps {
-  userId: string;
   forceShow?: boolean;
+  tourCompleted?: boolean;
 }
 
-export function GuidedTour({ userId, forceShow = false }: GuidedTourProps) {
+export function GuidedTour({
+  forceShow = false,
+  tourCompleted = false,
+}: GuidedTourProps) {
+  const router = useRouter();
+  const onboardingUi = useOnboardingUiOptional();
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
   const [rect, setRect] = useState<DOMRect | null>(null);
 
-  const storageKey = getTourStorageKey(userId);
+  const completed = tourCompleted || onboardingUi?.guidedTourCompleted;
 
   useEffect(() => {
-    const completed = localStorage.getItem(storageKey);
-    if (forceShow || !completed) {
+    if (forceShow && !completed) {
       setVisible(true);
-      if (forceShow) setStep(0);
+      setStep(0);
     }
-  }, [storageKey, forceShow]);
+  }, [forceShow, completed]);
 
   useEffect(() => {
     if (!visible) return;
@@ -71,14 +73,17 @@ export function GuidedTour({ userId, forceShow = false }: GuidedTourProps) {
     }
   }, [step, visible]);
 
-  function finish() {
-    markTourCompleted(userId);
+  async function finish() {
     setVisible(false);
+    if (onboardingUi) {
+      await onboardingUi.completeTour();
+    }
+    router.replace("/dashboard");
   }
 
   function next() {
     if (step >= STEPS.length - 1) {
-      finish();
+      void finish();
       return;
     }
     setStep((s) => s + 1);
@@ -92,7 +97,7 @@ export function GuidedTour({ userId, forceShow = false }: GuidedTourProps) {
     <>
       <div
         className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px]"
-        onClick={finish}
+        onClick={() => void finish()}
         aria-hidden="true"
       />
 
@@ -122,7 +127,7 @@ export function GuidedTour({ userId, forceShow = false }: GuidedTourProps) {
           <div className="mt-5 flex items-center justify-between gap-2">
             <button
               type="button"
-              onClick={finish}
+              onClick={() => void finish()}
               className="cursor-pointer text-sm text-foreground-muted transition-colors hover:text-foreground"
             >
               Saltar

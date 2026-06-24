@@ -3,10 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import confetti from "canvas-confetti";
 import { Check, ChevronDown } from "lucide-react";
+import { useOnboardingUiOptional } from "@/components/onboarding/onboarding-ui-provider";
 import type { SetupProgressState } from "@/lib/setup/progress";
 import { cn } from "@/lib/utils";
-
-const CELEBRATION_KEY = "threadpulse_setup_celebrated";
 
 interface SetupStep {
   id: string;
@@ -19,14 +18,11 @@ interface SetupProgressProps {
 }
 
 export function SetupProgress({ state }: SetupProgressProps) {
+  const onboardingUi = useOnboardingUiOptional();
   const [expanded, setExpanded] = useState(false);
-  const [dismissed, setDismissed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return (
-      state.setupCompleted &&
-      window.localStorage.getItem(CELEBRATION_KEY) === "1"
-    );
-  });
+  const celebrationSeen = onboardingUi?.setupCelebrationSeen ?? false;
+  const [localDismissed, setLocalDismissed] = useState(false);
+  const dismissed = celebrationSeen || localDismissed;
 
   const steps: SetupStep[] = useMemo(
     () => [
@@ -62,12 +58,12 @@ export function SetupProgress({ state }: SetupProgressProps) {
     });
 
     const timer = window.setTimeout(() => {
-      window.localStorage.setItem(CELEBRATION_KEY, "1");
-      setDismissed(true);
+      setLocalDismissed(true);
+      void onboardingUi?.dismissSetupCelebration();
     }, 2500);
 
     return () => window.clearTimeout(timer);
-  }, [state.setupCompleted, dismissed]);
+  }, [state.setupCompleted, dismissed, onboardingUi]);
 
   if (dismissed) return null;
 

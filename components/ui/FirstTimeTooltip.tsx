@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
+import { useOnboardingUiOptional } from "@/components/onboarding/onboarding-ui-provider";
 import { cn } from "@/lib/utils";
 
 interface FirstTimeTooltipProps {
@@ -42,18 +43,21 @@ export function FirstTimeTooltip({
   className,
 }: FirstTimeTooltipProps) {
   const tooltipId = useId();
-  const storageKey = `threadpulse_tooltip_${id}`;
+  const onboardingUi = useOnboardingUiOptional();
+  const alreadyDismissed = onboardingUi?.tooltipsDismissed.includes(id) ?? false;
   const [visible, setVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (localStorage.getItem(storageKey)) return;
+    if (alreadyDismissed) return;
     setVisible(true);
-  }, [storageKey]);
+  }, [alreadyDismissed, id]);
 
-  function dismiss() {
-    localStorage.setItem(storageKey, "1");
+  async function dismiss() {
     setVisible(false);
+    if (onboardingUi) {
+      await onboardingUi.dismissTooltip(id);
+    }
   }
 
   return (

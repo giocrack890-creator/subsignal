@@ -3,13 +3,15 @@
 import { GuidedTour } from "./guided-tour";
 
 interface GuidedTourWrapperProps {
-  userId: string;
   forceShow?: boolean;
+  tourCompleted?: boolean;
 }
 
 export function GuidedTourWrapper({
-  userId,
   forceShow,
+  tourCompleted,
 }: GuidedTourWrapperProps) {
-  return <GuidedTour userId={userId} forceShow={forceShow} />;
+  return (
+    <GuidedTour forceShow={forceShow} tourCompleted={tourCompleted} />
+  );
 }
