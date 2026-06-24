@@ -2,32 +2,43 @@
 
 import { PricingGrid } from "@/components/marketing/pricing/pricing-grid";
 import { SectionHeading } from "@/components/marketing/landing/section-heading";
+import { getMarketingCopy, type MarketingLocale } from "@/lib/i18n/marketing";
 
-export function LandingPricing() {
+interface LandingPricingProps {
+  locale?: MarketingLocale;
+}
+
+export function LandingPricing({ locale = "es" }: LandingPricingProps) {
+  const copy = getMarketingCopy(locale);
+
   return (
-    <section
-      id="precios"
-      className="landing-section relative scroll-mt-24 border-t border-border"
-      aria-labelledby="pricing-heading"
-    >
-      <div className="container-marketing px-6">
+    <>
+      <hr className="sf-divider" />
+      <section
+        id="precios"
+        className="sf-section scroll-mt-24"
+        aria-labelledby="pricing-heading"
+      >
         <SectionHeading
           id="pricing-heading"
-          title="Planes simples"
-          subtitle="Empezá gratis. Escalá cuando veas señales que valen la pena."
+          eyebrow="Precios"
+          title={copy.pricing.title}
+          subtitle={copy.pricing.subtitle}
         />
 
         <div className="mt-14">
-          <PricingGrid highlightedPlan="growth" animated />
+          <PricingGrid highlightedPlan="growth" animated landingStyle />
         </div>
 
-        <p className="mt-8 text-center text-sm text-foreground-muted">
-          ¿Necesitás comparar en detalle?{" "}
-          <a href="/pricing" className="text-primary hover:underline">
-            Ver página de pricing completa →
+        <p className="mt-8 text-center text-sm text-[#71717A]">
+          <a
+            href={copy.pricing.compareLinkHref}
+            className="text-[#22C55E] hover:underline"
+          >
+            {copy.pricing.compareLink}
           </a>
         </p>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

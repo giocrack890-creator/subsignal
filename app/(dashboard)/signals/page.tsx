@@ -7,6 +7,7 @@ import { SignalsToolbar } from "@/components/dashboard/signals-toolbar";
 import { LoadMoreSignals } from "@/components/dashboard/load-more-signals";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
 import { createClient } from "@/lib/supabase/server";
+import type { Plan } from "@/types";
 import {
   fetchSignals,
   parseSignalsQuery,
@@ -21,9 +22,11 @@ interface SignalsPageProps {
 
 async function SignalsContent({
   userId,
+  plan,
   params,
 }: {
   userId: string;
+  plan: Plan;
   params: SignalsSearchParams;
 }) {
   const supabase = await createClient();
@@ -34,6 +37,7 @@ async function SignalsContent({
     status: parsed.status !== "all" ? parsed.status : undefined,
     platform: parsed.platform !== "all" ? parsed.platform : undefined,
     minScore: parsed.minScore !== null ? String(parsed.minScore) : undefined,
+    draft: parsed.draft !== "all" ? parsed.draft : undefined,
     q: parsed.q || undefined,
     sort: parsed.sort !== "date" ? parsed.sort : undefined,
   };
@@ -83,7 +87,7 @@ async function SignalsContent({
       <ul className="dash-timeline mt-6 space-y-4">
         {signals.map((signal) => (
           <li key={signal.id} className="dash-timeline-item">
-            <SignalCard signal={signal} />
+            <SignalCard signal={signal} plan={plan} />
           </li>
         ))}
       </ul>
@@ -106,16 +110,21 @@ export default async function SignalsPage({ searchParams }: SignalsPageProps) {
 
   const params = await searchParams;
 
-  const { count: totalCount } = await supabase
-    .from("signals")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id);
+  const [{ count: totalCount }, { data: profile }] = await Promise.all([
+    supabase
+      .from("signals")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id),
+    supabase.from("profiles").select("plan").eq("id", user.id).single(),
+  ]);
+
+  const plan = (profile?.plan ?? "free") as Plan;
 
   return (
     <div className="p-6 lg:p-8">
       <PageHeader
-        title="Señales"
-        description="Historial completo de conversaciones detectadas"
+        title="Señales encontradas"
+        description="Respondé en 30 segundos — cada señal puede incluir un borrador listo para copiar."
         aside={
           <p className="text-sm text-foreground-muted">
             <span className="font-bold text-foreground">{totalCount ?? 0}</span> en
@@ -125,7 +134,7 @@ export default async function SignalsPage({ searchParams }: SignalsPageProps) {
       />
 
       <Suspense fallback={<DashboardFeedSkeleton />}>
-        <SignalsContent userId={user.id} params={params} />
+        <SignalsContent userId={user.id} plan={plan} params={params} />
       </Suspense>
     </div>
   );

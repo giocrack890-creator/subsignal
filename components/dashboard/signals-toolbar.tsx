@@ -27,7 +27,13 @@ const SCORE_OPTIONS = [
   { value: "all", label: "Todo score" },
   { value: "7", label: "7+" },
   { value: "9", label: "9+" },
-];
+] as const;
+
+const DRAFT_OPTIONS = [
+  { value: "all", label: "Todas" },
+  { value: "with", label: "Con draft" },
+  { value: "without", label: "Sin draft" },
+] as const;
 
 interface SignalsToolbarProps {
   className?: string;
@@ -41,6 +47,7 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
     status: searchParams.get("status") ?? "all",
     platform: searchParams.get("platform") ?? "all",
     minScore: searchParams.get("minScore") ?? "all",
+    draft: searchParams.get("draft") ?? "all",
     q: searchParams.get("q") ?? "",
     sort: searchParams.get("sort") ?? "date",
     page: searchParams.get("page") ?? "1",
@@ -51,6 +58,7 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
       status: current.status !== "all" ? current.status : undefined,
       platform: current.platform !== "all" ? current.platform : undefined,
       minScore: current.minScore !== "all" ? current.minScore : undefined,
+      draft: current.draft !== "all" ? current.draft : undefined,
       q: current.q || undefined,
       sort: current.sort !== "date" ? current.sort : undefined,
     };
@@ -179,6 +187,26 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
             className={cn(
               "dash-pill cursor-pointer !px-3 !py-1 !text-xs",
               current.minScore === opt.value && "dash-pill-active"
+            )}
+          >
+            {opt.label}
+          </Link>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <span className="mr-1 self-center text-xs font-medium uppercase tracking-wider text-foreground-muted">
+          Draft
+        </span>
+        {DRAFT_OPTIONS.map((opt) => (
+          <Link
+            key={opt.value}
+            href={pillHref({
+              draft: opt.value === "all" ? undefined : opt.value,
+            })}
+            className={cn(
+              "dash-pill cursor-pointer !px-3 !py-1 !text-xs",
+              current.draft === opt.value && "dash-pill-active"
             )}
           >
             {opt.label}

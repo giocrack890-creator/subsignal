@@ -8,7 +8,7 @@ import { SignalsList } from "@/components/dashboard/signals-list";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { createClient } from "@/lib/supabase/server";
-import type { Signal, SignalStatus } from "@/types";
+import type { Plan, Signal, SignalStatus } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +27,12 @@ function parseFilter(status?: string): SignalFilter {
 async function DashboardFeed({
   userId,
   filter,
+  plan,
   preserveParams = {},
 }: {
   userId: string;
   filter: SignalFilter;
+  plan: Plan;
   preserveParams?: Record<string, string>;
 }) {
   const supabase = await createClient();
@@ -96,6 +98,7 @@ async function DashboardFeed({
         <SignalsList
           signals={(signals as Signal[]) ?? []}
           hasKeywords={hasKeywords}
+          plan={plan}
         />
       </div>
     </section>
@@ -114,7 +117,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const showTour = params.welcome === "1";
   const filter = parseFilter(params.status);
 
-  const [{ count: newCount }, { count: keywordCount }] = await Promise.all([
+  const [{ count: newCount }, { count: keywordCount }, { data: profile }] =
+    await Promise.all([
     supabase
       .from("signals")
       .select("*", { count: "exact", head: true })
@@ -125,7 +129,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       .select("*", { count: "exact", head: true })
       .eq("user_id", user.id)
       .eq("is_active", true),
+    supabase.from("profiles").select("plan").eq("id", user.id).single(),
   ]);
+
+  const plan = (profile?.plan ?? "free") as Plan;
 
   const preserveParams: Record<string, string> = showTour ? { welcome: "1" } : {};
 
@@ -151,7 +158,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         />
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <StatCard value={newCount ?? 0} label="Señales nuevas" />
+          <StatCard
+            value={newCount ?? 0}
+            label="Señales nuevas — con respuesta lista para copiar"
+          />
           <StatCard
             value={keywordCount ?? 0}
             label="Keywords activas"
@@ -164,6 +174,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <DashboardFeed
             userId={user.id}
             filter={filter}
+            plan={plan}
             preserveParams={preserveParams}
           />
         </Suspense>

@@ -1,92 +1,70 @@
 "use client";
 
-import { FadeIn } from "@/components/marketing/landing/motion";
 import { SectionHeading } from "@/components/marketing/landing/section-heading";
 
 const PLATFORMS = [
   {
     name: "Hacker News",
-    color: "text-platform-hn",
-    dot: "bg-platform-hn",
+    dot: "#ff6600",
     status: "Activo",
-    active: true,
     desc: "Monitoreo en vivo con scoring de intención y borradores.",
   },
   {
     name: "Reddit",
-    color: "text-platform-reddit",
-    dot: "bg-platform-reddit",
+    dot: "#ff4500",
     status: "Activo",
-    active: true,
-    desc: "Subreddits de startups y SaaS. Requiere app OAuth en Reddit.",
+    desc: "Subreddits de startups y SaaS. Requiere aprobación API.",
   },
   {
     name: "Twitter / X",
-    color: "text-platform-twitter",
-    dot: "bg-platform-twitter",
+    dot: "#1da1f2",
     status: "Activo",
-    active: true,
-    desc: "Tweets recientes con intención de compra. Requiere Bearer Token.",
+    desc: "Tweets recientes con intención de compra.",
   },
   {
     name: "Indie Hackers",
-    color: "text-platform-ih",
-    dot: "bg-platform-ih",
+    dot: "#6366f1",
     status: "Activo",
-    active: true,
-    desc: "Posts de founders buscando herramientas y soluciones.",
+    desc: "Posts de founders buscando herramientas.",
   },
 ];
 
 export function LandingPlatforms() {
   return (
-    <section
-      id="plataformas"
-      className="landing-section relative scroll-mt-24 border-t border-border"
-      aria-labelledby="platforms-heading"
-    >
-      <div className="container-marketing px-6">
+    <>
+      <hr className="sf-divider" />
+      <section
+        id="plataformas"
+        className="sf-section scroll-mt-24"
+        aria-labelledby="platforms-heading"
+      >
         <SectionHeading
           id="platforms-heading"
+          eyebrow="Plataformas"
           title="Dónde te escuchamos"
           subtitle="Monitoreamos HN, Reddit, X e Indie Hackers donde tu ICP ya está preguntando."
         />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PLATFORMS.map((platform, i) => (
-            <FadeIn key={platform.name} delay={i * 0.06}>
-              <article
-                className={`landing-card flex h-full flex-col rounded-2xl p-5 ${
-                  platform.active
-                    ? "border-primary/30"
-                    : "opacity-75"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className={`h-2.5 w-2.5 rounded-full ${platform.dot}`} />
-                    <h3 className={`font-semibold ${platform.active ? "text-foreground" : "text-foreground-secondary"}`}>
-                      {platform.name}
-                    </h3>
-                  </div>
+          {PLATFORMS.map((platform) => (
+            <article key={platform.name} className="sf-card flex h-full flex-col p-5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                      platform.active
-                        ? "bg-primary-muted-bg text-primary"
-                        : "bg-muted text-foreground-muted"
-                    }`}
-                  >
-                    {platform.status}
-                  </span>
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ background: platform.dot }}
+                  />
+                  <h3 className="font-bold text-[#FAFAFA]">{platform.name}</h3>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-foreground-secondary">
-                  {platform.desc}
-                </p>
-              </article>
-            </FadeIn>
+                <span className="sf-status-badge">{platform.status}</span>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-[#A1A1AA]">
+                {platform.desc}
+              </p>
+            </article>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

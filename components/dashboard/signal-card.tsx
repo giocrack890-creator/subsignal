@@ -3,23 +3,24 @@
 import { useState, useTransition } from "react";
 import { ChevronDown, ExternalLink } from "lucide-react";
 import { dismissSignal } from "@/lib/actions/signals";
-import { GenerateDraftButton } from "@/components/dashboard/generate-draft-button";
+import { SignalDraftSection } from "@/components/dashboard/signal-draft-section";
 import { ScoreBadge } from "@/components/dashboard/score-badge";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { ScoreBar } from "@/components/ui/score-bar";
 import { Button } from "@/components/ui/button";
 import { formatRelativeTime, truncate, cn } from "@/lib/utils";
-import type { Platform, Signal } from "@/types";
+import type { Plan, Platform, Signal } from "@/types";
 
 interface SignalCardProps {
   signal: Signal;
+  plan: Plan;
   className?: string;
-  /** Si true, click expande preview en lugar de abrir post */
   expandable?: boolean;
 }
 
 export function SignalCard({
   signal,
+  plan,
   className,
   expandable = true,
 }: SignalCardProps) {
@@ -80,8 +81,14 @@ export function SignalCard({
           {signal.status !== "new" && (
             <span className="dash-chip uppercase">{signal.status}</span>
           )}
-          {isNew && (
-            <span className="dash-neon-tag">Nueva</span>
+          {isNew && <span className="dash-neon-tag">Nueva</span>}
+          {hasDraft && (
+            <span
+              className="dash-neon-tag"
+              title="Esta señal tiene un borrador listo para copiar"
+            >
+              Draft listo
+            </span>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -131,12 +138,13 @@ export function SignalCard({
         </div>
       )}
 
+      <SignalDraftSection signal={signal} plan={plan} />
+
       <div
         className="dash-signal-actions mt-4 flex flex-wrap items-center gap-2"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <GenerateDraftButton signalId={signal.id} hasDraft={hasDraft} />
         <Button
           variant="ghost"
           size="sm"

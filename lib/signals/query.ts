@@ -9,15 +9,19 @@ export interface SignalsSearchParams {
   status?: string;
   platform?: string;
   minScore?: string;
+  draft?: string;
   q?: string;
   sort?: string;
   page?: string;
 }
 
+export type DraftFilter = "all" | "with" | "without";
+
 export interface ParsedSignalsQuery {
   status: SignalFilter;
   platform: Platform | "all";
   minScore: number | null;
+  draft: DraftFilter;
   q: string;
   sort: "date" | "score";
   page: number;
@@ -47,6 +51,11 @@ export function parseSignalsQuery(
   const minScore =
     params.minScore === "7" ? 7 : params.minScore === "9" ? 9 : null;
 
+  const draftValues: DraftFilter[] = ["all", "with", "without"];
+  const draft = draftValues.includes(params.draft as DraftFilter)
+    ? (params.draft as DraftFilter)
+    : "all";
+
   const q = params.q?.trim() ?? "";
   const sort = params.sort === "score" ? "score" : "date";
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
@@ -56,10 +65,11 @@ export function parseSignalsQuery(
     status !== "all" ||
     platform !== "all" ||
     minScore !== null ||
+    draft !== "all" ||
     q.length > 0 ||
     sort !== "date";
 
-  return { status, platform, minScore, q, sort, page, limit, hasActiveFilters };
+  return { status, platform, minScore, draft, q, sort, page, limit, hasActiveFilters };
 }
 
 function escapeIlike(term: string): string {
@@ -88,6 +98,12 @@ export async function fetchSignals(
 
   if (query.minScore !== null) {
     dbQuery = dbQuery.gte("intent_score", query.minScore);
+  }
+
+  if (query.draft === "with") {
+    dbQuery = dbQuery.not("draft_reply", "is", null).neq("draft_reply", "");
+  } else if (query.draft === "without") {
+    dbQuery = dbQuery.or("draft_reply.is.null,draft_reply.eq.");
   }
 
   if (query.q) {

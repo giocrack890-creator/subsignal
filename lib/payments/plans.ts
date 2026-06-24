@@ -77,7 +77,7 @@ export const PLAN_CATALOG: Record<Plan, PlanCatalogEntry> = {
       "2 keywords activas",
       "Monitoreo Hacker News",
       "5 alertas email / día",
-      "Sin borradores IA",
+      "✗ Draft de respuesta (solo pago)",
     ],
   },
   starter: {
@@ -90,6 +90,7 @@ export const PLAN_CATALOG: Record<Plan, PlanCatalogEntry> = {
       "5 keywords activas",
       "Alertas email + Slack ilimitadas",
       "20 borradores IA / mes",
+      "✓ Draft de respuesta listo para copiar",
       "Todas las plataformas disponibles",
     ],
   },
@@ -103,6 +104,7 @@ export const PLAN_CATALOG: Record<Plan, PlanCatalogEntry> = {
     features: [
       "15 keywords activas",
       "Borradores IA ilimitados",
+      "✓ Draft de respuesta listo para copiar",
       "Conversion tracking",
       "Alertas ilimitadas",
     ],
@@ -116,6 +118,7 @@ export const PLAN_CATALOG: Record<Plan, PlanCatalogEntry> = {
     features: [
       "Keywords ilimitadas",
       "Borradores IA ilimitados",
+      "✓ Draft de respuesta listo para copiar",
       "Conversion tracking avanzado",
       "API access + 3 seats",
     ],

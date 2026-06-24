@@ -1,14 +1,14 @@
 import { SignalCard } from "@/components/dashboard/signal-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import { RadarIcon } from "@/components/dashboard/radar-icon";
-import type { Signal } from "@/types";
+import type { Plan, Signal } from "@/types";
 
 interface SignalsListProps {
   signals: Signal[];
   hasKeywords: boolean;
+  plan: Plan;
 }
 
-export function SignalsList({ signals, hasKeywords }: SignalsListProps) {
+export function SignalsList({ signals, hasKeywords, plan }: SignalsListProps) {
   if (!hasKeywords) {
     return (
       <EmptyState
@@ -35,7 +35,7 @@ export function SignalsList({ signals, hasKeywords }: SignalsListProps) {
     <ul className="dash-timeline space-y-4">
       {signals.map((signal) => (
         <li key={signal.id} className="dash-timeline-item">
-          <SignalCard signal={signal} />
+          <SignalCard signal={signal} plan={plan} />
         </li>
       ))}
     </ul>

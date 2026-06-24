@@ -8,31 +8,24 @@ const FOOTER_LINKS = [
   { href: "/login", label: "Login" },
 ];
 
-const SOCIAL = [
-  { label: "X (Twitter)", href: "#", abbr: "X" },
-  { label: "Discord", href: "#", abbr: "D" },
-  { label: "LinkedIn", href: "#", abbr: "in" },
-];
-
 export function LandingFooter() {
   return (
-    <footer className="border-t border-border py-12">
-      <div className="container-marketing mx-auto max-w-5xl px-6">
+    <footer className="border-t border-[#27272A] py-12">
+      <div className="mx-auto max-w-[1100px] px-6 lg:px-10">
         <div className="grid gap-10 sm:grid-cols-3">
           <div>
-            <span className="flex items-center gap-2 font-semibold text-foreground">
-              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
-                SS
-              </span>
+            <span className="flex items-center gap-2 font-extrabold text-[#FAFAFA]">
+              <span className="sf-dot-pulse" />
               SubSignal
             </span>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-foreground-secondary">
-              Intent monitoring para founders. Encontrá clientes donde ya están preguntando.
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#A1A1AA]">
+              Intent monitoring para founders. Encontrá clientes donde ya están
+              preguntando.
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
               Producto
             </p>
             <ul className="mt-4 space-y-2">
@@ -40,7 +33,7 @@ export function LandingFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="cursor-pointer text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground"
+                    className="text-sm text-[#A1A1AA] transition-colors hover:text-[#FAFAFA]"
                   >
                     {link.label}
                   </Link>
@@ -50,25 +43,17 @@ export function LandingFooter() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
-              Seguinos
+            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
+              Status
             </p>
-            <div className="mt-4 flex gap-2">
-              {SOCIAL.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  aria-label={s.label}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border text-xs font-medium text-foreground-muted transition-colors duration-200 hover:border-border-glow hover:text-foreground"
-                >
-                  {s.abbr}
-                </a>
-              ))}
-            </div>
+            <p className="mt-4 inline-flex items-center gap-2 text-sm text-[#A1A1AA]">
+              <span className="sf-dot-pulse" />
+              Beta privada — HN activo
+            </p>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-xs text-foreground-muted sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-[#27272A] pt-8 text-xs text-[#71717A] sm:flex-row">
           <span>© {new Date().getFullYear()} SubSignal</span>
           <span>Hecho para founders que venden con valor, no con spam.</span>
         </div>

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { getPlanLimits } from "@/lib/payments/plans";
+import { getPlanLimits, getPlanCatalog } from "@/lib/payments/plans";
 import type { Plan, Profile } from "@/types";
 
 interface SettingsFormProps {
@@ -60,6 +60,8 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
 
   const plan = profile.plan as Plan;
   const limits = getPlanLimits(plan);
+  const planCatalog = getPlanCatalog(plan);
+  const hasDraftFeature = limits.aiDraftsPerMonth !== 0;
 
   function handleSubmit(formData: FormData) {
     setMessage(null);
@@ -223,6 +225,11 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <PlanBadge plan={plan} />
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-foreground-secondary">
+          {hasDraftFeature
+            ? `Con tu plan ${planCatalog.name} cada señal incluye un borrador de respuesta personalizado para tu producto, listo para copiar y publicar desde tu cuenta.`
+            : `Con tu plan ${planCatalog.name} las señales no incluyen borrador de respuesta. Actualizá a Starter o superior para desbloquear drafts listos para copiar.`}
+        </p>
         <ul className="mt-4 space-y-2 text-sm text-foreground-secondary">
           <li>
             ·{" "}

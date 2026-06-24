@@ -158,3 +158,46 @@ export async function markSignalReplied(
   revalidatePath("/analytics");
   return { success: true };
 }
+
+export async function markDraftCopied(
+  signalId: string,
+  draftText?: string
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "No autenticado" };
+  }
+
+  const now = new Date().toISOString();
+  const update: {
+    draft_copied: boolean;
+    draft_copied_at: string;
+    draft_reply?: string;
+  } = {
+    draft_copied: true,
+    draft_copied_at: now,
+  };
+
+  if (draftText?.trim()) {
+    update.draft_reply = draftText.trim();
+  }
+
+  const { error } = await supabase
+    .from("signals")
+    .update(update)
+    .eq("id", signalId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/signals");
+  revalidatePath("/drafts");
+  return { success: true };
+}

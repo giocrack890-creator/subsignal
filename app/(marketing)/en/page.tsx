@@ -9,19 +9,21 @@ import { LandingFaq } from "@/components/marketing/landing/faq";
 import { LandingCta } from "@/components/marketing/landing/cta";
 import { LandingFooter } from "@/components/marketing/landing/footer";
 
-export default function HomePage() {
+const LOCALE = "en" as const;
+
+export default function EnglishHomePage() {
   return (
     <>
-      <LandingNavbar />
+      <LandingNavbar locale={LOCALE} />
       <main id="main-content">
-        <LandingHero />
+        <LandingHero locale={LOCALE} />
         <LandingSteps />
         <LandingPlatforms />
         <LandingFeatures />
-        <LandingPricing />
+        <LandingPricing locale={LOCALE} />
         <LandingSocialProof />
-        <LandingFaq />
-        <LandingCta />
+        <LandingFaq locale={LOCALE} />
+        <LandingCta locale={LOCALE} />
       </main>
       <LandingFooter />
     </>

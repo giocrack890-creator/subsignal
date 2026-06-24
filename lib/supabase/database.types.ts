@@ -159,6 +159,8 @@ export type Database = {
           intent_reason: string | null;
           status: string;
           draft_reply: string | null;
+          draft_copied: boolean;
+          draft_copied_at: string | null;
           reply_url: string | null;
           found_at: string;
           alerted_at: string | null;
@@ -178,6 +180,8 @@ export type Database = {
           intent_reason?: string | null;
           status?: string;
           draft_reply?: string | null;
+          draft_copied?: boolean;
+          draft_copied_at?: string | null;
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;
@@ -197,6 +201,8 @@ export type Database = {
           intent_reason?: string | null;
           status?: string;
           draft_reply?: string | null;
+          draft_copied?: boolean;
+          draft_copied_at?: string | null;
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;

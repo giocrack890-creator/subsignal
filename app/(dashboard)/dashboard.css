@@ -533,6 +533,12 @@
   color: var(--dash-accent);
 }
 
+.dashboard-sf .dash-draft-box {
+  background: var(--background-card-hover);
+  border-left: 3px solid #34d399;
+  border-radius: 0 8px 8px 0;
+}
+
 .dashboard-sf .dash-danger-zone {
   border-color: rgba(248, 113, 113, 0.25) !important;
   box-shadow: inset 0 0 30px rgba(248, 113, 113, 0.04);

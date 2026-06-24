@@ -1,6 +1,5 @@
 "use client";
 
-import { FadeIn } from "@/components/marketing/landing/motion";
 import { SectionHeading } from "@/components/marketing/landing/section-heading";
 
 const TESTIMONIALS = [
@@ -24,47 +23,51 @@ const TESTIMONIALS = [
   },
 ];
 
+function Stars() {
+  return (
+    <div className="flex gap-0.5 text-[#22C55E]" aria-hidden="true">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i}>★</span>
+      ))}
+    </div>
+  );
+}
+
 export function LandingSocialProof() {
   return (
-    <section
-      id="social"
-      className="landing-section relative scroll-mt-24 border-t border-border bg-background-elevated/40"
-      aria-labelledby="social-heading"
-    >
-      <div className="container-marketing px-6">
+    <>
+      <hr className="sf-divider" />
+      <section
+        id="social"
+        className="sf-section scroll-mt-24"
+        aria-labelledby="social-heading"
+      >
         <SectionHeading
           id="social-heading"
+          eyebrow="Testimonios"
           title="Construido por founders, para founders"
           subtitle="Estamos en beta temprana. Estos son los primeros feedbacks de quienes ya monitorean señales."
         />
 
-        <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-border bg-background-card px-6 py-4 text-center">
-          <p className="text-sm text-foreground-secondary">
-            Monitoreando keywords activamente en Hacker News
-          </p>
-          <p className="mt-1 text-2xl font-bold text-primary">Beta privada</p>
-        </div>
-
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {TESTIMONIALS.map((item, i) => (
-            <FadeIn key={item.author} delay={i * 0.08}>
-              <blockquote className="landing-card h-full rounded-2xl p-6">
-                <p className="text-[15px] leading-relaxed text-foreground-secondary">
-                  &ldquo;{item.quote}&rdquo;
-                </p>
-                <footer className="mt-4 border-t border-border pt-4">
-                  <cite className="not-italic">
-                    <span className="block text-sm font-semibold text-foreground">
-                      {item.author}
-                    </span>
-                    <span className="text-xs text-foreground-muted">{item.role}</span>
-                  </cite>
-                </footer>
-              </blockquote>
-            </FadeIn>
+        <div className="mt-14 grid gap-4 md:grid-cols-3">
+          {TESTIMONIALS.map((item) => (
+            <blockquote key={item.author} className="sf-card p-7">
+              <Stars />
+              <p className="mt-4 text-[15px] italic leading-relaxed text-[#A1A1AA]">
+                &ldquo;{item.quote}&rdquo;
+              </p>
+              <footer className="mt-5">
+                <cite className="not-italic">
+                  <span className="block text-[13px] font-bold text-[#FAFAFA]">
+                    {item.author}
+                  </span>
+                  <span className="text-xs text-[#71717A]">{item.role}</span>
+                </cite>
+              </footer>
+            </blockquote>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
