@@ -29,6 +29,31 @@ export const PLATFORM_DRAFT_STYLES: Record<Platform, PlatformDraftStyle> = {
     tone: "founder-to-founder, transparente",
     structure: "Compartí aprendizaje + cómo resolvés el pain point.",
   },
+  github: {
+    maxChars: 1000,
+    tone: "técnico, orientado a issues",
+    structure: "Referenciá el issue + solución concreta sin spam.",
+  },
+  rss: {
+    maxChars: 800,
+    tone: "informativo, útil",
+    structure: "Comentario breve con valor agregado al artículo.",
+  },
+  google_alert: {
+    maxChars: 800,
+    tone: "contextual, relevante",
+    structure: "Respondé al contexto de la alerta con insight accionable.",
+  },
+  app_store: {
+    maxChars: 600,
+    tone: "empático, solución",
+    structure: "Reconocé el pain + cómo tu app lo resuelve.",
+  },
+  slack: {
+    maxChars: 600,
+    tone: "comunidad, casual",
+    structure: "Mensaje corto útil para el canal.",
+  },
 };
 
 export function getPlatformDraftInstruction(platform: Platform): string {

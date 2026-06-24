@@ -46,6 +46,9 @@ export function SignalPanel({
   const [replyUrl, setReplyUrl] = useState("");
   const [related, setRelated] = useState<RelatedSignal[]>([]);
   const [regenerations, setRegenerations] = useState(0);
+  const [tweetThread, setTweetThread] = useState<string[]>([]);
+  const [translated, setTranslated] = useState<{ title: string; body: string } | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const isPaid = plan !== "free";
@@ -179,6 +182,73 @@ export function SignalPanel({
           >
             Ver post original ↗
           </a>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={aiLoading}
+              onClick={() => {
+                if (!signal) return;
+                setAiLoading(true);
+                void fetch("/api/signals/translate", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ signalId: signal.id, targetLanguage: "es" }),
+                })
+                  .then((r) => r.json())
+                  .then((d: { translated?: { title: string; body: string } }) => {
+                    if (d.translated) setTranslated(d.translated);
+                  })
+                  .finally(() => setAiLoading(false));
+              }}
+            >
+              Traducir
+            </Button>
+            {(signal.platform === "hn" || signal.platform === "rss") && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={aiLoading}
+                onClick={() => {
+                  setAiLoading(true);
+                  void fetch("/api/signals/tweet-thread", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ signalId: signal.id }),
+                  })
+                    .then((r) => r.json())
+                    .then((d: { tweets?: string[] }) => setTweetThread(d.tweets ?? []))
+                    .finally(() => setAiLoading(false));
+                }}
+              >
+                Thread 3 tweets
+              </Button>
+            )}
+          </div>
+
+          {translated && (
+            <div className="mt-4 rounded-lg border border-[#232323] bg-[#111714] p-3 text-sm text-[#B4B4B4]">
+              <p className="font-medium text-white">{translated.title}</p>
+              <p className="mt-2 whitespace-pre-wrap">{translated.body}</p>
+            </div>
+          )}
+
+          {tweetThread.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {tweetThread.map((tweet, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border border-[#232323] bg-[#111714] p-3 text-sm text-[#E5E5E5]"
+                >
+                  <span className="text-xs text-[#6B6B6B]">{i + 1}/3</span>
+                  <p className="mt-1">{tweet}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#232323]" />

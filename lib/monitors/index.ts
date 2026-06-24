@@ -13,7 +13,9 @@ export {
   isPlatformNotImplementedError,
 } from "./errors";
 
-const monitors: Record<Platform, PlatformMonitor> = {
+type MonitoredPlatform = "hn" | "reddit" | "twitter" | "ih";
+
+const monitors: Record<MonitoredPlatform, PlatformMonitor> = {
   hn: hackerNewsMonitor,
   reddit: redditMonitor,
   twitter: twitterMonitor,
@@ -21,7 +23,10 @@ const monitors: Record<Platform, PlatformMonitor> = {
 };
 
 export function getMonitor(platform: Platform): PlatformMonitor {
-  return monitors[platform];
+  if (!(platform in monitors)) {
+    throw new Error(`No hay monitor nativo para ${platform}; usa feature_sources`);
+  }
+  return monitors[platform as MonitoredPlatform];
 }
 
 export function getAllMonitors(): PlatformMonitor[] {
@@ -32,6 +37,6 @@ export function getActiveMonitors(): PlatformMonitor[] {
   return getAllMonitors().filter((m) => m.meta.status === "active");
 }
 
-export function getMonitorRegistry(): Record<Platform, PlatformMeta> {
+export function getMonitorRegistry(): Partial<Record<Platform, PlatformMeta>> {
   return PLATFORM_META;
 }

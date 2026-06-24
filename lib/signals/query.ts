@@ -50,7 +50,18 @@ export function parseSignalsQuery(
     ? (params.status as SignalFilter)
     : "all";
 
-  const platforms: (Platform | "all")[] = ["all", "hn", "reddit", "twitter", "ih"];
+  const platforms: (Platform | "all")[] = [
+    "all",
+    "hn",
+    "reddit",
+    "twitter",
+    "ih",
+    "github",
+    "rss",
+    "google_alert",
+    "app_store",
+    "slack",
+  ];
   const platform = platforms.includes(params.platform as Platform | "all")
     ? (params.platform as Platform | "all")
     : "all";

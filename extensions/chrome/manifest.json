@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "ThreadPulse",
+  "version": "0.1.0",
+  "description": "Overlay de monitoreo en Hacker News y Reddit",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://news.ycombinator.com/*",
+    "https://www.reddit.com/*",
+    "https://old.reddit.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://news.ycombinator.com/*",
+        "https://www.reddit.com/*",
+        "https://old.reddit.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["overlay.css"]
+    }
+  ],
+  "action": {
+    "default_title": "ThreadPulse",
+    "default_popup": "popup.html"
+  }
+}

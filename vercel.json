@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/follow-up",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/feature-sources",
+      "schedule": "0 */2 * * *"
     }
   ]
 }

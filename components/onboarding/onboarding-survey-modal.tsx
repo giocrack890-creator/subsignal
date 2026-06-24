@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Bot,
   Briefcase,
@@ -25,6 +25,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  isSurveyHandledLocally,
+  markSurveyHandledLocally,
+} from "@/lib/onboarding/survey-storage";
 
 type SurveyAnswers = {
   source: string;
@@ -370,36 +374,69 @@ export function OnboardingSurveyModal({
 
 interface OnboardingSurveyGateProps {
   showSurvey: boolean;
+  /** Si true, solo se muestra en /dashboard (usuarios que ya completaron setup) */
+  dashboardOnly?: boolean;
+  onHandled?: () => void;
 }
 
-export function OnboardingSurveyGate({ showSurvey }: OnboardingSurveyGateProps) {
+export function OnboardingSurveyGate({
+  showSurvey,
+  dashboardOnly = false,
+  onHandled,
+}: OnboardingSurveyGateProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [dismissed, setDismissed] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [skipping, setSkipping] = useState(false);
+  const [localHandled, setLocalHandled] = useState(isSurveyHandledLocally);
 
-  const open = showSurvey && !dismissed && !completed && !skipping;
+  useEffect(() => {
+    if (!showSurvey) {
+      markSurveyHandledLocally();
+    }
+  }, [showSurvey]);
+
+  const markHandled = useCallback(() => {
+    markSurveyHandledLocally();
+    setLocalHandled(true);
+    onHandled?.();
+  }, [onHandled]);
+
+  const onDashboard = pathname === "/dashboard";
+  const shouldConsider =
+    showSurvey && !localHandled && !dismissed && !completed && !skipping;
+  const open = dashboardOnly
+    ? shouldConsider && onDashboard
+    : shouldConsider;
 
   async function handleDismiss() {
     setSkipping(true);
     try {
-      await fetch("/api/onboarding/preferences", {
+      const res = await fetch("/api/onboarding/preferences", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "skip_survey" }),
       });
+      if (!res.ok) throw new Error("skip failed");
       setDismissed(true);
+      markHandled();
       router.refresh();
     } catch {
       setSkipping(false);
     }
   }
 
+  function handleCompleted() {
+    setCompleted(true);
+    markHandled();
+  }
+
   return (
     <OnboardingSurveyModal
       open={open}
       onDismiss={() => void handleDismiss()}
-      onCompleted={() => setCompleted(true)}
+      onCompleted={handleCompleted}
     />
   );
 }

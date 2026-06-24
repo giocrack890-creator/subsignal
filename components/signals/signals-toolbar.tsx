@@ -39,6 +39,11 @@ const PLATFORM_OPTIONS: { value: Platform | "all"; label: string }[] = [
   { value: "reddit", label: "Reddit" },
   { value: "twitter", label: "X" },
   { value: "ih", label: "IH" },
+  { value: "github", label: "GitHub" },
+  { value: "rss", label: "RSS" },
+  { value: "google_alert", label: "Alerts" },
+  { value: "app_store", label: "App Store" },
+  { value: "slack", label: "Slack" },
 ];
 
 const SCORE_OPTIONS = [

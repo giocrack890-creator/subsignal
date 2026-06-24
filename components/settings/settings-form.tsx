@@ -13,6 +13,9 @@ import {
 import { deleteAccount, updateSettings } from "@/lib/actions/settings";
 import { DraftToneSection } from "@/components/settings/draft-tone-section";
 import { CancelSubscriptionButton } from "@/components/settings/cancel-subscription-button";
+import { IntegrationsPanel } from "@/components/settings/integrations-panel";
+import { ReferralPanel } from "@/components/settings/referral-panel";
+import { AgencyPanel } from "@/components/settings/agency-panel";
 import { RestartTourButton } from "@/components/settings/restart-tour-button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PlanBadge } from "@/components/dashboard/plan-badge";
@@ -309,6 +312,22 @@ export function SettingsForm({ profile, email, avatarUrl }: SettingsFormProps) {
               .
             </p>
           )}
+      </section>
+
+      <section className="dash-card p-6">
+        <IntegrationsPanel />
+      </section>
+
+      <section className="dash-card p-6">
+        <ReferralPanel />
+      </section>
+
+      <section className="dash-card p-6">
+        <AgencyPanel
+          whiteLabelName={profile.white_label_name ?? null}
+          whiteLabelLogoUrl={profile.white_label_logo_url ?? null}
+          ltdPurchasedAt={profile.ltd_purchased_at ?? null}
+        />
       </section>
 
       <section className="dash-card p-6">

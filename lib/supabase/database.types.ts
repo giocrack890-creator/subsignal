@@ -49,6 +49,10 @@ export type Database = {
           ph_launch_mode_until: string | null;
           sandbox_mode: boolean;
           leaderboard_opt_in: boolean;
+          ltd_purchased_at: string | null;
+          white_label_name: string | null;
+          white_label_logo_url: string | null;
+          zapier_webhook_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -90,6 +94,10 @@ export type Database = {
           ph_launch_mode_until?: string | null;
           sandbox_mode?: boolean;
           leaderboard_opt_in?: boolean;
+          ltd_purchased_at?: string | null;
+          white_label_name?: string | null;
+          white_label_logo_url?: string | null;
+          zapier_webhook_url?: string | null;
           created_at?: string;
         };
         Update: {
@@ -131,6 +139,10 @@ export type Database = {
           ph_launch_mode_until?: string | null;
           sandbox_mode?: boolean;
           leaderboard_opt_in?: boolean;
+          ltd_purchased_at?: string | null;
+          white_label_name?: string | null;
+          white_label_logo_url?: string | null;
+          zapier_webhook_url?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -681,6 +693,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      agency_products: {
+        Row: {
+          id: string;
+          owner_id: string;
+          name: string;
+          slug: string;
+          white_label_name: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id: string;
+          name: string;
+          slug: string;
+          white_label_name?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_id?: string;
+          name?: string;
+          slug?: string;
+          white_label_name?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       api_keys: {
         Row: {
           id: string;
@@ -705,6 +744,81 @@ export type Database = {
           label?: string;
           created_at?: string;
           last_used_at?: string | null;
+        };
+        Relationships: [];
+      };
+      feature_sources: {
+        Row: {
+          id: string;
+          user_id: string;
+          source_type: string;
+          config: Json;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          source_type: string;
+          config?: Json;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          source_type?: string;
+          config?: Json;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      referrals: {
+        Row: {
+          id: string;
+          referrer_id: string;
+          referred_id: string;
+          reward_granted: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          referrer_id: string;
+          referred_id: string;
+          reward_granted?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          referrer_id?: string;
+          referred_id?: string;
+          reward_granted?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      source_ingest_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          source_type: string;
+          external_id: string;
+          ingested_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          source_type: string;
+          external_id: string;
+          ingested_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          source_type?: string;
+          external_id?: string;
+          ingested_at?: string;
         };
         Relationships: [];
       };

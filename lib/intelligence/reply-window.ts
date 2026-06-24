@@ -2,11 +2,16 @@
 
 import type { Platform } from "@/types";
 
-const REPLY_WINDOW_HOURS: Record<Platform, number> = {
+const REPLY_WINDOW_HOURS: Partial<Record<Platform, number>> = {
   hn: 6,
   reddit: 24,
   twitter: 3,
   ih: 12,
+  github: 48,
+  rss: 72,
+  google_alert: 24,
+  app_store: 48,
+  slack: 12,
 };
 
 export function computeReplyWindow(platform: Platform, foundAt: Date = new Date()): {

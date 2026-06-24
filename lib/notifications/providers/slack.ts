@@ -7,6 +7,11 @@ const PLATFORM_EMOJI: Record<Platform, string> = {
   reddit: ":red_circle:",
   twitter: ":bird:",
   ih: ":rocket:",
+  github: ":purple_circle:",
+  rss: ":newspaper:",
+  google_alert: ":bell:",
+  app_store: ":iphone:",
+  slack: ":speech_balloon:",
 };
 
 function truncateTitle(title: string, max = 120): string {

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { OnboardingEntry } from "@/components/onboarding/onboarding-entry";
 import { getOnboardingStatus } from "@/lib/onboarding/status";
 import { createClient } from "@/lib/supabase/server";
 import type { Plan, UserProduct } from "@/types";
@@ -22,7 +22,7 @@ export default async function OnboardingPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, full_name, email")
+    .select("plan, full_name, email, onboarding_survey_completed")
     .eq("id", user.id)
     .single();
 
@@ -35,9 +35,11 @@ export default async function OnboardingPage() {
 
   const plan = (profile?.plan ?? "free") as Plan;
   const initialStep = status.hasProduct ? 2 : 1;
+  const showSurvey = !profile?.onboarding_survey_completed;
 
   return (
-    <OnboardingWizard
+    <OnboardingEntry
+      showSurvey={showSurvey}
       product={(product as UserProduct | null) ?? null}
       productId={status.productId}
       plan={plan}

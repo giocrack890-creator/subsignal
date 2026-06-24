@@ -51,10 +51,24 @@ export const PLATFORM_LABELS: Record<Platform, string> = {
   reddit: "Reddit",
   twitter: "Twitter/X",
   ih: "Indie Hackers",
+  github: "GitHub",
+  rss: "RSS / blogs",
+  google_alert: "Google Alerts",
+  app_store: "App Store",
+  slack: "Slack",
 };
 
 /** Plataformas con monitor implementado y operativo en el pipeline */
 export const ACTIVE_PLATFORMS: Platform[] = ["hn", "reddit", "twitter", "ih"];
+
+/** Fuentes extendidas vía feature_sources cron */
+export const EXTENDED_PLATFORMS: Platform[] = [
+  "github",
+  "rss",
+  "google_alert",
+  "app_store",
+  "slack",
+];
 
 /** Plataformas planificadas pero aún no implementadas */
 export const COMING_SOON_PLATFORMS: Platform[] = [];

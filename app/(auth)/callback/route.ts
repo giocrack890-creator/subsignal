@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { getOnboardingStatus } from "@/lib/onboarding/status";
+import { applyReferralCode } from "@/lib/referrals";
 import { createClient } from "@/lib/supabase/server";
+
+const REFERRAL_COOKIE = "tp_referral_code";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -29,6 +33,13 @@ export async function GET(request: Request) {
 
   if (!user) {
     return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
+  }
+
+  const cookieStore = await cookies();
+  const referralCode = cookieStore.get(REFERRAL_COOKIE)?.value;
+  if (referralCode) {
+    await applyReferralCode(user.id, referralCode);
+    cookieStore.delete(REFERRAL_COOKIE);
   }
 
   if (next) {

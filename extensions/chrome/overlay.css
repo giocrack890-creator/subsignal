@@ -1,0 +1,22 @@
+#threadpulse-overlay {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 99999;
+  background: #111714;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34d399;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+#threadpulse-overlay small {
+  display: block;
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 10px;
+}

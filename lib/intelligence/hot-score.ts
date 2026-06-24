@@ -2,11 +2,16 @@
 
 import type { Platform } from "@/types";
 
-const PLATFORM_VELOCITY: Record<Platform, number> = {
+const PLATFORM_VELOCITY: Partial<Record<Platform, number>> = {
   hn: 1.2,
   reddit: 1.0,
   twitter: 1.5,
   ih: 0.9,
+  github: 1.0,
+  rss: 0.85,
+  google_alert: 0.9,
+  app_store: 1.05,
+  slack: 1.1,
 };
 
 export function computeHotScore(input: {

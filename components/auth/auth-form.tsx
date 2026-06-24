@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppLogo } from "@/components/brand/app-logo";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/auth/urls";
 import { Button } from "@/components/ui/button";
+
+const REFERRAL_COOKIE = "tp_referral_code";
 
 interface AuthFormProps {
   errorMessage?: string | null;
@@ -15,8 +17,14 @@ interface AuthFormProps {
 export function AuthForm({ errorMessage }: AuthFormProps) {
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
+  const ref = searchParams.get("ref");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(errorMessage ?? null);
+
+  useEffect(() => {
+    if (!ref) return;
+    document.cookie = `${REFERRAL_COOKIE}=${encodeURIComponent(ref)}; path=/; max-age=604800; SameSite=Lax`;
+  }, [ref]);
 
   async function handleGoogleSignIn() {
     setLoading(true);

@@ -21,6 +21,11 @@ const PLATFORM_STYLES: Record<
     label: "IH",
     className: "bg-platform-ih/15 text-foreground-muted border-border-strong",
   },
+  github: { label: "GH", className: "bg-violet-500/15 text-violet-400 border-violet-500/30" },
+  rss: { label: "RSS", className: "bg-orange-500/15 text-orange-400 border-orange-500/30" },
+  google_alert: { label: "GA", className: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
+  app_store: { label: "App", className: "bg-sky-500/15 text-sky-400 border-sky-500/30" },
+  slack: { label: "Slack", className: "bg-pink-500/15 text-pink-400 border-pink-500/30" },
 };
 
 interface PlatformBadgeProps {

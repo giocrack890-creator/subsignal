@@ -1,6 +1,15 @@
 export type Plan = "free" | "starter" | "growth" | "pro";
 
-export type Platform = "reddit" | "twitter" | "hn" | "ih";
+export type Platform =
+  | "reddit"
+  | "twitter"
+  | "hn"
+  | "ih"
+  | "github"
+  | "rss"
+  | "google_alert"
+  | "app_store"
+  | "slack";
 
 export type SignalStatus = "new" | "viewed" | "replied" | "dismissed";
 
@@ -53,6 +62,10 @@ export interface Profile {
   ph_launch_mode_until?: string | null;
   sandbox_mode?: boolean;
   leaderboard_opt_in?: boolean;
+  ltd_purchased_at?: string | null;
+  white_label_name?: string | null;
+  white_label_logo_url?: string | null;
+  zapier_webhook_url?: string | null;
   created_at: string;
 }
 

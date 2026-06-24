@@ -49,7 +49,8 @@ export default async function DashboardLayout({
 
   const profile = profileResult.data;
   const plan = (profile?.plan ?? "free") as Plan;
-  const showOnboardingSurvey = !onboardingUi.onboardingSurveyCompleted;
+  const showOnboardingSurvey =
+    onboardingStatus.isComplete && !onboardingUi.onboardingSurveyCompleted;
   const displayName =
     profile?.full_name ?? profile?.email ?? user.email ?? "Usuario";
 
@@ -62,7 +63,10 @@ export default async function DashboardLayout({
             className={`dashboard-sf ${inter.variable} flex min-h-screen bg-nivel-0 font-[family-name:var(--font-dashboard)]`}
           >
             <OnboardingRedirect isComplete={onboardingStatus.isComplete} />
-            <OnboardingSurveyGate showSurvey={showOnboardingSurvey} />
+            <OnboardingSurveyGate
+              showSurvey={showOnboardingSurvey}
+              dashboardOnly
+            />
 
             <DashboardSidebar
               displayName={displayName}

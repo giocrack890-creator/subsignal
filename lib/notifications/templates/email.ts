@@ -8,6 +8,11 @@ const PLATFORM_EMOJI: Record<Platform, string> = {
   reddit: "🔴",
   twitter: "🐦",
   ih: "🚀",
+  github: "💜",
+  rss: "📰",
+  google_alert: "🔔",
+  app_store: "📱",
+  slack: "💬",
 };
 
 function escapeHtml(value: string): string {
