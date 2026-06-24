@@ -1,6 +1,10 @@
 /** Verificación centralizada de límites por plan (solo lee profiles.plan) */
 
-import type { Plan } from "@/types";
+import type { Plan, Platform } from "@/types";
+import {
+  canUsePlatform,
+  getMaxTwitterKeywords,
+} from "./platforms";
 import {
   getPlanLimits,
   getRecommendedPlan,
@@ -115,15 +119,29 @@ export function checkEmailAlertLimit(input: {
 
 export function checkPlatformAccess(input: {
   plan: Plan;
-  platform: string;
+  platform: Platform | string;
 }): LimitCheckResult {
-  if (input.plan === "free" && input.platform !== "hn") {
+  const platform = input.platform as Platform;
+
+  if (!canUsePlatform(input.plan, platform)) {
+    if (platform === "twitter") {
+      return {
+        allowed: false,
+        feature: "platforms",
+        currentPlan: input.plan,
+        recommendedPlan: "starter",
+        message:
+          "Twitter/X está disponible desde Starter. Actualizá tu plan para monitorear X.",
+      };
+    }
+
     return {
       allowed: false,
       feature: "platforms",
       currentPlan: input.plan,
       recommendedPlan: getRecommendedPlan(input.plan, "platforms"),
-      message: "Plan Free: solo Hacker News. Actualizá tu plan para más plataformas.",
+      message:
+        "Plan Free: solo Hacker News. Actualizá tu plan para más plataformas.",
     };
   }
 
@@ -132,6 +150,45 @@ export function checkPlatformAccess(input: {
     feature: "platforms",
     currentPlan: input.plan,
     recommendedPlan: null,
+  };
+}
+
+export function checkTwitterKeywordLimit(input: {
+  plan: Plan;
+  twitterKeywordCount: number;
+}): LimitCheckResult {
+  const limit = getMaxTwitterKeywords(input.plan);
+
+  if (limit === 0) {
+    return {
+      allowed: false,
+      feature: "platforms",
+      currentPlan: input.plan,
+      recommendedPlan: "starter",
+      message: "Twitter/X requiere plan Starter o Pro.",
+    };
+  }
+
+  if (limit !== null && input.twitterKeywordCount >= limit) {
+    return {
+      allowed: false,
+      feature: "platforms",
+      currentPlan: input.plan,
+      recommendedPlan: "pro",
+      used: input.twitterKeywordCount,
+      limit,
+      message:
+        "Starter incluye 1 keyword con Twitter/X. Pasá a Pro para monitorear más términos en X.",
+    };
+  }
+
+  return {
+    allowed: true,
+    feature: "platforms",
+    currentPlan: input.plan,
+    recommendedPlan: null,
+    used: input.twitterKeywordCount,
+    limit,
   };
 }
 

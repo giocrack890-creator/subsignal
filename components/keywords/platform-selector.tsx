@@ -6,6 +6,10 @@ import {
   COMING_SOON_PLATFORMS,
   PLATFORM_LABELS,
 } from "@/lib/monitors/types";
+import {
+  canUsePlatform,
+  getMaxTwitterKeywords,
+} from "@/lib/payments/platforms";
 import { cn } from "@/lib/utils";
 import type { Plan, Platform } from "@/types";
 
@@ -24,6 +28,7 @@ export function PlatformSelector({
 }: PlatformSelectorProps) {
   const allPlatforms: Platform[] = ["hn", "reddit", "twitter", "ih"];
   const redditActive = ACTIVE_PLATFORMS.includes("reddit");
+  const twitterKeywordLimit = getMaxTwitterKeywords(plan);
 
   return (
     <div className="space-y-3">
@@ -32,8 +37,8 @@ export function PlatformSelector({
         {allPlatforms.map((platform) => {
           const isActive = ACTIVE_PLATFORMS.includes(platform);
           const isComingSoon = COMING_SOON_PLATFORMS.includes(platform);
-          const isFreePlanLocked = plan === "free" && platform !== "hn";
-          const isDisabled = !isActive || isFreePlanLocked;
+          const isPlanLocked = !canUsePlatform(plan, platform);
+          const isDisabled = !isActive || isPlanLocked;
 
           return (
             <label
@@ -63,9 +68,19 @@ export function PlatformSelector({
                   Próximamente
                 </Badge>
               )}
-              {isFreePlanLocked && isActive && (
+              {isPlanLocked && isActive && platform === "twitter" && (
+                <Badge variant="outline" className="text-[10px]">
+                  Starter+
+                </Badge>
+              )}
+              {isPlanLocked && isActive && platform !== "twitter" && (
                 <Badge variant="outline" className="text-[10px]">
                   Plan pago
+                </Badge>
+              )}
+              {!isPlanLocked && platform === "twitter" && twitterKeywordLimit === 1 && (
+                <Badge variant="outline" className="text-[10px]">
+                  1 keyword
                 </Badge>
               )}
             </label>
@@ -75,7 +90,14 @@ export function PlatformSelector({
 
       {plan === "free" && (
         <p className="text-xs text-foreground-muted">
-          Plan free: solo Hacker News. Upgrade para más plataformas.
+          Plan free: solo Hacker News. Twitter/X y el resto requieren Starter o
+          Pro.
+        </p>
+      )}
+      {plan === "starter" && (
+        <p className="text-xs text-foreground-muted">
+          Starter incluye 1 keyword con Twitter/X. Pro desbloquea X en todas tus
+          keywords.
         </p>
       )}
 

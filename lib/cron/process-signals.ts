@@ -14,6 +14,7 @@ import { sendPushToUser } from "@/lib/push/send";
 import { fetchRedditAuthorProfile } from "@/lib/monitors/reddit-author";
 import { buildAuthorMeta } from "@/lib/shill/heuristics";
 import { truncate } from "@/lib/utils";
+import { filterPlatformsForPlan } from "@/lib/payments/platforms";
 import type { Platform, Plan } from "@/types";
 
 export interface ProcessSignalsResult {
@@ -305,8 +306,10 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
     const keyword = rawKeyword as unknown as KeywordRow;
     result.keywordsProcessed++;
 
-    const platforms = keyword.platforms.filter((p) =>
-      ACTIVE_PLATFORMS.includes(p)
+    const plan = keyword.profiles.plan ?? "free";
+    const platforms = filterPlatformsForPlan(
+      plan,
+      keyword.platforms.filter((p) => ACTIVE_PLATFORMS.includes(p))
     );
 
     for (const platform of platforms) {

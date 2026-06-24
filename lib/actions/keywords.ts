@@ -3,7 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { ACTIVE_PLATFORMS } from "@/lib/monitors/types";
-import { checkKeywordLimit } from "@/lib/payments/checks";
+import {
+  checkKeywordLimit,
+  checkTwitterKeywordLimit,
+} from "@/lib/payments/checks";
+import { filterPlatformsForPlan } from "@/lib/payments/platforms";
 import { markSetupKeywordDone } from "@/lib/setup/progress";
 import type { Plan, Platform } from "@/types";
 import type { ActionResult } from "./product";
@@ -69,14 +73,34 @@ export async function createKeyword(formData: FormData): Promise<ActionResult> {
     };
   }
 
-  // Plan free: solo Hacker News
-  let platforms: Platform[] =
-    plan === "free"
-      ? selectedPlatforms.filter((p) => p === "hn")
-      : selectedPlatforms.filter((p) => ACTIVE_PLATFORMS.includes(p));
+  let platforms = filterPlatformsForPlan(
+    plan,
+    selectedPlatforms.filter((p) => ACTIVE_PLATFORMS.includes(p))
+  );
 
   if (platforms.length === 0) {
     platforms = ["hn"];
+  }
+
+  if (platforms.includes("twitter")) {
+    const { count: twitterKeywordCount } = await supabase
+      .from("keywords")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_active", true)
+      .contains("platforms", ["twitter"]);
+
+    const twitterLimit = checkTwitterKeywordLimit({
+      plan,
+      twitterKeywordCount: twitterKeywordCount ?? 0,
+    });
+
+    if (!twitterLimit.allowed) {
+      return {
+        success: false,
+        error: twitterLimit.message ?? "Límite de Twitter/X alcanzado",
+      };
+    }
   }
 
   const subreddits =

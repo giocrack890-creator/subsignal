@@ -19,9 +19,18 @@ export const PLAN_COMPARISON_ROWS: PlanComparisonRow[] = [
     values: { free: true, starter: true, growth: true, pro: true },
   },
   {
-    label: "Reddit, X e Indie Hackers",
-    hint: "A medida que se habiliten en el producto",
+    label: "Reddit e Indie Hackers",
     values: { free: false, starter: true, growth: true, pro: true },
+  },
+  {
+    label: "Twitter / X",
+    hint: "Starter: 1 keyword · Pro: ilimitado",
+    values: {
+      free: false,
+      starter: "1 keyword",
+      growth: true,
+      pro: true,
+    },
   },
   {
     label: "Alertas email / día",
