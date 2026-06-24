@@ -122,14 +122,16 @@ function LandingPlanCard({ plan }: { plan: MarketingPlan }) {
     >
       {isFeatured && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
-          Más popular
+          Más elegido
         </span>
       )}
 
       <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
       <div className="mt-3 flex items-baseline gap-1">
         <span className="text-3xl font-bold text-foreground">{plan.price}</span>
-        <span className="text-sm text-foreground-muted">/mes</span>
+        <span className="text-sm text-foreground-muted">
+          /{plan.priceSuffix ?? "mes"}
+        </span>
       </div>
       <p className="mt-2 text-sm text-foreground-secondary">{plan.description}</p>
 
@@ -173,7 +175,7 @@ function PagePlanCard({ plan }: { plan: MarketingPlan }) {
     >
       {isFeatured && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#34D399] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-black">
-          Más popular
+          Más elegido
         </span>
       )}
 

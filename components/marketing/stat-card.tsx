@@ -20,16 +20,16 @@ function Sparkline() {
     >
       <defs>
         <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(245,158,11,0.4)" />
-          <stop offset="100%" stopColor="rgba(245,158,11,0)" />
+          <stop offset="0%" stopColor="rgba(52,211,153,0.4)" />
+          <stop offset="100%" stopColor="rgba(52,211,153,0)" />
         </linearGradient>
       </defs>
       <path
         d="M0 48 C20 44, 30 20, 50 28 S80 52, 128 12"
-        stroke="#f59e0b"
+        stroke="#34D399"
         strokeWidth="2"
         fill="none"
-        style={{ filter: "drop-shadow(0 0 6px rgba(245,158,11,0.6))" }}
+        style={{ filter: "drop-shadow(0 0 6px rgba(52,211,153,0.6))" }}
       />
       <path
         d="M0 48 C20 44, 30 20, 50 28 S80 52, 128 12 V64 H0 Z"

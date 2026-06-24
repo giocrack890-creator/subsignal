@@ -19,8 +19,8 @@ const FAQ_ITEMS = [
     a: "Analizamos patrones del autor y del contenido (cuentas nuevas, lenguaje promocional coordinado, etc.) y marcamos señales de riesgo para que priorices conversaciones reales.",
   },
   {
-    q: "¿Qué plataformas están disponibles?",
-    a: "Hacker News está activo en el plan Free. Reddit desde Starter. Twitter/X e Indie Hackers en planes superiores.",
+    q: "¿Qué plataformas están disponibles hoy?",
+    a: "Hacker News está activo y monitoreando en tiempo real. Reddit y Twitter/X están en desarrollo — los estamos integrando y avisamos por email cuando estén listos. Indie Hackers está en evaluación.",
   },
   {
     q: "¿Necesito tarjeta de crédito para empezar?",

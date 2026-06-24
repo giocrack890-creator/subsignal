@@ -13,16 +13,16 @@ import {
 } from "recharts";
 import type { AnalyticsData } from "@/lib/analytics/queries";
 
-const CHART_GREEN = "#22C55E";
+const CHART_GREEN = "#34D399";
 const CHART_GREEN_DIM = "#27272A";
 const GRID_COLOR = "rgba(255,255,255,0.06)";
 
 const tooltipStyle = {
   background: "#1a1a1a",
-  border: "1px solid rgba(34, 197, 94, 0.35)",
+  border: "1px solid rgba(52, 211, 153, 0.35)",
   borderRadius: "10px",
   color: "#fafafa",
-  boxShadow: "0 0 16px rgba(34, 197, 94, 0.15)",
+  boxShadow: "0 0 16px rgba(52, 211, 153, 0.15)",
 };
 
 interface AnalyticsChartsProps {

@@ -10,6 +10,7 @@ export interface MarketingPlan {
   id: string;
   name: string;
   price: string;
+  priceSuffix?: string;
   description: string;
   cta: { label: string; href: string; variant: "ghost" | "accent" };
   featured?: boolean;

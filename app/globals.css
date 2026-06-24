@@ -15,28 +15,28 @@
 
   --card: #18181b;
   --card-foreground: #fafafa;
-  --card-border: rgba(34, 197, 94, 0.12);
+  --card-border: rgba(52, 211, 153, 0.12);
   --muted: #27272a;
   --muted-foreground: #71717a;
 
   --border: #27272a;
   --border-strong: #3f3f46;
-  --border-glow: rgba(34, 197, 94, 0.4);
+  --border-glow: rgba(52, 211, 153, 0.4);
 
-  --primary: #22c55e;
-  --primary-dark: #14532d;
+  --primary: #34d399;
+  --primary-dark: #065f46;
   --primary-foreground: #09090b;
-  --primary-glow: rgba(34, 197, 94, 0.25);
-  --primary-muted-bg: rgba(34, 197, 94, 0.12);
+  --primary-glow: rgba(52, 211, 153, 0.25);
+  --primary-muted-bg: rgba(52, 211, 153, 0.1);
 
-  --accent: #22c55e;
-  --success: #22c55e;
+  --accent: #34d399;
+  --success: #34d399;
   --warning: #fbbf24;
   --destructive: #f87171;
-  --chart: #f59e0b;
+  --chart: #34d399;
 
-  --platform-hn: #ff6600;
-  --platform-reddit: #ff4500;
+  --platform-hn: #34d399;
+  --platform-reddit: #34d399;
   --platform-twitter: #1da1f2;
   --platform-ih: #6366f1;
 
@@ -121,20 +121,20 @@ body {
 .text-glow {
   text-shadow:
     0 0 24px var(--primary-glow),
-    0 0 64px rgba(34, 197, 94, 0.18);
+    0 0 64px rgba(52, 211, 153, 0.18);
 }
 
 .fx-grid {
   background-image:
-    linear-gradient(rgba(34, 197, 94, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 197, 94, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(52, 211, 153, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 211, 153, 0.07) 1px, transparent 1px);
   background-size: 52px 52px;
 }
 
 .fx-radial-glow {
   background:
-    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(34, 197, 94, 0.1) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(20, 83, 45, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(52, 211, 153, 0.1) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(6, 95, 70, 0.35) 0%, transparent 60%),
     var(--background);
 }
 
@@ -158,7 +158,7 @@ body {
 .landing-card:hover {
   background: var(--background-card-hover);
   border-color: var(--border-glow);
-  box-shadow: 0 0 32px rgba(34, 197, 94, 0.08);
+  box-shadow: 0 0 32px rgba(52, 211, 153, 0.08);
 }
 
 .bento-card {
@@ -172,7 +172,7 @@ body {
 .bento-card:hover {
   border-color: var(--border-glow);
   background: var(--background-card-hover);
-  box-shadow: 0 0 28px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 28px rgba(52, 211, 153, 0.1);
 }
 
 .dash-card {
@@ -195,7 +195,7 @@ body {
 
 .border-glow-card {
   border: 1px solid var(--border-glow);
-  box-shadow: 0 0 40px rgba(34, 197, 94, 0.12);
+  box-shadow: 0 0 40px rgba(52, 211, 153, 0.12);
 }
 
 .feature-pill {
@@ -206,7 +206,7 @@ body {
 
 .pricing-highlight {
   border-color: var(--border-glow);
-  box-shadow: 0 0 48px rgba(34, 197, 94, 0.15);
+  box-shadow: 0 0 48px rgba(52, 211, 153, 0.15);
 }
 
 .container-marketing {
@@ -232,8 +232,8 @@ body {
 }
 
 @keyframes fx-particle {
-  0%, 100% { opacity: 0.35; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
-  50% { opacity: 0.7; box-shadow: 0 0 18px rgba(34, 197, 94, 0.8); }
+  0%, 100% { opacity: 0.35; box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 18px rgba(52, 211, 153, 0.8); }
 }
 
 .fx-float {
@@ -254,6 +254,6 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--background); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(34, 197, 94, 0.25);
+  background: rgba(52, 211, 153, 0.25);
   border-radius: 3px;
 }
