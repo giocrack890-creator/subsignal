@@ -26,7 +26,7 @@ export function GenerateDraftButton({
   if (hasDraft) {
     return (
       <Link href={`/drafts?signal=${signalId}`}>
-        <Button variant="accent" size="sm" type="button">
+        <Button variant="accent" size="sm" type="button" className="dash-btn-neon">
           Ver borrador
         </Button>
       </Link>
@@ -68,7 +68,7 @@ export function GenerateDraftButton({
         type="button"
         disabled={isPending}
         onClick={handleGenerate}
-        className="gap-1.5"
+        className="gap-1.5 dash-btn-neon"
       >
         {isPending ? (
           <>

@@ -3,33 +3,33 @@
 /* ─── SubSignal design tokens ─── */
 
 :root {
-  --background: #0a0a0a;
-  --background-elevated: #111714;
-  --background-card: #111714;
-  --background-card-hover: #151d19;
+  --background: #0d0d0d;
+  --background-elevated: #111111;
+  --background-card: #1a1a1a;
+  --background-card-hover: #222222;
 
-  --foreground: #ffffff;
-  --foreground-secondary: #b4b4b4;
-  --foreground-muted: #6b6b6b;
+  --foreground: #fafafa;
+  --foreground-secondary: #a1a1aa;
+  --foreground-muted: #71717a;
 
-  --card: #111714;
-  --card-foreground: #ffffff;
-  --card-border: rgba(52, 211, 153, 0.12);
-  --muted: #151d19;
-  --muted-foreground: #6b6b6b;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --card-border: rgba(34, 197, 94, 0.12);
+  --muted: #27272a;
+  --muted-foreground: #71717a;
 
-  --border: #232323;
-  --border-strong: rgba(255, 255, 255, 0.18);
-  --border-glow: rgba(52, 211, 153, 0.4);
+  --border: #27272a;
+  --border-strong: #3f3f46;
+  --border-glow: rgba(34, 197, 94, 0.4);
 
-  --primary: #34d399;
-  --primary-dark: #1a3328;
-  --primary-foreground: #0a0a0a;
-  --primary-glow: rgba(52, 211, 153, 0.25);
-  --primary-muted-bg: #1a3328;
+  --primary: #22c55e;
+  --primary-dark: #14532d;
+  --primary-foreground: #09090b;
+  --primary-glow: rgba(34, 197, 94, 0.25);
+  --primary-muted-bg: rgba(34, 197, 94, 0.12);
 
-  --accent: #34d399;
-  --success: #34d399;
+  --accent: #22c55e;
+  --success: #22c55e;
   --warning: #fbbf24;
   --destructive: #f87171;
   --chart: #f59e0b;
@@ -119,20 +119,20 @@ body {
 .text-glow {
   text-shadow:
     0 0 24px var(--primary-glow),
-    0 0 64px rgba(52, 211, 153, 0.18);
+    0 0 64px rgba(34, 197, 94, 0.18);
 }
 
 .fx-grid {
   background-image:
-    linear-gradient(rgba(52, 211, 153, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(52, 211, 153, 0.09) 1px, transparent 1px);
+    linear-gradient(rgba(34, 197, 94, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.07) 1px, transparent 1px);
   background-size: 52px 52px;
 }
 
 .fx-radial-glow {
   background:
-    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(52, 211, 153, 0.12) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(26, 51, 40, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(34, 197, 94, 0.1) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(20, 83, 45, 0.35) 0%, transparent 60%),
     var(--background);
 }
 
@@ -156,12 +156,13 @@ body {
 .landing-card:hover {
   background: var(--background-card-hover);
   border-color: var(--border-glow);
-  box-shadow: 0 0 32px rgba(52, 211, 153, 0.08);
+  box-shadow: 0 0 32px rgba(34, 197, 94, 0.08);
 }
 
 .bento-card {
   background: var(--background-card);
   border: 1px solid var(--border);
+  border-radius: 14px;
   backdrop-filter: blur(12px);
   transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
 }
@@ -169,7 +170,19 @@ body {
 .bento-card:hover {
   border-color: var(--border-glow);
   background: var(--background-card-hover);
-  box-shadow: 0 0 28px rgba(52, 211, 153, 0.1);
+  box-shadow: 0 0 28px rgba(34, 197, 94, 0.1);
+}
+
+.dash-card {
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.dash-card:hover {
+  background: var(--background-card-hover);
+  border-color: var(--border-strong);
 }
 
 .glass-card {
@@ -180,7 +193,7 @@ body {
 
 .border-glow-card {
   border: 1px solid var(--border-glow);
-  box-shadow: 0 0 40px rgba(52, 211, 153, 0.12);
+  box-shadow: 0 0 40px rgba(34, 197, 94, 0.12);
 }
 
 .feature-pill {
@@ -191,7 +204,7 @@ body {
 
 .pricing-highlight {
   border-color: var(--border-glow);
-  box-shadow: 0 0 48px rgba(52, 211, 153, 0.15);
+  box-shadow: 0 0 48px rgba(34, 197, 94, 0.15);
 }
 
 .container-marketing {
@@ -217,8 +230,8 @@ body {
 }
 
 @keyframes fx-particle {
-  0%, 100% { opacity: 0.35; box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
-  50% { opacity: 0.7; box-shadow: 0 0 18px rgba(52, 211, 153, 0.8); }
+  0%, 100% { opacity: 0.35; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 18px rgba(34, 197, 94, 0.8); }
 }
 
 .fx-float {
@@ -239,6 +252,6 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--background); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(52, 211, 153, 0.25);
+  background: rgba(34, 197, 94, 0.25);
   border-radius: 3px;
 }

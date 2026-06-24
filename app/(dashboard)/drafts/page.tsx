@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { DraftsList } from "@/components/drafts/drafts-list";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { createClient } from "@/lib/supabase/server";
 import type { Signal } from "@/types";
@@ -32,7 +33,7 @@ export default async function DraftsPage({ searchParams }: DraftsPageProps) {
   if (error) {
     return (
       <div className="p-6 lg:p-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Borradores</h1>
+        <PageHeader title="Borradores" />
         <ErrorMessage
           className="mt-8"
           title="No pudimos cargar borradores"
@@ -59,11 +60,11 @@ export default async function DraftsPage({ searchParams }: DraftsPageProps) {
 
   return (
     <div className="p-6 lg:p-8">
-      <h1 className="text-2xl font-bold tracking-tight text-foreground">Borradores</h1>
-      <p className="mt-1 text-sm text-foreground-secondary">
-        Editá, copiá y publicá tus respuestas a señales de alta intención.
-      </p>
-      <div className="mt-8 max-w-3xl">
+      <PageHeader
+        title="Borradores"
+        description="Editá, copiá y publicá tus respuestas a señales de alta intención."
+      />
+      <div className="mt-8 max-w-4xl">
         <DraftsList signals={signals} highlightId={highlightId} />
       </div>
     </div>

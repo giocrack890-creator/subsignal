@@ -7,7 +7,6 @@ import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import { Search } from "lucide-react";
 import type { Keyword, Plan, Platform } from "@/types";
 
 interface KeywordsListProps {
@@ -22,9 +21,9 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
   if (keywords.length === 0) {
     return (
       <EmptyState
-        icon={Search}
+        variant="radar"
         title="No tenés keywords todavía"
-        description="Agregá tu primera keyword arriba para empezar a monitorear conversaciones en Hacker News."
+        description="Tocá «Agregar keyword» para empezar a monitorear conversaciones en Hacker News."
       />
     );
   }
@@ -53,38 +52,48 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {actionError && (
         <p className="rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {actionError}
         </p>
       )}
 
-      <ul className="space-y-3">
+      <ul className="grid gap-3 sm:grid-cols-2">
         {keywords.map((kw) => (
           <li
             key={kw.id}
-            className={`landing-card rounded-2xl p-5 transition-opacity ${isPending ? "opacity-70" : ""} ${!kw.is_active ? "opacity-80" : ""}`}
+            className={`dash-card p-5 transition-opacity ${isPending ? "opacity-70" : ""} ${!kw.is_active ? "opacity-75" : ""}`}
           >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex h-full flex-col gap-4">
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-start justify-between gap-2">
                   <h3
-                    className={`text-base font-semibold ${kw.is_active ? "text-foreground" : "text-foreground-secondary"}`}
+                    className={`text-lg font-black tracking-tight ${kw.is_active ? "text-foreground" : "text-foreground-secondary"}`}
                   >
                     {kw.term}
                   </h3>
                   {!kw.is_active && (
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-foreground-muted">
-                      Pausada
-                    </span>
+                    <span className="dash-chip uppercase">Pausada</span>
                   )}
                 </div>
-                <div className="mt-2 flex flex-wrap gap-1.5">
+
+                <div className="mt-3 flex flex-wrap gap-1.5">
                   {kw.platforms.map((p) => (
                     <PlatformBadge key={p} platform={p as Platform} />
                   ))}
                 </div>
+
+                {kw.subreddits.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {kw.subreddits.map((sub) => (
+                      <span key={sub} className="dash-neon-tag">
+                        r/{sub}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 {plan === "free" && kw.platforms.length === 1 && kw.platforms[0] === "hn" && (
                   <p className="mt-2 text-xs text-foreground-muted">
                     Monitoreo HN · escaneo diario
@@ -92,7 +101,7 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
                 )}
               </div>
 
-              <div className="flex shrink-0 items-center gap-4">
+              <div className="flex items-center justify-between gap-3 border-t border-white/5 pt-4">
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={kw.is_active}
@@ -114,7 +123,6 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
                   aria-label={`Eliminar keyword ${kw.term}`}
                 >
                   <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Eliminar</span>
                 </Button>
               </div>
             </div>

@@ -54,10 +54,8 @@ export function FilterBar({
             role="tab"
             aria-selected={active}
             className={cn(
-              "cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200",
-              active
-                ? "border border-primary/30 bg-primary-muted-bg text-primary"
-                : "border border-border bg-background-card text-foreground-secondary hover:border-border-glow hover:text-foreground"
+              "dash-pill cursor-pointer",
+              active && "dash-pill-active"
             )}
           >
             {tab.label}

@@ -79,7 +79,8 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("dash-toolbar-sticky", className)}>
+      <div className="space-y-4">
       <form
         onSubmit={handleSearch}
         className="flex flex-col gap-3 sm:flex-row sm:items-center"
@@ -94,7 +95,7 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
             type="search"
             defaultValue={current.q}
             placeholder="Buscar en título o contenido…"
-            className="h-10 w-full rounded-full border border-border bg-background-card pl-10 pr-4 text-sm text-foreground placeholder:text-foreground-muted focus:border-border-glow focus:outline-none"
+            className="h-10 w-full rounded-[10px] border border-border bg-background-card pl-10 pr-4 text-sm text-foreground placeholder:text-foreground-muted focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -103,14 +104,14 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
             value={current.sort}
             onChange={handleSortChange}
             aria-label="Ordenar señales"
-            className="h-10 cursor-pointer rounded-full border border-border bg-background-card px-4 text-sm text-foreground-secondary focus:border-border-glow focus:outline-none"
+            className="h-10 cursor-pointer rounded-[10px] border border-border bg-background-card px-4 text-sm text-foreground-secondary focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20"
           >
             <option value="date">Más recientes</option>
             <option value="score">Mayor score</option>
           </select>
           <button
             type="submit"
-            className="h-10 cursor-pointer rounded-full border border-border-strong bg-background-card px-4 text-sm font-medium text-foreground transition-colors hover:border-border-glow"
+            className="h-10 cursor-pointer rounded-[10px] border border-border-strong bg-background-card px-4 text-sm font-semibold text-foreground transition-colors hover:border-primary/30"
           >
             Buscar
           </button>
@@ -126,10 +127,8 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
             key={opt.value}
             href={pillHref({ status: opt.value === "all" ? undefined : opt.value })}
             className={cn(
-              "cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors",
-              current.status === opt.value
-                ? "border border-primary/30 bg-primary-muted-bg text-primary"
-                : "border border-border bg-background-card text-foreground-secondary hover:text-foreground"
+              "dash-pill cursor-pointer !px-3 !py-1 !text-xs",
+              current.status === opt.value && "dash-pill-active"
             )}
           >
             {opt.label}
@@ -157,10 +156,8 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
                 platform: opt.value === "all" ? undefined : opt.value,
               })}
               className={cn(
-                "cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                current.platform === opt.value
-                  ? "border border-primary/30 bg-primary-muted-bg text-primary"
-                  : "border border-border bg-background-card text-foreground-secondary hover:text-foreground"
+                "dash-pill cursor-pointer !px-3 !py-1 !text-xs",
+                current.platform === opt.value && "dash-pill-active"
               )}
             >
               {opt.label}
@@ -180,15 +177,14 @@ export function SignalsToolbar({ className }: SignalsToolbarProps) {
               minScore: opt.value === "all" ? undefined : opt.value,
             })}
             className={cn(
-              "cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors",
-              current.minScore === opt.value
-                ? "border border-primary/30 bg-primary-muted-bg text-primary"
-                : "border border-border bg-background-card text-foreground-secondary hover:text-foreground"
+              "dash-pill cursor-pointer !px-3 !py-1 !text-xs",
+              current.minScore === opt.value && "dash-pill-active"
             )}
           >
             {opt.label}
           </Link>
         ))}
+      </div>
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { BarChart3 } from "lucide-react";
 import { AnalyticsCharts } from "@/components/analytics/analytics-charts";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { PageHeader } from "@/components/dashboard/page-header";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { fetchAnalytics } from "@/lib/analytics/queries";
 import { createClient } from "@/lib/supabase/server";
@@ -21,7 +23,7 @@ export default async function AnalyticsPage() {
   if (analyticsError || !data) {
     return (
       <div className="p-6 lg:p-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics</h1>
+        <PageHeader title="Analytics" />
         <ErrorMessage
           className="mt-8"
           title="No pudimos cargar analytics"
@@ -33,35 +35,21 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics</h1>
-      <p className="mt-1 text-sm text-foreground-secondary">
-        Métricas de señales, respuestas y keywords de los últimos 30 días.
-      </p>
+      <PageHeader
+        title="Analytics"
+        description="Métricas de señales, respuestas y keywords de los últimos 30 días."
+      />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <div className="bento-card rounded-2xl p-5">
-          <p className="text-3xl font-bold text-foreground">{data.totalSignals}</p>
-          <p className="mt-1 text-xs uppercase tracking-wider text-foreground-muted">
-            Total señales
-          </p>
-        </div>
-        <div className="bento-card rounded-2xl p-5">
-          <p className="text-3xl font-bold text-primary">{data.repliedCount}</p>
-          <p className="mt-1 text-xs uppercase tracking-wider text-foreground-muted">
-            Respondidas
-          </p>
-        </div>
-        <div className="bento-card rounded-2xl p-5">
-          <p className="text-3xl font-bold text-foreground">{data.responseRate}%</p>
-          <p className="mt-1 text-xs uppercase tracking-wider text-foreground-muted">
-            Tasa de respuesta
-          </p>
-        </div>
+      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+        <StatCard value={data.totalSignals} label="Total señales" />
+        <StatCard value={data.repliedCount} label="Respondidas" accent />
+        <StatCard value={`${data.responseRate}%`} label="Tasa de respuesta" />
       </div>
 
       {!data.hasEnoughData ? (
         <EmptyState
           className="mt-8"
+          variant="chart"
           icon={BarChart3}
           title="Todavía no hay suficientes datos"
           description="Vas a ver tus estadísticas acá cuando tengas más actividad. Necesitamos al menos unas pocas señales para graficar tendencias con sentido."

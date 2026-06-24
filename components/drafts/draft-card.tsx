@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, Copy, ExternalLink } from "lucide-react";
+import { Check, ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { markSignalReplied, saveDraftReply } from "@/lib/actions/signals";
+import { ScoreBadge } from "@/components/dashboard/score-badge";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,16 +17,21 @@ interface DraftCardProps {
   highlighted?: boolean;
 }
 
+const MAX_CHARS = 2000;
+
 export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
   const [draft, setDraft] = useState(signal.draft_reply ?? "");
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [postCollapsed, setPostCollapsed] = useState(false);
   const [replyUrl, setReplyUrl] = useState(signal.reply_url ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const isReplied = signal.status === "replied";
+  const score = signal.intent_score ?? 0;
+  const charCount = draft.length;
 
   function handleSave() {
     setError(null);
@@ -67,76 +73,104 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
   return (
     <article
       id={`draft-${signal.id}`}
-      className={`landing-card rounded-2xl overflow-hidden ${highlighted ? "border-glow-card" : ""} ${isPending ? "opacity-70" : ""}`}
+      className={`dash-card overflow-hidden ${highlighted ? "border-glow-card" : ""} ${isPending ? "opacity-70" : ""}`}
     >
-      {/* Contexto del post */}
-      <div className="border-b border-border bg-background-elevated/50 px-5 py-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <PlatformBadge platform={signal.platform as Platform} />
-          {signal.intent_score != null && (
-            <span className="rounded-md bg-primary-muted-bg px-2 py-0.5 text-xs font-bold text-primary">
-              {signal.intent_score}/10
+      <div className="dash-draft-split">
+        {/* Post original — izquierda */}
+        <div className="border-b border-border lg:border-b-0 lg:border-r">
+          <button
+            type="button"
+            onClick={() => setPostCollapsed((v) => !v)}
+            className="flex w-full cursor-pointer items-center justify-between gap-2 border-b border-white/5 bg-background-elevated/40 px-5 py-3 text-left lg:hidden"
+          >
+            <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+              Post original
             </span>
-          )}
-          <span className="text-xs text-foreground-muted">
-            {formatRelativeTime(signal.found_at)}
-          </span>
-          {isReplied && (
-            <span className="rounded-full bg-primary-muted-bg px-2 py-0.5 text-[10px] font-medium text-primary">
-              Publicado
-            </span>
-          )}
+            <ChevronDown
+              className={`h-4 w-4 text-foreground-muted transition-transform ${postCollapsed ? "" : "rotate-180"}`}
+            />
+          </button>
+          <div className={`px-5 py-4 ${postCollapsed ? "hidden lg:block" : ""}`}>
+            <p className="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-foreground-muted lg:block">
+              Post original
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <PlatformBadge platform={signal.platform as Platform} />
+              {signal.intent_score != null && <ScoreBadge score={score} size="sm" />}
+              <span className="text-xs text-foreground-muted">
+                {formatRelativeTime(signal.found_at)}
+              </span>
+              {isReplied && <span className="dash-neon-tag">Publicado</span>}
+            </div>
+            <h3 className="mt-3 text-sm font-bold text-foreground line-clamp-3">
+              {signal.title ?? "Sin título"}
+            </h3>
+            {(signal.body || signal.intent_reason) && (
+              <p className="mt-2 text-xs leading-relaxed text-foreground-muted line-clamp-4">
+                {truncate(signal.body ?? signal.intent_reason ?? "", 280)}
+              </p>
+            )}
+            <Link
+              href={signal.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            >
+              Ver post original
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
-        <h3 className="mt-2 text-sm font-semibold text-foreground-secondary line-clamp-2">
-          {signal.title ?? "Sin título"}
-        </h3>
-        {(signal.body || signal.intent_reason) && (
-          <p className="mt-1 text-xs leading-relaxed text-foreground-muted line-clamp-2">
-            {truncate(signal.body ?? signal.intent_reason ?? "", 160)}
-          </p>
-        )}
-        <Link
-          href={signal.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-        >
-          Ver post original
-          <ExternalLink className="h-3 w-3" aria-hidden="true" />
-        </Link>
+
+        {/* Editor — derecha */}
+        <div className="flex flex-col">
+          <div className="border-b border-white/5 px-5 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+              Tu borrador
+            </p>
+          </div>
+          <div className="flex-1 px-5 py-4">
+            <Textarea
+              id={`draft-${signal.id}-textarea`}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value.slice(0, MAX_CHARS))}
+              onBlur={handleSave}
+              rows={8}
+              className="min-h-[160px] border-white/10 bg-background-card-hover focus:border-primary/50 focus:ring-primary/20"
+              placeholder="Editá tu respuesta antes de publicar…"
+            />
+            <div className="mt-2 flex items-center justify-between text-xs text-foreground-muted">
+              <span>{charCount} / {MAX_CHARS} caracteres</span>
+              {error && <span className="text-destructive">{error}</span>}
+            </div>
+
+            {draft.trim() && signal.platform === "hn" && (
+              <div className="mt-4">
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-foreground-muted">
+                  Preview HN
+                </p>
+                <div className="dash-hn-preview">
+                  <strong>{signal.author ?? "usuario"}</strong>
+                  <span className="text-foreground-muted"> · hace un momento</span>
+                  <p className="mt-2 text-foreground-secondary whitespace-pre-wrap">
+                    {draft}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Borrador editable */}
-      <div className="px-5 py-4">
-        <label
-          htmlFor={`draft-${signal.id}-textarea`}
-          className="mb-2 block text-xs font-medium uppercase tracking-wider text-foreground-muted"
-        >
-          Tu borrador
-        </label>
-        <Textarea
-          id={`draft-${signal.id}-textarea`}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={handleSave}
-          rows={6}
-          className="bg-background-card-hover"
-          placeholder="Editá tu respuesta antes de publicar…"
-        />
-        {error && (
-          <p className="mt-2 text-xs text-destructive">{error}</p>
-        )}
-      </div>
-
-      {/* Acciones */}
-      <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-4">
+      {/* Toolbar fija */}
+      <div className="flex flex-wrap items-center gap-2 border-t border-border bg-background-elevated/30 px-5 py-3">
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={handleCopy}
           disabled={!draft.trim()}
-          className="gap-1.5"
+          className="gap-1.5 border-white/10"
         >
           {copied ? (
             <>
@@ -157,7 +191,7 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
           onClick={handleSave}
           disabled={isPending}
         >
-          {saved ? "Guardado" : "Guardar cambios"}
+          {saved ? "Guardado" : "Guardar"}
         </Button>
         {!isReplied && (
           <Button
@@ -165,8 +199,9 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
             variant="accent"
             size="sm"
             onClick={() => setShowReplyForm(!showReplyForm)}
+            className="dash-btn-neon"
           >
-            Marcar como publicado
+            Marcar publicado
           </Button>
         )}
         {isReplied && signal.reply_url && (
@@ -176,7 +211,7 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
             rel="noopener noreferrer"
             className="ml-auto text-xs text-foreground-muted hover:text-primary"
           >
-            Ver respuesta publicada →
+            Ver respuesta →
           </Link>
         )}
       </div>
@@ -184,7 +219,7 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
       {showReplyForm && !isReplied && (
         <form
           onSubmit={handleMarkReplied}
-          className="border-t border-border bg-background-elevated/30 px-5 py-4"
+          className="border-t border-border bg-background-elevated/20 px-5 py-4"
         >
           <label
             htmlFor={`reply-url-${signal.id}`}
@@ -199,7 +234,7 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
               onChange={(e) => setReplyUrl(e.target.value)}
               placeholder="https://news.ycombinator.com/item?id=..."
               required
-              className="flex-1"
+              className="flex-1 border-white/10"
             />
             <Button type="submit" variant="primary" size="sm" disabled={isPending}>
               Confirmar

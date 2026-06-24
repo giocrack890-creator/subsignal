@@ -1,6 +1,6 @@
 export function SignalCardSkeleton() {
   return (
-    <div className="animate-pulse rounded-2xl border border-border bg-background-card p-5">
+    <div className="animate-pulse rounded-[14px] border border-border bg-background-card p-5">
       <div className="flex justify-between gap-4">
         <div className="h-5 w-16 rounded-full bg-white/10" />
         <div className="h-4 w-20 rounded bg-white/10" />
@@ -79,7 +79,7 @@ export function KeywordsPageSkeleton() {
       <PageHeaderSkeleton />
       <div className="mt-10 animate-pulse space-y-4">
         <div className="h-5 w-36 rounded bg-white/10" />
-        <div className="landing-card h-48 rounded-2xl bg-white/5" />
+        <div className="dash-card h-48 bg-white/5" />
         <div className="h-5 w-28 rounded bg-white/10" />
         <div className="space-y-3">
           {Array.from({ length: 2 }).map((_, i) => (

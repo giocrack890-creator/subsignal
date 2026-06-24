@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Filter } from "lucide-react";
 import { SignalCard } from "@/components/dashboard/signal-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { SignalsToolbar } from "@/components/dashboard/signals-toolbar";
 import { LoadMoreSignals } from "@/components/dashboard/load-more-signals";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
@@ -54,7 +54,7 @@ async function SignalsContent({
         <SignalsToolbar className="mt-8" />
         <EmptyState
           className="mt-6"
-          icon={Filter}
+          variant="radar"
           title="No hay señales que coincidan"
           description="Probá con otros filtros o limpiá la búsqueda para ver todo tu historial."
           action={{ label: "Limpiar filtros", href: "/signals" }}
@@ -69,7 +69,7 @@ async function SignalsContent({
         <SignalsToolbar className="mt-8" />
         <EmptyState
           className="mt-6"
-          icon={Filter}
+          variant="radar"
           title="Todavía no hay señales"
           description="Cuando el monitor detecte conversaciones con intención de compra, van a aparecer acá con todo el historial."
         />
@@ -80,9 +80,9 @@ async function SignalsContent({
   return (
     <>
       <SignalsToolbar className="mt-8" />
-      <ul className="mt-6 space-y-3">
+      <ul className="dash-timeline mt-6 space-y-4">
         {signals.map((signal) => (
-          <li key={signal.id}>
+          <li key={signal.id} className="dash-timeline-item">
             <SignalCard signal={signal} />
           </li>
         ))}
@@ -113,20 +113,16 @@ export default async function SignalsPage({ searchParams }: SignalsPageProps) {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Señales
-          </h1>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            Historial completo de conversaciones detectadas
+      <PageHeader
+        title="Señales"
+        description="Historial completo de conversaciones detectadas"
+        aside={
+          <p className="text-sm text-foreground-muted">
+            <span className="font-bold text-foreground">{totalCount ?? 0}</span> en
+            total
           </p>
-        </div>
-        <p className="text-sm text-foreground-muted">
-          <span className="font-semibold text-foreground">{totalCount ?? 0}</span> en
-          total
-        </p>
-      </div>
+        }
+      />
 
       <Suspense fallback={<DashboardFeedSkeleton />}>
         <SignalsContent userId={user.id} params={params} />

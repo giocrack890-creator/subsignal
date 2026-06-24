@@ -3,6 +3,13 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  Bell,
+  CreditCard,
+  HelpCircle,
+  ShieldAlert,
+  User,
+} from "lucide-react";
 import { deleteAccount, updateSettings } from "@/lib/actions/settings";
 import { RestartTourButton } from "@/components/settings/restart-tour-button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
@@ -19,6 +26,28 @@ interface SettingsFormProps {
   email: string;
   userId: string;
   avatarUrl?: string | null;
+}
+
+function SectionHeader({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="dash-settings-section">
+      <div className="dash-settings-icon">
+        <Icon className="h-4 w-4" aria-hidden="true" />
+      </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight text-foreground">{title}</h2>
+        <p className="mt-0.5 text-sm text-foreground-secondary">{description}</p>
+      </div>
+    </div>
+  );
 }
 
 export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsFormProps) {
@@ -64,14 +93,14 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
   }
 
   return (
-    <div className="space-y-8">
-      <form action={handleSubmit} className="space-y-8">
-        {/* Perfil */}
-        <section className="landing-card rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-foreground">Perfil</h2>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            Información de tu cuenta de Google.
-          </p>
+    <div className="space-y-6">
+      <form action={handleSubmit} className="space-y-6">
+        <section className="dash-card p-6">
+          <SectionHeader
+            icon={User}
+            title="Perfil"
+            description="Información de tu cuenta de Google."
+          />
           <div className="mt-6 space-y-4">
             <div className="flex items-center gap-4">
               {avatarUrl ? (
@@ -79,7 +108,7 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
                 <img
                   src={avatarUrl}
                   alt=""
-                  className="h-12 w-12 rounded-full border border-border object-cover"
+                  className="h-12 w-12 rounded-full border border-white/10 object-cover"
                 />
               ) : (
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-muted-bg text-sm font-bold text-primary">
@@ -98,23 +127,24 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
                 name="full_name"
                 defaultValue={profile.full_name ?? ""}
                 placeholder="Tu nombre"
+                className="border-white/10"
               />
             </div>
           </div>
         </section>
 
-        {/* Notificaciones */}
-        <section className="landing-card rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-foreground">Notificaciones</h2>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            Controlá cuándo y cómo te avisamos de nuevas señales.
-          </p>
+        <section className="dash-card p-6">
+          <SectionHeader
+            icon={Bell}
+            title="Notificaciones"
+            description="Controlá cuándo y cómo te avisamos de nuevas señales."
+          />
           <div className="mt-6 space-y-5">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-foreground">Alertas por email</p>
                 <p className="text-xs text-foreground-muted">
-                  Recibí un email cuando aparezca una señal de alta intención.
+                  Email cuando aparezca una señal de alta intención.
                 </p>
               </div>
               <Switch
@@ -124,11 +154,11 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
               />
             </div>
 
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-foreground">Alertas por Slack</p>
                 <p className="text-xs text-foreground-muted">
-                  Enviar notificaciones a tu webhook de Slack.
+                  Notificaciones a tu webhook de Slack.
                 </p>
               </div>
               <Switch
@@ -147,6 +177,7 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
                   type="url"
                   defaultValue={profile.slack_webhook_url ?? ""}
                   placeholder="https://hooks.slack.com/services/..."
+                  className="border-white/10"
                 />
               </div>
             )}
@@ -160,9 +191,10 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
                 min={1}
                 max={10}
                 defaultValue={profile.min_intent_score}
+                className="border-white/10"
               />
               <p className="mt-1.5 text-xs text-foreground-muted">
-                Solo recibir alertas de señales con score mayor o igual a este valor (1–10).
+                Solo alertas con score ≥ este valor (1–10).
               </p>
             </div>
           </div>
@@ -175,17 +207,20 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
             variant="accent"
             size="md"
             disabled={isPending}
-            className="mt-6"
+            className="mt-6 dash-btn-neon"
           >
             {isPending ? "Guardando…" : "Guardar cambios"}
           </Button>
         </section>
       </form>
 
-      {/* Plan — fuera del form */}
-      <section className="landing-card rounded-2xl p-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-lg font-semibold text-foreground">Plan actual</h2>
+      <section className="dash-card p-6">
+        <SectionHeader
+          icon={CreditCard}
+          title="Plan actual"
+          description="Tu suscripción y límites del plan."
+        />
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <PlanBadge plan={plan} />
         </div>
         <ul className="mt-4 space-y-2 text-sm text-foreground-secondary">
@@ -210,30 +245,30 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
               : "Sin conversion tracking"}
           </li>
         </ul>
-        <Link href="/pricing" className="mt-4 inline-block cursor-pointer">
-          <Button variant="outline" size="sm">
-            Ver planes
+        <Link href="/pricing" className="mt-5 inline-block cursor-pointer">
+          <Button variant="accent" size="sm" className="dash-btn-neon">
+            Upgrade plan
           </Button>
         </Link>
       </section>
 
-      {/* Ayuda */}
-      <section className="landing-card rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-foreground">Ayuda</h2>
-        <p className="mt-1 text-sm text-foreground-secondary">
-          Volvé a recorrer el producto si querés refrescar cómo funciona cada sección.
-        </p>
+      <section className="dash-card p-6">
+        <SectionHeader
+          icon={HelpCircle}
+          title="Ayuda"
+          description="Recorré el producto de nuevo si querés refrescar."
+        />
         <div className="mt-4">
           <RestartTourButton userId={userId} />
         </div>
       </section>
 
-      {/* Cuenta */}
-      <section className="landing-card rounded-2xl border-destructive/20 p-6">
-        <h2 className="text-lg font-semibold text-foreground">Cuenta</h2>
-        <p className="mt-1 text-sm text-foreground-secondary">
-          Cerrá sesión o eliminá tu cuenta y todos tus datos.
-        </p>
+      <section className="dash-card dash-danger-zone p-6">
+        <SectionHeader
+          icon={ShieldAlert}
+          title="Zona de peligro"
+          description="Cerrá sesión o eliminá tu cuenta permanentemente."
+        />
         <div className="mt-6 flex flex-wrap gap-3">
           <SignOutButton />
           <Button

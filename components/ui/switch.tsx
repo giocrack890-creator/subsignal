@@ -27,7 +27,7 @@ export function Switch({
       className={cn(
         "relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
-        checked ? "bg-primary" : "bg-white/10",
+        checked ? "bg-primary dash-switch-on" : "bg-white/10",
         disabled && "cursor-not-allowed opacity-50"
       )}
     >
