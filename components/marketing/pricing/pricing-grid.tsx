@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Check, X } from "lucide-react";
-import { CheckoutButton } from "@/components/billing/checkout-button";
 import { FadeIn } from "@/components/marketing/landing/motion";
 import { Button } from "@/components/ui/button";
 import { PLAN_CATALOG, PLAN_ORDER } from "@/lib/payments/plans";
@@ -86,14 +85,17 @@ function PlanCard({
             </span>
           </Link>
         ) : (
-          <CheckoutButton
-            plan={planId}
-            variant={isFeatured ? "accent" : "outline"}
-            size="md"
-            className={`mt-8 w-full ${isFeatured ? "!bg-[#22C55E] !text-black !font-bold hover:!bg-[#16A34A]" : ""}`}
-          >
-            {`Elegir ${plan.name}`}
-          </CheckoutButton>
+          <Link href="/pricing" className="mt-8 block">
+            <span
+              className={
+                isFeatured
+                  ? "sf-btn-primary flex w-full justify-center text-sm"
+                  : "sf-btn-ghost flex w-full justify-center text-sm"
+              }
+            >
+              {`Elegir ${plan.name}`}
+            </span>
+          </Link>
         )}
       </article>
     );
@@ -156,14 +158,15 @@ function PlanCard({
           </Button>
         </Link>
       ) : (
-        <CheckoutButton
-          plan={planId}
-          variant={isFeatured ? "accent" : "outline"}
-          size="md"
-          className="mt-8 w-full"
-        >
-          {`Elegir ${plan.name}`}
-        </CheckoutButton>
+        <Link href="/pricing" className="mt-8 block cursor-pointer">
+          <Button
+            variant={isFeatured ? "accent" : "outline"}
+            size="md"
+            className="w-full"
+          >
+            {`Elegir ${plan.name}`}
+          </Button>
+        </Link>
       )}
     </article>
   );
