@@ -1,4 +1,5 @@
 import type { MarketingPlan } from "@/lib/marketing/pricing-plans";
+import { PAID_PLAN_CHECKOUT } from "@/lib/marketing/pricing-plans";
 
 /** Planes mostrados en la sección #precios de la landing (/) */
 export const LANDING_PRICING_PLANS: MarketingPlan[] = [
@@ -23,7 +24,7 @@ export const LANDING_PRICING_PLANS: MarketingPlan[] = [
     featured: true,
     cta: {
       label: "Elegir Starter",
-      href: "/pricing",
+      href: PAID_PLAN_CHECKOUT.starter,
       variant: "accent",
     },
     features: [
@@ -42,7 +43,7 @@ export const LANDING_PRICING_PLANS: MarketingPlan[] = [
     description: "Para founders que escalan",
     cta: {
       label: "Elegir Pro",
-      href: "/pricing",
+      href: PAID_PLAN_CHECKOUT.pro,
       variant: "ghost",
     },
     features: [

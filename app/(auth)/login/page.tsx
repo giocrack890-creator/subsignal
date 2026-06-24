@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AuthForm } from "@/components/auth/auth-form";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +18,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="flex flex-col items-center">
-      <AuthForm errorMessage={authError} />
+      <Suspense fallback={<div className="py-20 text-sm text-foreground-muted">Cargando…</div>}>
+        <AuthForm errorMessage={authError} />
+      </Suspense>
     </main>
   );
 }

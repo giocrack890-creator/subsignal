@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/auth/urls";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ interface AuthFormProps {
 }
 
 export function AuthForm({ errorMessage }: AuthFormProps) {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(errorMessage ?? null);
 
@@ -22,7 +25,7 @@ export function AuthForm({ errorMessage }: AuthFormProps) {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: getAuthCallbackUrl(),
+        redirectTo: getAuthCallbackUrl(next),
       },
     });
 

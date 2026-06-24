@@ -16,11 +16,11 @@ export interface MarketingPlan {
   features: MarketingPlanFeature[];
 }
 
-// TODO: reemplazar con URL de checkout CREEM cuando esté creado el producto Starter
-export const CREEM_CHECKOUT_STARTER = "#";
-
-// TODO: reemplazar con URL de checkout CREEM cuando esté creado el producto Pro
-export const CREEM_CHECKOUT_PRO = "#";
+// Planes de pago en Creem — checkout dinámico vía /api/billing/checkout
+export const PAID_PLAN_CHECKOUT = {
+  starter: "/api/billing/checkout?plan=starter",
+  pro: "/api/billing/checkout?plan=pro",
+} as const;
 
 export const MARKETING_PLANS: MarketingPlan[] = [
   {
@@ -46,7 +46,7 @@ export const MARKETING_PLANS: MarketingPlan[] = [
     featured: true,
     cta: {
       label: "Empezar con Starter",
-      href: CREEM_CHECKOUT_STARTER,
+      href: PAID_PLAN_CHECKOUT.starter,
       variant: "accent",
     },
     features: [
@@ -67,7 +67,7 @@ export const MARKETING_PLANS: MarketingPlan[] = [
     description: "Para founders que escalan",
     cta: {
       label: "Empezar con Pro",
-      href: CREEM_CHECKOUT_PRO,
+      href: PAID_PLAN_CHECKOUT.pro,
       variant: "ghost",
     },
     features: [

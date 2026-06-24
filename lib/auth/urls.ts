@@ -3,6 +3,8 @@ export function getAppUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 }
 
-export function getAuthCallbackUrl(): string {
-  return `${getAppUrl()}/callback`;
+export function getAuthCallbackUrl(next?: string | null): string {
+  const base = `${getAppUrl()}/callback`;
+  if (!next) return base;
+  return `${base}?${new URLSearchParams({ next }).toString()}`;
 }

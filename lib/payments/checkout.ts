@@ -1,22 +1,19 @@
-/** Checkout desacoplado — conectar Stripe/Lemon/Paddle cuando se elija proveedor */
+/** Checkout desacoplado — redirige a Creem cuando está configurado */
 
 import type { Plan } from "@/types";
-import { getPlanCatalog } from "./plans";
+import { isCreemConfigured } from "./creem";
 
 export interface CheckoutSession {
   url: string;
   plan: Plan;
 }
 
-/**
- * URL de checkout o pricing según el proveedor configurado.
- * Hoy redirige a /pricing hasta conectar pagos reales.
- */
 export function getCheckoutUrl(targetPlan: Plan): string {
-  const provider = process.env.PAYMENT_PROVIDER;
+  if (targetPlan === "free") {
+    return "/signup";
+  }
 
-  if (provider === "stripe" && process.env.STRIPE_CHECKOUT_ENABLED === "true") {
-    // Placeholder para integración futura con Stripe Checkout
+  if (isCreemConfigured() && (targetPlan === "starter" || targetPlan === "pro")) {
     return `/api/billing/checkout?plan=${targetPlan}`;
   }
 
@@ -26,9 +23,7 @@ export function getCheckoutUrl(targetPlan: Plan): string {
 export async function createCheckoutSession(
   targetPlan: Plan
 ): Promise<CheckoutSession> {
-  const plan = getPlanCatalog(targetPlan);
-
-  if (plan.id === "free") {
+  if (targetPlan === "free") {
     throw new Error("No se puede hacer checkout del plan Free");
   }
 
