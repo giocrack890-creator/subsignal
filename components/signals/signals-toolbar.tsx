@@ -1,11 +1,29 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { LayoutGrid, List, Search } from "lucide-react";
+import { LayoutGrid, List } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { Platform } from "@/types";
 import { buildSignalsUrl } from "@/lib/signals/query";
+
+function SearchIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      className="text-[#4B4B4B]"
+      aria-hidden="true"
+    >
+      <circle cx="6" cy="6" r="4.25" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 const STATUS_OPTIONS = [
   { value: "all", label: "Todas" },
@@ -43,7 +61,12 @@ interface SignalsToolbarProps {
 }
 
 function FilterSeparator() {
-  return <span className="mx-1 h-4 w-px shrink-0 bg-[#232323]" aria-hidden="true" />;
+  return (
+    <span
+      className="mx-0.5 h-3 w-px shrink-0 bg-border-sutil"
+      aria-hidden="true"
+    />
+  );
 }
 
 function FilterPill({
@@ -51,34 +74,36 @@ function FilterPill({
   active,
   disabled,
   children,
-  title,
+  tooltip,
 }: {
   href?: string;
   active: boolean;
   disabled?: boolean;
   children: React.ReactNode;
-  title?: string;
+  tooltip?: string;
 }) {
   const className = cn(
-    "shrink-0 rounded-full px-2.5 py-1 text-xs transition-colors duration-150",
+    "shrink-0 rounded-md px-2 py-1 text-[12px] transition-[color,background] duration-100",
     disabled && "cursor-not-allowed opacity-40",
-    !disabled && !active && "border border-[#232323] text-[#6B6B6B] hover:bg-[rgba(52,211,153,0.1)] hover:text-[#34D399]",
-    active && "bg-[#34D399] font-medium text-[#0A0A0A]"
+    !disabled &&
+      !active &&
+      "text-[#6B6B6B] hover:bg-nivel-4 hover:text-[#B4B4B4]",
+    active && "bg-[rgba(52,211,153,0.12)] font-medium text-accent"
   );
 
-  if (disabled || !href) {
-    return (
-      <span className={className} title={title}>
-        {children}
-      </span>
-    );
-  }
-
-  return (
-    <Link href={href} className={className} title={title}>
+  const inner = disabled || !href ? (
+    <span className={className}>{children}</span>
+  ) : (
+    <Link href={href} className={className}>
       {children}
     </Link>
   );
+
+  if (tooltip) {
+    return <Tooltip content={tooltip}>{inner}</Tooltip>;
+  }
+
+  return inner;
 }
 
 export function SignalsToolbar({
@@ -88,6 +113,8 @@ export function SignalsToolbar({
 }: SignalsToolbarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const current = {
     status: searchParams.get("status") ?? "all",
@@ -96,6 +123,35 @@ export function SignalsToolbar({
     draft: searchParams.get("draft") ?? "all",
     q: searchParams.get("q") ?? "",
   };
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Escape" || !searchFocused) return;
+      if (inputRef.current) {
+        inputRef.current.value = "";
+        inputRef.current.blur();
+      }
+      const params = {
+        status: searchParams.get("status") ?? "all",
+        platform: searchParams.get("platform") ?? "all",
+        minScore: searchParams.get("minScore") ?? "all",
+        draft: searchParams.get("draft") ?? "all",
+      };
+      router.push(
+        buildSignalsUrl(
+          {
+            status: params.status !== "all" ? params.status : undefined,
+            platform: params.platform !== "all" ? params.platform : undefined,
+            minScore: params.minScore !== "all" ? params.minScore : undefined,
+            draft: params.draft !== "all" ? params.draft : undefined,
+          },
+          { q: undefined, page: undefined }
+        )
+      );
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [searchFocused, router, searchParams]);
 
   function baseParams() {
     return {
@@ -122,57 +178,72 @@ export function SignalsToolbar({
     <div className={cn("mt-8 space-y-4", className)}>
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative min-w-0 flex-1">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B6B6B]"
-            aria-hidden="true"
-          />
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+            <SearchIcon />
+          </span>
           <input
+            ref={inputRef}
             name="q"
             type="search"
             defaultValue={current.q}
-            placeholder="Buscar en señales..."
-            className="h-10 w-full rounded-[10px] border border-[#232323] bg-[#111714] pl-10 pr-4 text-sm text-white placeholder:text-[#6B6B6B] transition-colors focus:border-[rgba(52,211,153,0.4)] focus:outline-none focus:ring-0"
+            placeholder="Buscar señales..."
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            className={cn(
+              "h-9 w-full rounded-lg border bg-nivel-3 pl-9 pr-24 text-sm text-white placeholder:text-[#4B4B4B] transition-[border-color] duration-150 focus:outline-none focus:ring-0",
+              searchFocused ? "border-border-activo" : "border-border-medio"
+            )}
           />
+          {searchFocused && (
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-[#6B6B6B]">
+              ESC para cerrar
+            </span>
+          )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1 rounded-[10px] border border-[#232323] bg-[#111714] p-1">
-          <button
-            type="button"
-            onClick={() => onViewModeChange("list")}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-md transition-colors",
-              viewMode === "list"
-                ? "bg-[rgba(52,211,153,0.1)] text-[#34D399]"
-                : "text-[#6B6B6B] hover:text-[#B4B4B4]"
-            )}
-            aria-label="Vista lista"
-            aria-pressed={viewMode === "list"}
-          >
-            <List className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onViewModeChange("cards")}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-md transition-colors",
-              viewMode === "cards"
-                ? "bg-[rgba(52,211,153,0.1)] text-[#34D399]"
-                : "text-[#6B6B6B] hover:text-[#B4B4B4]"
-            )}
-            aria-label="Vista cards"
-            aria-pressed={viewMode === "cards"}
-          >
-            <LayoutGrid className="h-4 w-4" />
-          </button>
+        <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border-medio bg-nivel-3 p-0.5">
+          <Tooltip content="Vista compacta">
+            <button
+              type="button"
+              onClick={() => onViewModeChange("list")}
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-md transition-colors duration-150",
+                viewMode === "list"
+                  ? "bg-[rgba(52,211,153,0.1)] text-accent"
+                  : "text-[#6B6B6B] hover:text-[#B4B4B4]"
+              )}
+              aria-label="Vista lista"
+              aria-pressed={viewMode === "list"}
+            >
+              <List className="h-4 w-4" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Vista expandida">
+            <button
+              type="button"
+              onClick={() => onViewModeChange("cards")}
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-md transition-colors duration-150",
+                viewMode === "cards"
+                  ? "bg-[rgba(52,211,153,0.1)] text-accent"
+                  : "text-[#6B6B6B] hover:text-[#B4B4B4]"
+              )}
+              aria-label="Vista cards"
+              aria-pressed={viewMode === "cards"}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+          </Tooltip>
         </div>
       </form>
 
-      <div className="signals-filter-scroll flex items-center gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
+      <div className="signals-filter-scroll flex items-center gap-1 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
         {STATUS_OPTIONS.map((opt) => (
           <FilterPill
             key={opt.value}
             href={pillHref({ status: opt.value === "all" ? undefined : opt.value })}
             active={current.status === opt.value}
+            tooltip={`Filtrar: ${opt.label}`}
           >
             {opt.label}
           </FilterPill>
@@ -192,7 +263,7 @@ export function SignalsToolbar({
             }
             active={current.platform === opt.value}
             disabled={opt.disabled}
-            title={opt.disabled ? "Próximamente" : undefined}
+            tooltip={opt.disabled ? "Próximamente" : opt.label}
           >
             {opt.label}
           </FilterPill>
@@ -207,6 +278,7 @@ export function SignalsToolbar({
               minScore: current.minScore === opt.value ? undefined : opt.value,
             })}
             active={current.minScore === opt.value}
+            tooltip={`Score ${opt.label}`}
           >
             {opt.label}
           </FilterPill>
@@ -221,6 +293,7 @@ export function SignalsToolbar({
               draft: current.draft === opt.value ? undefined : opt.value,
             })}
             active={current.draft === opt.value}
+            tooltip={opt.label}
           >
             {opt.label}
           </FilterPill>

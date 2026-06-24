@@ -79,7 +79,7 @@ export default async function DraftsPage({ searchParams }: DraftsPageProps) {
       >
         <PageHeader
           title="Borradores"
-          description="Editá, copiá y publicá tus respuestas a señales de alta intención."
+          subtitle="Editá, copiá y publicá tus respuestas a señales de alta intención."
         />
       </FirstTimeTooltip>
       <div className="mt-8 max-w-4xl">

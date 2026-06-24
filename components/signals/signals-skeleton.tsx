@@ -4,7 +4,7 @@ export function SignalsSkeleton() {
       {Array.from({ length: 5 }).map((_, i) => (
         <li
           key={i}
-          className="signals-shimmer h-[88px] rounded-xl border border-[#1E1E1E]"
+          className="signals-shimmer h-[88px] rounded-[10px] border border-border-medio bg-nivel-3"
         />
       ))}
     </ul>

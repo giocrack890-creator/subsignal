@@ -163,7 +163,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
         <PageHeader
           title="Dashboard"
-          description={
+          subtitle={
             user.email ? `Bienvenido, ${user.email}` : "Bienvenido."
           }
         />

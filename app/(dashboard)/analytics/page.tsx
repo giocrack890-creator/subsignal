@@ -48,7 +48,7 @@ export default async function AnalyticsPage() {
       >
         <PageHeader
           title="Analytics"
-          description="Métricas de señales, respuestas y keywords de los últimos 30 días."
+          subtitle="Métricas de señales, respuestas y keywords de los últimos 30 días."
         />
       </FirstTimeTooltip>
 

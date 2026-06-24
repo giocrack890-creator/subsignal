@@ -50,14 +50,18 @@ export default async function DashboardLayout({
     <UpgradeProvider currentPlan={plan}>
       <SignalPanelProvider plan={plan}>
         <div
-          className={`dashboard-sf ${inter.variable} flex min-h-screen bg-background font-[family-name:var(--font-dashboard)]`}
+          className={`dashboard-sf ${inter.variable} flex min-h-screen bg-nivel-0 font-[family-name:var(--font-dashboard)]`}
         >
           <OnboardingRedirect isComplete={onboardingStatus.isComplete} />
 
-          <DashboardSidebar displayName={displayName} plan={plan} />
+          <DashboardSidebar
+            displayName={displayName}
+            email={profile?.email ?? user.email ?? ""}
+            plan={plan}
+          />
 
-          <div className="flex flex-1 flex-col min-w-0">
-            <header className="flex items-center justify-between border-b border-border bg-background-elevated/50 px-4 py-3 backdrop-blur-md lg:hidden">
+          <div className="flex min-w-0 flex-1 flex-col bg-nivel-2">
+            <header className="flex items-center justify-between border-b border-border-sutil bg-nivel-1 px-4 py-3 lg:hidden">
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-xs font-black text-primary-foreground">
                   SS

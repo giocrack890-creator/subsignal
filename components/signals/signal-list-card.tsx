@@ -5,6 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import { dismissSignalWithReason } from "@/lib/actions/signals";
 import { getScoreColor } from "@/components/dashboard/score-badge";
 import { useSignalPanelOptional } from "@/components/dashboard/signal-panel-context";
+import { Tooltip } from "@/components/ui/tooltip";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { formatRelativeTime, cn } from "@/lib/utils";
 import type { Plan, Platform, Signal } from "@/types";
@@ -73,7 +74,7 @@ export function SignalListCard({
   return (
     <article
       className={cn(
-        "signals-card-enter group cursor-pointer rounded-xl border border-[#1E1E1E] bg-[#111714] transition-all duration-200 ease-out hover:border-[rgba(52,211,153,0.2)] hover:bg-[#131813]",
+        "signals-card-enter group cursor-pointer rounded-[10px] border border-border-medio bg-nivel-3 transition-all duration-200 ease-out hover:border-border-activo hover:bg-nivel-4",
         isList ? "px-4 py-0" : "px-5 py-4",
         isPending && "opacity-60",
         isDismissed && "opacity-55",
@@ -174,17 +175,20 @@ export function SignalListCard({
           onKeyDown={(e) => e.stopPropagation()}
         >
           {!isList && (
-            <button
-              type="button"
-              onClick={openPanel}
-              className="hidden rounded-lg border border-[#34D399] bg-[#1E1E1E] px-3 py-1.5 text-xs font-medium text-[#34D399] transition-colors hover:bg-[rgba(52,211,153,0.08)] sm:inline-block"
-            >
-              {hasDraft ? "Ver draft" : "Ver señal"}
-            </button>
+            <Tooltip content={hasDraft ? "Abrir draft" : "Ver señal"}>
+              <button
+                type="button"
+                onClick={openPanel}
+                className="hidden rounded-lg border border-border-activo bg-nivel-4 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-nivel-5 sm:inline-block"
+              >
+                {hasDraft ? "Ver draft" : "Ver señal"}
+              </button>
+            </Tooltip>
           )}
 
           <div ref={menuRef} className="relative">
-            <button
+            <Tooltip content="Más opciones">
+              <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
               className="flex h-8 w-8 items-center justify-center rounded-lg text-[#6B6B6B] transition-colors hover:bg-[#1E1E1E] hover:text-white"
@@ -193,6 +197,7 @@ export function SignalListCard({
             >
               <MoreHorizontal className="h-4 w-4" />
             </button>
+            </Tooltip>
 
             {menuOpen && (
               <div className="absolute right-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden rounded-lg border border-[#232323] bg-[#1A1A1A] py-1 shadow-xl">

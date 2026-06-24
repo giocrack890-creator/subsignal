@@ -65,7 +65,7 @@ export default async function KeywordsPage() {
       >
         <PageHeader
           title="Keywords"
-          description="Configurá qué términos monitoreamos en Hacker News y otras plataformas."
+          subtitle="Configurá qué términos monitoreamos en Hacker News y otras plataformas."
           aside={
             <KeywordsHeaderActions
               activeCount={activeCount}

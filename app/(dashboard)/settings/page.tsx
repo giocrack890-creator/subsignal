@@ -38,7 +38,7 @@ export default async function SettingsPage() {
     <div className="p-6 lg:p-8">
       <PageHeader
         title="Settings"
-        description="Perfil, plan, notificaciones y cuenta."
+        subtitle="Perfil, plan, notificaciones y cuenta."
       />
       <div className="mt-8 max-w-2xl">
         <SettingsForm
