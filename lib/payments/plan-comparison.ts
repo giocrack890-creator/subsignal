@@ -24,10 +24,10 @@ export const PLAN_COMPARISON_ROWS: PlanComparisonRow[] = [
   },
   {
     label: "Twitter / X",
-    hint: "Starter: 1 keyword · Pro: ilimitado",
+    hint: "Starter: 3 keywords · Pro: ilimitado",
     values: {
       free: false,
-      starter: "1 keyword",
+      starter: "3 keywords",
       growth: true,
       pro: true,
     },

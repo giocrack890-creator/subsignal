@@ -43,7 +43,6 @@ export default async function SettingsPage() {
       <div className="mt-8 max-w-2xl">
         <SettingsForm
           profile={profile as Profile}
-          userId={user.id}
           email={user.email ?? profile.email ?? ""}
           avatarUrl={profile.avatar_url ?? user.user_metadata?.avatar_url}
         />

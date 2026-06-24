@@ -178,7 +178,7 @@ export function checkTwitterKeywordLimit(input: {
       used: input.twitterKeywordCount,
       limit,
       message:
-        "Starter incluye 1 keyword con Twitter/X. Pasá a Pro para monitorear más términos en X.",
+        `Starter incluye ${limit} keywords con Twitter/X. Pasá a Pro para monitorear X en todas tus keywords.`,
     };
   }
 

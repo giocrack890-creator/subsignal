@@ -6,10 +6,12 @@ import { isPlanAtLeast } from "./plans";
 /** Plataformas que requieren plan Starter o superior */
 export const PREMIUM_ONLY_PLATFORMS: Platform[] = ["twitter"];
 
-/** Máximo de keywords con Twitter/X activo por plan (`null` = sin límite extra) */
+export const STARTER_MAX_TWITTER_KEYWORDS = 3;
+
+/** Máximo de keywords activas con Twitter/X por plan (`null` = sin límite extra) */
 export function getMaxTwitterKeywords(plan: Plan): number | null {
   if (plan === "free") return 0;
-  if (plan === "starter") return 1;
+  if (plan === "starter") return STARTER_MAX_TWITTER_KEYWORDS;
   return null;
 }
 

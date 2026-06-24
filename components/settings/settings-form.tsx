@@ -26,7 +26,6 @@ import type { Plan, Profile } from "@/types";
 interface SettingsFormProps {
   profile: Profile;
   email: string;
-  userId: string;
   avatarUrl?: string | null;
 }
 
@@ -52,7 +51,7 @@ function SectionHeader({
   );
 }
 
-export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsFormProps) {
+export function SettingsForm({ profile, email, avatarUrl }: SettingsFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);

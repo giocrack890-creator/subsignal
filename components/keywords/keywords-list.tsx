@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { deleteKeyword, toggleKeyword } from "@/lib/actions/keywords";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Switch } from "@/components/ui/switch";
@@ -12,9 +12,10 @@ import type { Keyword, Plan, Platform } from "@/types";
 interface KeywordsListProps {
   keywords: Keyword[];
   plan: Plan;
+  onEdit: (keyword: Keyword) => void;
 }
 
-export function KeywordsList({ keywords, plan }: KeywordsListProps) {
+export function KeywordsList({ keywords, plan, onEdit }: KeywordsListProps) {
   const [isPending, startTransition] = useTransition();
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -73,9 +74,22 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
                   >
                     {kw.term}
                   </h3>
-                  {!kw.is_active && (
-                    <span className="dash-chip uppercase">Pausada</span>
-                  )}
+                  <div className="flex items-center gap-1">
+                    {!kw.is_active && (
+                      <span className="dash-chip uppercase">Pausada</span>
+                    )}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={isPending}
+                      onClick={() => onEdit(kw)}
+                      className="h-8 w-8 p-0 text-foreground-muted hover:text-foreground"
+                      aria-label={`Editar keyword ${kw.term}`}
+                    >
+                      <Pencil className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -92,6 +106,12 @@ export function KeywordsList({ keywords, plan }: KeywordsListProps) {
                       </span>
                     ))}
                   </div>
+                )}
+
+                {kw.platforms.includes("reddit") && kw.subreddits.length === 0 && (
+                  <p className="mt-2 text-xs text-foreground-muted">
+                    Reddit · subreddits por defecto
+                  </p>
                 )}
 
                 {plan === "free" && kw.platforms.length === 1 && kw.platforms[0] === "hn" && (
