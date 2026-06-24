@@ -4,26 +4,55 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
+import { DraftUpgradeModal } from "@/components/dashboard/draft-upgrade-modal";
 import { useUpgradeModalOptional } from "@/components/billing/upgrade-provider";
 import { generateDraftForSignal } from "@/lib/actions/signals";
 import { Button } from "@/components/ui/button";
+import type { Plan } from "@/types";
 
 interface GenerateDraftButtonProps {
   signalId: string;
   hasDraft: boolean;
+  plan?: Plan;
 }
 
 export function GenerateDraftButton({
   signalId,
   hasDraft,
+  plan = "free",
 }: GenerateDraftButtonProps) {
   const router = useRouter();
   const upgradeModal = useUpgradeModalOptional();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
+  const [draftUpgradeOpen, setDraftUpgradeOpen] = useState(false);
 
   if (hasDraft) {
+    if (plan === "free") {
+      return (
+        <>
+          <Button
+            variant="accent"
+            size="sm"
+            type="button"
+            className="dash-btn-neon"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDraftUpgradeOpen(true);
+            }}
+          >
+            Ver borrador
+          </Button>
+          <DraftUpgradeModal
+            open={draftUpgradeOpen}
+            onClose={() => setDraftUpgradeOpen(false)}
+          />
+        </>
+      );
+    }
+
     return (
       <Link href={`/drafts?signal=${signalId}`}>
         <Button variant="accent" size="sm" type="button" className="dash-btn-neon">
@@ -38,6 +67,11 @@ export function GenerateDraftButton({
     e.stopPropagation();
     setError(null);
     setLimitReached(false);
+
+    if (plan === "free") {
+      setDraftUpgradeOpen(true);
+      return;
+    }
 
     startTransition(async () => {
       const result = await generateDraftForSignal(signalId);
@@ -102,6 +136,10 @@ export function GenerateDraftButton({
           )}
         </p>
       )}
+      <DraftUpgradeModal
+        open={draftUpgradeOpen}
+        onClose={() => setDraftUpgradeOpen(false)}
+      />
     </div>
   );
 }

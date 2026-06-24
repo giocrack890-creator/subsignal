@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Check, Clipboard, Pencil, X } from "lucide-react";
-import Link from "next/link";
 import { markDraftCopied } from "@/lib/actions/signals";
+import { DraftUpgradeModal } from "@/components/dashboard/draft-upgrade-modal";
 import { GenerateDraftButton } from "@/components/dashboard/generate-draft-button";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +27,7 @@ export function SignalDraftSection({ signal, plan }: SignalDraftSectionProps) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [editText, setEditText] = useState(signal.draft_reply ?? "");
 
   useEffect(() => {
@@ -58,6 +59,12 @@ export function SignalDraftSection({ signal, plan }: SignalDraftSectionProps) {
     void copyText(editText.trim()).then(() => setEditOpen(false));
   }
 
+  function openUpgradeModal(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setUpgradeOpen(true);
+  }
+
   return (
     <>
       <div
@@ -82,11 +89,15 @@ export function SignalDraftSection({ signal, plan }: SignalDraftSectionProps) {
               <p className="text-sm font-medium text-foreground">
                 🔒 Draft disponible en planes de pago
               </p>
-              <Link href="/pricing">
-                <Button variant="accent" size="sm" className="dash-btn-neon">
-                  Ver planes
-                </Button>
-              </Link>
+              <Button
+                variant="accent"
+                size="sm"
+                type="button"
+                className="dash-btn-neon"
+                onClick={openUpgradeModal}
+              >
+                Ver borrador
+              </Button>
             </div>
           </div>
         ) : hasDraft ? (
@@ -149,11 +160,20 @@ export function SignalDraftSection({ signal, plan }: SignalDraftSectionProps) {
               Esta señal califica para borrador automático (score {score}+).
             </p>
             <div className="mt-3 flex justify-center">
-              <GenerateDraftButton signalId={signal.id} hasDraft={false} />
+              <GenerateDraftButton
+                signalId={signal.id}
+                hasDraft={false}
+                plan={plan}
+              />
             </div>
           </div>
         )}
       </div>
+
+      <DraftUpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+      />
 
       {editOpen && isPaid && (
         <>

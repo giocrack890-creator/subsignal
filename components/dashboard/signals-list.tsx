@@ -21,6 +21,24 @@ export function SignalsList({ signals, hasKeywords, plan }: SignalsListProps) {
   }
 
   if (signals.length === 0) {
+    if (plan === "free") {
+      return (
+        <EmptyState
+          variant="radar"
+          title="Todavía no encontramos señales"
+          description="Estamos monitoreando Hacker News con tus keywords."
+          action={{ label: "Ver keywords", href: "/keywords" }}
+          upgradeFooter={{
+            text: "Con Starter desbloqueás Reddit + drafts de respuesta listos para copiar en cada señal.",
+            secondaryAction: {
+              label: "Ver qué incluye Starter →",
+              href: "/pricing",
+            },
+          }}
+        />
+      );
+    }
+
     return (
       <EmptyState
         variant="radar"

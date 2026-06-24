@@ -13,6 +13,13 @@ interface EmptyStateProps {
     label: string;
     href: string;
   };
+  upgradeFooter?: {
+    text: string;
+    secondaryAction: {
+      label: string;
+      href: string;
+    };
+  };
   className?: string;
 }
 
@@ -22,6 +29,7 @@ export function EmptyState({
   title,
   description,
   action,
+  upgradeFooter,
   className,
 }: EmptyStateProps) {
   return (
@@ -49,6 +57,22 @@ export function EmptyState({
             {action.label}
           </Button>
         </Link>
+      )}
+      {upgradeFooter && (
+        <div className="mt-8 w-full max-w-md border-t border-white/8 pt-6">
+          <p className="text-sm leading-relaxed text-[#B4B4B4]">
+            {upgradeFooter.text}
+          </p>
+          <Link href={upgradeFooter.secondaryAction.href} className="mt-4 inline-block">
+            <Button
+              variant="outline"
+              size="md"
+              className="border-[#34D399] bg-transparent text-[#34D399] hover:bg-[rgba(52,211,153,0.08)]"
+            >
+              {upgradeFooter.secondaryAction.label}
+            </Button>
+          </Link>
+        </div>
       )}
     </div>
   );

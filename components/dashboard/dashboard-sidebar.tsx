@@ -9,6 +9,7 @@ import {
   Radio,
   Search,
   Settings,
+  Sparkles,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,19 @@ export function DashboardSidebar({ displayName, plan }: DashboardSidebarProps) {
             </Link>
           );
         })}
+
+        {(plan === "free" || plan === "starter") && (
+          <Link href="/pricing" className="dash-nav-link">
+            <Sparkles className="h-4 w-4 shrink-0 opacity-80" aria-hidden="true" />
+            <span className="flex-1">Upgrades a Pro</span>
+            <span
+              className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold text-[#34D399]"
+              style={{ backgroundColor: "rgba(52, 211, 153, 0.15)" }}
+            >
+              Nuevo
+            </span>
+          </Link>
+        )}
       </nav>
 
       <div className="border-t border-border p-4">
@@ -79,9 +93,25 @@ export function DashboardSidebar({ displayName, plan }: DashboardSidebarProps) {
           <p className="truncate text-sm font-semibold text-foreground">
             {displayName}
           </p>
-          <p className="mt-0.5 text-xs capitalize text-foreground-muted">
-            Plan {plan}
-          </p>
+          {plan === "free" ? (
+            <Link
+              href="/pricing"
+              className="mt-2 block cursor-pointer rounded-lg border px-3 py-2.5 transition-colors hover:border-[rgba(52,211,153,0.4)]"
+              style={{
+                backgroundColor: "rgba(52, 211, 153, 0.08)",
+                borderColor: "rgba(52, 211, 153, 0.25)",
+              }}
+            >
+              <span className="block text-xs text-[#6B6B6B]">Plan Free</span>
+              <span className="mt-0.5 block text-xs font-medium text-[#34D399]">
+                Upgrades a Starter →
+              </span>
+            </Link>
+          ) : (
+            <p className="mt-0.5 text-xs capitalize text-foreground-muted">
+              Plan {plan}
+            </p>
+          )}
           <div className="mt-3">
             <SignOutButton />
           </div>

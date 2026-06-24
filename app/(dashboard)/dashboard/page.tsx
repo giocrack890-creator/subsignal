@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SignalsList } from "@/components/dashboard/signals-list";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
+import { UpgradeTopBanner } from "@/components/dashboard/upgrade-top-banner";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { createClient } from "@/lib/supabase/server";
 import type { Plan, Signal, SignalStatus } from "@/types";
@@ -143,6 +144,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       )}
 
       <div className="p-6 lg:p-8">
+        <UpgradeTopBanner plan={plan} />
+
         {showTour && (
           <div className="dash-welcome-toast mb-6">
             <span className="dash-live-dot shrink-0" aria-hidden="true" />
@@ -161,6 +164,17 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <StatCard
             value={newCount ?? 0}
             label="Señales nuevas — con respuesta lista para copiar"
+            locked={plan === "free"}
+            description={
+              plan === "free"
+                ? "Disponible en Starter — los drafts se generan automáticamente para señales con score ≥ 7"
+                : undefined
+            }
+            footerLink={
+              plan === "free"
+                ? { label: "Activar drafts →", href: "/pricing" }
+                : undefined
+            }
           />
           <StatCard
             value={keywordCount ?? 0}
