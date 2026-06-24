@@ -1,5 +1,6 @@
 import { LandingNavbar } from "@/components/marketing/landing/navbar";
 import { LandingHero } from "@/components/marketing/landing/hero";
+import { LandingProductPreview } from "@/components/marketing/landing/product-preview";
 import { LandingSteps } from "@/components/marketing/landing/steps";
 import { LandingPlatforms } from "@/components/marketing/landing/platforms";
 import { LandingFeatures } from "@/components/marketing/landing/features";
@@ -11,10 +12,11 @@ import { LandingFooter } from "@/components/marketing/landing/footer";
 
 export default function HomePage() {
   return (
-    <>
+    <div className="bg-background text-foreground">
       <LandingNavbar />
       <main id="main-content">
         <LandingHero />
+        <LandingProductPreview />
         <LandingSteps />
         <LandingPlatforms />
         <LandingFeatures />
@@ -24,6 +26,6 @@ export default function HomePage() {
         <LandingCta />
       </main>
       <LandingFooter />
-    </>
+    </div>
   );
 }

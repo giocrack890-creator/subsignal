@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const FOOTER_LINKS = [
   { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/pricing", label: "Precios" },
   { href: "/#plataformas", label: "Plataformas" },
   { href: "/#faq", label: "FAQ" },
   { href: "/login", label: "Login" },
@@ -15,24 +15,31 @@ const LEGAL_LINKS = [
   { href: "/refunds", label: "Reembolsos" },
 ];
 
+const SOCIAL = [
+  { label: "X (Twitter)", href: "#", abbr: "X" },
+  { label: "Discord", href: "#", abbr: "D" },
+  { label: "LinkedIn", href: "#", abbr: "in" },
+];
+
 export function LandingFooter() {
   return (
-    <footer className="border-t border-[#27272A] py-12">
-      <div className="mx-auto max-w-[1100px] px-6 lg:px-10">
+    <footer className="border-t border-border py-12">
+      <div className="container-marketing mx-auto max-w-5xl px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <span className="flex items-center gap-2 font-extrabold text-[#FAFAFA]">
-              <span className="sf-dot-pulse" />
+            <span className="flex items-center gap-2 font-semibold text-foreground">
+              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
+                SS
+              </span>
               SubSignal
             </span>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#A1A1AA]">
-              Intent monitoring para founders. Encontrá clientes donde ya están
-              preguntando.
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-foreground-secondary">
+              Intent monitoring para founders. Encontrá clientes donde ya están preguntando.
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
               Producto
             </p>
             <ul className="mt-4 space-y-2">
@@ -40,7 +47,7 @@ export function LandingFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#A1A1AA] transition-colors hover:text-[#FAFAFA]"
+                    className="cursor-pointer text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -50,7 +57,7 @@ export function LandingFooter() {
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
               Legal
             </p>
             <ul className="mt-4 space-y-2">
@@ -58,7 +65,7 @@ export function LandingFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#A1A1AA] transition-colors hover:text-[#FAFAFA]"
+                    className="cursor-pointer text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -68,17 +75,25 @@ export function LandingFooter() {
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#71717A]">
-              Status
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+              Seguinos
             </p>
-            <p className="mt-4 inline-flex items-center gap-2 text-sm text-[#A1A1AA]">
-              <span className="sf-dot-pulse" />
-              Beta privada — HN activo
-            </p>
+            <div className="mt-4 flex gap-2">
+              {SOCIAL.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border text-xs font-medium text-foreground-muted transition-colors duration-200 hover:border-border-glow hover:text-foreground"
+                >
+                  {s.abbr}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-[#27272A] pt-8 text-xs text-[#71717A] sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-xs text-foreground-muted sm:flex-row">
           <span>© {new Date().getFullYear()} SubSignal</span>
           <span>Hecho para founders que venden con valor, no con spam.</span>
         </div>

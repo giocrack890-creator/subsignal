@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./landing.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800", "900"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Intent monitoring para founders SaaS",
   description:
-    "Encontrá conversaciones de alta intención en HN, Reddit y más. SubSignal te dice qué responder con un borrador listo para copiar.",
+    "Monitorea Hacker News, puntúa conversaciones por intención de compra y genera borradores de respuesta genuinos con IA.",
   openGraph: {
     title: "SubSignal — Intent monitoring para founders SaaS",
     description:
-      "SubSignal encuentra señales de compra y redacta la respuesta por vos. Copiás, publicás y listo en 30 segundos.",
+      "Dejá de buscar clientes manualmente en HN. SubSignal encuentra señales de alta intención y te ayuda a responder con valor.",
     type: "website",
   },
 };
@@ -25,5 +17,5 @@ export default function MarketingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className={`landing-sf ${inter.className}`}>{children}</div>;
+  return children;
 }

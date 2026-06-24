@@ -4,90 +4,80 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import {
-  getMarketingCopy,
-  localeHomePath,
-  localePricingPath,
-  localeSwitchPath,
-  type MarketingLocale,
-} from "@/lib/i18n/marketing";
+import { Button } from "@/components/ui/button";
 
-interface LandingNavbarProps {
-  locale?: MarketingLocale;
-}
+const NAV = [
+  { href: "#inicio", label: "Home" },
+  { href: "#como-funciona", label: "Cómo funciona" },
+  { href: "/pricing", label: "Precios", page: true },
+  { href: "#plataformas", label: "Plataformas" },
+];
 
-function resolveHref(
-  href: string,
-  pathname: string,
-  locale: MarketingLocale,
-  isPage?: boolean
-): string {
-  if (isPage || href.startsWith("/")) {
-    if (href === "/pricing") return localePricingPath(locale);
-    return href;
-  }
-  const home = localeHomePath(locale);
-  if (pathname !== home && pathname !== "/") return `${home}${href}`;
+function resolveHref(href: string, pathname: string, isPage?: boolean): string {
+  if (isPage || href.startsWith("/")) return href;
+  if (pathname !== "/") return `/${href}`;
   return href;
 }
 
-export function LandingNavbar({ locale = "es" }: LandingNavbarProps) {
+export function LandingNavbar() {
   const pathname = usePathname();
-  const copy = getMarketingCopy(locale);
   const [open, setOpen] = useState(false);
-  const homeHref = pathname === localeHomePath(locale) ? "#inicio" : localeHomePath(locale);
-
-  const NAV = [
-    { href: "#como-funciona", label: copy.navbar.howItWorks },
-    { href: "/pricing", label: copy.navbar.pricing, page: true },
-    { href: "#plataformas", label: copy.navbar.platforms },
-    { href: "#faq", label: "FAQ" },
-  ];
+  const homeHref = pathname === "/" ? "#inicio" : "/";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#27272A] bg-[rgba(9,9,11,0.85)] backdrop-blur-[16px]">
-      <div className="mx-auto flex max-w-[1100px] items-center justify-between gap-4 px-6 py-4 lg:px-10">
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-5 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <Link
           href={homeHref}
-          className="flex shrink-0 items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22C55E]"
+          className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
-          <span className="sf-dot-pulse" aria-hidden="true" />
-          <span className="text-lg font-extrabold tracking-tight text-[#FAFAFA]">
-            SubSignal
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
+            SS
           </span>
+          <span className="text-lg font-semibold tracking-tight">SubSignal</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Principal">
+        <nav
+          className="pill-dock hidden items-center gap-0.5 rounded-full px-1.5 py-1 lg:flex"
+          aria-label="Principal"
+        >
           {NAV.map((item) => (
             <Link
               key={item.href}
-              href={resolveHref(item.href, pathname, locale, item.page)}
-              className="text-sm text-[#A1A1AA] transition-colors duration-200 hover:text-[#FAFAFA]"
+              href={resolveHref(item.href, pathname, item.page)}
+              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm transition-colors duration-200 hover:text-foreground ${
+                pathname === item.href
+                  ? "text-foreground"
+                  : "text-foreground-secondary"
+              }`}
             >
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/login"
+            className="cursor-pointer rounded-full border border-border-strong px-4 py-1.5 text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground"
+          >
+            Login
+          </Link>
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-3 md:flex">
-          <Link
-            href={localeSwitchPath(locale, pathname)}
-            className="text-xs font-semibold uppercase tracking-wide text-[#71717A] transition-colors hover:text-[#FAFAFA]"
-            aria-label={`Switch to ${copy.navbar.localeSwitch}`}
-          >
-            {copy.navbar.localeSwitch}
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <Link href="/login" className="cursor-pointer">
+            <Button variant="primary" size="md" showArrow>
+              Empezar gratis
+            </Button>
           </Link>
-          <Link href="/login" className="sf-btn-ghost !px-5 !py-2.5 text-sm">
-            {copy.navbar.login}
-          </Link>
-          <Link href="/login" className="sf-btn-primary !px-5 !py-2.5 text-sm">
-            {copy.navbar.startFree}
+          <Link href="/pricing" className="cursor-pointer">
+            <Button variant="outline" size="md">
+              Ver precios
+            </Button>
           </Link>
         </div>
 
         <button
           type="button"
-          className="rounded-lg p-2 text-[#A1A1AA] lg:hidden"
+          className="cursor-pointer rounded-lg p-2 text-foreground-muted lg:hidden"
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
           onClick={() => setOpen(!open)}
         >
@@ -96,12 +86,12 @@ export function LandingNavbar({ locale = "es" }: LandingNavbarProps) {
       </div>
 
       {open && (
-        <div className="border-t border-[#27272A] bg-[#09090B] px-6 py-4 lg:hidden">
+        <div className="pill-dock mx-auto mt-3 max-w-md rounded-2xl p-4 lg:hidden">
           {NAV.map((item) => (
             <Link
               key={item.href}
-              href={resolveHref(item.href, pathname, locale, item.page)}
-              className="block py-2.5 text-sm text-[#A1A1AA]"
+              href={resolveHref(item.href, pathname, item.page)}
+              className="block cursor-pointer py-2 text-sm text-foreground-secondary"
               onClick={() => setOpen(false)}
             >
               {item.label}
@@ -109,10 +99,15 @@ export function LandingNavbar({ locale = "es" }: LandingNavbarProps) {
           ))}
           <Link
             href="/login"
-            className="mt-3 block sf-btn-primary text-center text-sm"
+            className="mt-2 block cursor-pointer py-2 text-sm text-foreground-secondary"
             onClick={() => setOpen(false)}
           >
-            {copy.navbar.startFree}
+            Login
+          </Link>
+          <Link href="/login" className="mt-2 block" onClick={() => setOpen(false)}>
+            <Button variant="primary" size="md" className="w-full" showArrow>
+              Empezar gratis
+            </Button>
           </Link>
         </div>
       )}

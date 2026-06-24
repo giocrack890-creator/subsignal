@@ -1,29 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { getMarketingCopy, type MarketingLocale } from "@/lib/i18n/marketing";
+import { Button } from "@/components/ui/button";
 
-interface LandingCtaProps {
-  locale?: MarketingLocale;
-}
-
-export function LandingCta({ locale = "es" }: LandingCtaProps) {
-  const copy = getMarketingCopy(locale);
-
+export function LandingCta() {
   return (
-    <>
-      <hr className="sf-divider" />
-      <section className="sf-section">
-        <div className="sf-cta-box mx-auto max-w-3xl">
-          <h2 className="sf-section-title text-[#FAFAFA]">{copy.cta.title}</h2>
-          <p className="mx-auto mt-4 max-w-md text-base text-[#A1A1AA]">
-            {copy.cta.subtitle}
-          </p>
-          <Link href="/login" className="sf-btn-primary mt-10 inline-flex text-base">
-            {copy.cta.button}
-          </Link>
-        </div>
-      </section>
-    </>
+    <section className="relative py-32 sm:py-40">
+      <div className="absolute inset-0 fx-radial-glow opacity-60" aria-hidden="true" />
+      <div className="container-marketing relative mx-auto max-w-2xl px-6 text-center">
+        <h2 className="section-title text-glow">
+          Tu próximo cliente ya está preguntando
+        </h2>
+        <p className="mt-4 text-foreground-secondary">
+          Plan free · Sin tarjeta · Login con Google
+        </p>
+        <Link href="/login" className="mt-10 inline-block cursor-pointer">
+          <Button variant="primary" size="lg" showArrow>
+            Empezar gratis
+          </Button>
+        </Link>
+      </div>
+    </section>
   );
 }
