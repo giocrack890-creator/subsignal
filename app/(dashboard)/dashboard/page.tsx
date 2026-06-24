@@ -7,8 +7,13 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { SignalsList } from "@/components/dashboard/signals-list";
 import { DashboardFeedSkeleton } from "@/components/dashboard/skeletons";
 import { UpgradeTopBanner } from "@/components/dashboard/upgrade-top-banner";
+import { SetupProgress } from "@/components/dashboard/SetupProgress";
+import { NicheWeekCard } from "@/components/dashboard/niche-week-card";
+import { PushNotificationBanner } from "@/components/dashboard/push-notification-banner";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { createClient } from "@/lib/supabase/server";
+import { fetchNicheWeekInsights } from "@/lib/dashboard/niche-week";
+import { syncSetupProgress } from "@/lib/setup/progress";
 import type { Plan, Signal, SignalStatus } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -118,7 +123,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const showTour = params.welcome === "1";
   const filter = parseFilter(params.status);
 
-  const [{ count: newCount }, { count: keywordCount }, { data: profile }] =
+  const [{ count: newCount }, { count: keywordCount }, { data: profile }, setupState, nicheInsights] =
     await Promise.all([
     supabase
       .from("signals")
@@ -131,6 +136,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       .eq("user_id", user.id)
       .eq("is_active", true),
     supabase.from("profiles").select("plan").eq("id", user.id).single(),
+    syncSetupProgress(supabase, user.id),
+    fetchNicheWeekInsights(supabase, user.id),
   ]);
 
   const plan = (profile?.plan ?? "free") as Plan;
@@ -145,6 +152,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       <div className="p-6 lg:p-8">
         <UpgradeTopBanner plan={plan} />
+        <PushNotificationBanner />
 
         {showTour && (
           <div className="dash-welcome-toast mb-6">
@@ -159,6 +167,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             user.email ? `Bienvenido, ${user.email}` : "Bienvenido."
           }
         />
+
+        <SetupProgress state={setupState} />
+        <NicheWeekCard insights={nicheInsights} />
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
           <StatCard

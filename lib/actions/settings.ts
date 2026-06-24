@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { DraftTone } from "@/lib/claude/tone";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "./product";
@@ -19,6 +20,8 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
   const fullName = (formData.get("full_name") as string)?.trim() || null;
   const notifyEmail = formData.get("notify_email") === "on";
   const notifySlack = formData.get("notify_slack") === "on";
+  const notifyPush = formData.get("notify_push") === "on";
+  const weeklyDigest = formData.get("weekly_digest") === "on";
   const slackWebhook = (formData.get("slack_webhook_url") as string)?.trim() || null;
   const minScoreRaw = parseInt(formData.get("min_intent_score") as string, 10);
   const minIntentScore = Number.isInteger(minScoreRaw)
@@ -31,6 +34,8 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
       full_name: fullName,
       notify_email: notifyEmail,
       notify_slack: notifySlack,
+      notify_push: notifyPush,
+      weekly_digest: weeklyDigest,
       slack_webhook_url: notifySlack ? slackWebhook : null,
       min_intent_score: minIntentScore,
     })
@@ -42,6 +47,29 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
 
   revalidatePath("/settings");
   revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function updateDraftTone(tone: DraftTone): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "No autenticado" };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ draft_tone: tone })
+    .eq("id", user.id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/settings");
   return { success: true };
 }
 

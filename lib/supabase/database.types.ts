@@ -19,9 +19,17 @@ export type Database = {
           slack_webhook_url: string | null;
           notify_email: boolean;
           notify_slack: boolean;
+          notify_push: boolean;
           min_intent_score: number;
           payment_customer_id: string | null;
           payment_subscription_id: string | null;
+          setup_product_done: boolean;
+          setup_keyword_done: boolean;
+          setup_signal_received: boolean;
+          setup_draft_copied: boolean;
+          setup_completed: boolean;
+          draft_tone: string;
+          weekly_digest: boolean;
           created_at: string;
         };
         Insert: {
@@ -33,9 +41,17 @@ export type Database = {
           slack_webhook_url?: string | null;
           notify_email?: boolean;
           notify_slack?: boolean;
+          notify_push?: boolean;
           min_intent_score?: number;
           payment_customer_id?: string | null;
           payment_subscription_id?: string | null;
+          setup_product_done?: boolean;
+          setup_keyword_done?: boolean;
+          setup_signal_received?: boolean;
+          setup_draft_copied?: boolean;
+          setup_completed?: boolean;
+          draft_tone?: string;
+          weekly_digest?: boolean;
           created_at?: string;
         };
         Update: {
@@ -47,9 +63,17 @@ export type Database = {
           slack_webhook_url?: string | null;
           notify_email?: boolean;
           notify_slack?: boolean;
+          notify_push?: boolean;
           min_intent_score?: number;
           payment_customer_id?: string | null;
           payment_subscription_id?: string | null;
+          setup_product_done?: boolean;
+          setup_keyword_done?: boolean;
+          setup_signal_received?: boolean;
+          setup_draft_copied?: boolean;
+          setup_completed?: boolean;
+          draft_tone?: string;
+          weekly_digest?: boolean;
           created_at?: string;
         };
         Relationships: [];
@@ -161,6 +185,8 @@ export type Database = {
           draft_reply: string | null;
           draft_copied: boolean;
           draft_copied_at: string | null;
+          draft_regenerations: number;
+          dismiss_reason: string | null;
           reply_url: string | null;
           found_at: string;
           alerted_at: string | null;
@@ -182,6 +208,8 @@ export type Database = {
           draft_reply?: string | null;
           draft_copied?: boolean;
           draft_copied_at?: string | null;
+          draft_regenerations?: number;
+          dismiss_reason?: string | null;
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;
@@ -203,6 +231,8 @@ export type Database = {
           draft_reply?: string | null;
           draft_copied?: boolean;
           draft_copied_at?: string | null;
+          draft_regenerations?: number;
+          dismiss_reason?: string | null;
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;
@@ -295,6 +325,59 @@ export type Database = {
           processed_at?: string;
         };
         Relationships: [];
+      };
+      cron_logs: {
+        Row: {
+          id: string;
+          ran_at: string;
+          signals_found: number;
+          status: string;
+          platform: string | null;
+        };
+        Insert: {
+          id?: string;
+          ran_at?: string;
+          signals_found?: number;
+          status: string;
+          platform?: string | null;
+        };
+        Update: {
+          id?: string;
+          ran_at?: string;
+          signals_found?: number;
+          status?: string;
+          platform?: string | null;
+        };
+        Relationships: [];
+      };
+      push_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          subscription: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          subscription: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          subscription?: Json;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;

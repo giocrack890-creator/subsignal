@@ -9,6 +9,8 @@ import type { RawPost } from "@/lib/monitors/types";
 import { sendNotification, type NotificationPayload } from "@/lib/notifications";
 import { scorePost } from "@/lib/scoring";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { markSetupSignalReceived } from "@/lib/setup/progress";
+import { sendPushToUser } from "@/lib/push/send";
 import { truncate } from "@/lib/utils";
 import type { Platform, Plan } from "@/types";
 
@@ -34,9 +36,10 @@ interface KeywordRow {
     email: string | null;
     plan: Plan;
     min_intent_score: number;
-    notify_email: boolean;
-    notify_slack: boolean;
-    slack_webhook_url: string | null;
+  notify_email: boolean;
+  notify_slack: boolean;
+  notify_push: boolean;
+  slack_webhook_url: string | null;
   };
   user_products: {
     name: string;
@@ -160,6 +163,16 @@ async function processPostForKeyword(
 
   result.signalsCreated++;
 
+  await markSetupSignalReceived(keyword.user_id);
+
+  if (scoreResult.score >= 9) {
+    void sendPushToUser(keyword.user_id, {
+      title: `🔥 Señal ${scoreResult.score}/10`,
+      body: post.title ?? "Nueva señal de alta intención",
+      signalId: signal.id,
+    }).catch(() => undefined);
+  }
+
   const profile = keyword.profiles;
   let draftUrl = `${getAppUrl()}/drafts?signal=${signal.id}`;
 
@@ -249,6 +262,7 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
         min_intent_score,
         notify_email,
         notify_slack,
+        notify_push,
         slack_webhook_url
       ),
       user_products!inner (
@@ -346,6 +360,16 @@ export async function processSignals(): Promise<ProcessSignalsResult> {
       const recipient = payload.email ?? payload.userId;
       result.errors.push(`Notificación falló (${recipient}): ${msg}`);
     }
+  }
+
+  try {
+    await supabase.from("cron_logs").insert({
+      status: result.errors.length > 0 ? "partial" : "ok",
+      signals_found: result.signalsCreated,
+      platform: "all",
+    });
+  } catch {
+    // No bloquear el cron si falla el log
   }
 
   return result;

@@ -1,7 +1,12 @@
 /** Generación de borradores con Claude + verificación de límites por plan */
 
 import { getAnthropicClient, DRAFT_MODEL } from "@/lib/claude/client";
-import { buildDraftUserPrompt, DRAFT_SYSTEM_PROMPT } from "@/lib/claude/prompts";
+import {
+  buildDraftUserPrompt,
+  buildRegenerateDraftUserPrompt,
+  DRAFT_SYSTEM_PROMPT,
+} from "@/lib/claude/prompts";
+import { getDraftToneInstruction, type DraftTone } from "@/lib/claude/tone";
 import { checkAiDraftLimit } from "@/lib/payments/checks";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { withRetry } from "@/lib/utils/retry";
@@ -72,19 +77,27 @@ export async function checkDraftLimit(
 export async function generateDraftReply(input: {
   post: DraftPostInput;
   product: ProductContext;
+  tone?: DraftTone;
+  previousDraft?: string;
 }): Promise<string> {
   const client = getAnthropicClient();
+  const toneInstruction = getDraftToneInstruction(input.tone ?? "conversational");
+  const system = `${DRAFT_SYSTEM_PROMPT}\n\nTONO: ${toneInstruction}`;
+
+  const userPrompt = input.previousDraft
+    ? buildRegenerateDraftUserPrompt(input.post, input.product, input.previousDraft)
+    : buildDraftUserPrompt(input.post, input.product);
 
   return withRetry(
     async () => {
       const message = await client.messages.create({
         model: DRAFT_MODEL,
         max_tokens: 512,
-        system: DRAFT_SYSTEM_PROMPT,
+        system,
         messages: [
           {
             role: "user",
-            content: buildDraftUserPrompt(input.post, input.product),
+            content: userPrompt,
           },
         ],
       });
@@ -113,6 +126,7 @@ interface SignalDraftRow {
   platform: Platform;
   draft_reply: string | null;
   intent_reason: string | null;
+  draft_regenerations: number;
   keywords: {
     user_products: ProductContext;
   } | null;
@@ -135,6 +149,7 @@ async function loadSignalForDraft(
       platform,
       draft_reply,
       intent_reason,
+      draft_regenerations,
       keywords (
         user_products (
           name,
@@ -206,6 +221,13 @@ export async function generateDraftForSignal(input: {
     return { success: true, draft: signal.draft_reply.trim() };
   }
 
+  if (regenerate && signal.draft_regenerations >= 3) {
+    return {
+      success: false,
+      error: "Límite de regeneraciones alcanzado para esta señal",
+    };
+  }
+
   const limitCheck = await checkDraftLimit(plan, userId);
   if (!limitCheck.allowed) {
     return {
@@ -217,6 +239,14 @@ export async function generateDraftForSignal(input: {
 
   let draft: string;
   try {
+    const { data: profile } = await createAdminClient()
+      .from("profiles")
+      .select("draft_tone")
+      .eq("id", userId)
+      .single();
+
+    const tone = (profile?.draft_tone ?? "conversational") as DraftTone;
+
     draft = await generateDraftReply({
       post: {
         title: signal.title,
@@ -225,6 +255,8 @@ export async function generateDraftForSignal(input: {
         intent_reason: signal.intent_reason,
       },
       product,
+      tone,
+      previousDraft: regenerate ? signal.draft_reply ?? undefined : undefined,
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -232,9 +264,18 @@ export async function generateDraftForSignal(input: {
   }
 
   const supabase = createAdminClient();
+  const updatePayload: {
+    draft_reply: string;
+    draft_regenerations?: number;
+  } = { draft_reply: draft };
+
+  if (regenerate) {
+    updatePayload.draft_regenerations = signal.draft_regenerations + 1;
+  }
+
   const { error: updateError } = await supabase
     .from("signals")
-    .update({ draft_reply: draft })
+    .update(updatePayload)
     .eq("id", signalId)
     .eq("user_id", userId);
 

@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { DraftsList } from "@/components/drafts/drafts-list";
+import { PublishedResponsesSection } from "@/components/drafts/published-responses-section";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
+import { FirstTimeTooltip } from "@/components/ui/FirstTimeTooltip";
 import { createClient } from "@/lib/supabase/server";
 import type { Signal } from "@/types";
 
@@ -22,13 +24,23 @@ export default async function DraftsPage({ searchParams }: DraftsPageProps) {
   const params = await searchParams;
   const highlightId = params.signal;
 
-  const { data: drafts, error } = await supabase
-    .from("signals")
-    .select("*")
-    .eq("user_id", user.id)
-    .not("draft_reply", "is", null)
-    .neq("draft_reply", "")
-    .order("found_at", { ascending: false });
+  const [{ data: drafts, error }, { data: published }] = await Promise.all([
+    supabase
+      .from("signals")
+      .select("*")
+      .eq("user_id", user.id)
+      .not("draft_reply", "is", null)
+      .neq("draft_reply", "")
+      .order("found_at", { ascending: false }),
+    supabase
+      .from("signals")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "replied")
+      .not("reply_url", "is", null)
+      .order("found_at", { ascending: false })
+      .limit(20),
+  ]);
 
   if (error) {
     return (
@@ -60,12 +72,19 @@ export default async function DraftsPage({ searchParams }: DraftsPageProps) {
 
   return (
     <div className="p-6 lg:p-8">
-      <PageHeader
-        title="Borradores"
-        description="Editá, copiá y publicá tus respuestas a señales de alta intención."
-      />
+      <FirstTimeTooltip
+        id="drafts_page"
+        content="Editá, copiá y marcá como respondidas tus señales. El historial de publicaciones queda abajo."
+        position="bottom"
+      >
+        <PageHeader
+          title="Borradores"
+          description="Editá, copiá y publicá tus respuestas a señales de alta intención."
+        />
+      </FirstTimeTooltip>
       <div className="mt-8 max-w-4xl">
         <DraftsList signals={signals} highlightId={highlightId} />
+        <PublishedResponsesSection signals={(published as Signal[]) ?? []} />
       </div>
     </div>
   );

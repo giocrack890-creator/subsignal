@@ -92,3 +92,18 @@ Contenido: ${body}${intentContext}
 
 Redactá el borrador de respuesta siguiendo todas las reglas del system prompt.`;
 }
+
+export function buildRegenerateDraftUserPrompt(
+  post: DraftPostContext,
+  product: Pick<UserProduct, "name" | "description" | "target_customer" | "pain_points">,
+  previousDraft: string
+): string {
+  return `${buildDraftUserPrompt(post, product)}
+
+Generá una respuesta ALTERNATIVA al draft anterior.
+Usá un enfoque diferente: si el draft anterior era directo, este debe ser más narrativo.
+Si mencionaba el producto al final, esta versión debe construir más valor antes de mencionarlo.
+
+Draft anterior:
+${previousDraft}`;
+}

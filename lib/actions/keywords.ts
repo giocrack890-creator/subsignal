@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { ACTIVE_PLATFORMS } from "@/lib/monitors/types";
 import { checkKeywordLimit } from "@/lib/payments/checks";
+import { markSetupKeywordDone } from "@/lib/setup/progress";
 import type { Plan, Platform } from "@/types";
 import type { ActionResult } from "./product";
 
@@ -95,6 +96,8 @@ export async function createKeyword(formData: FormData): Promise<ActionResult> {
   if (error) {
     return { success: false, error: error.message };
   }
+
+  await markSetupKeywordDone(user.id);
 
   revalidatePath("/onboarding");
   revalidatePath("/keywords");

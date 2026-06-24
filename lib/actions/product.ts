@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { markSetupProductDone } from "@/lib/setup/progress";
 
 export interface ActionResult {
   success: boolean;
@@ -80,8 +81,11 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       return { success: false, error: error.message };
     }
 
+    await markSetupProductDone(user.id);
+
     revalidatePath("/onboarding");
     revalidatePath("/keywords");
+    revalidatePath("/dashboard");
     return { success: true, productId: existing.id };
   }
 
@@ -101,7 +105,10 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     return { success: false, error: error.message };
   }
 
+  await markSetupProductDone(user.id);
+
   revalidatePath("/onboarding");
   revalidatePath("/keywords");
+  revalidatePath("/dashboard");
   return { success: true, productId: data.id };
 }

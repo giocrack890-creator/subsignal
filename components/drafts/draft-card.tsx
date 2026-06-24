@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, Copy, ExternalLink } from "lucide-react";
-import { markSignalReplied, saveDraftReply } from "@/lib/actions/signals";
+import { markSignalReplied, markDraftCopied, saveDraftReply } from "@/lib/actions/signals";
 import { ScoreBadge } from "@/components/dashboard/score-badge";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,7 @@ export function DraftCard({ signal, highlighted = false }: DraftCardProps) {
     try {
       await navigator.clipboard.writeText(draft);
       setCopied(true);
+      void markDraftCopied(signal.id, draft);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setError("No se pudo copiar al portapapeles");

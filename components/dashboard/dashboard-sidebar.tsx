@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { CronStatusIndicator } from "@/components/dashboard/cron-status-indicator";
 import { cn } from "@/lib/utils";
 import type { Plan } from "@/types";
 
@@ -70,6 +71,7 @@ export function DashboardSidebar({ displayName, plan }: DashboardSidebarProps) {
             >
               <Icon className="h-4 w-4 shrink-0 opacity-80" aria-hidden="true" />
               {item.label}
+              {item.href === "/signals" && <CronStatusIndicator />}
             </Link>
           );
         })}

@@ -11,6 +11,7 @@ import {
   User,
 } from "lucide-react";
 import { deleteAccount, updateSettings } from "@/lib/actions/settings";
+import { DraftToneSection } from "@/components/settings/draft-tone-section";
 import { RestartTourButton } from "@/components/settings/restart-tour-button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PlanBadge } from "@/components/dashboard/plan-badge";
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { getPlanLimits, getPlanCatalog } from "@/lib/payments/plans";
+import type { DraftTone } from "@/lib/claude/tone";
 import type { Plan, Profile } from "@/types";
 
 interface SettingsFormProps {
@@ -57,6 +59,8 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
   const [error, setError] = useState<string | null>(null);
   const [notifyEmail, setNotifyEmail] = useState(profile.notify_email);
   const [notifySlack, setNotifySlack] = useState(profile.notify_slack);
+  const [notifyPush, setNotifyPush] = useState(profile.notify_push ?? false);
+  const [weeklyDigest, setWeeklyDigest] = useState(profile.weekly_digest ?? true);
 
   const plan = profile.plan as Plan;
   const limits = getPlanLimits(plan);
@@ -68,6 +72,8 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
     setError(null);
     if (notifyEmail) formData.set("notify_email", "on");
     if (notifySlack) formData.set("notify_slack", "on");
+    if (notifyPush) formData.set("notify_push", "on");
+    if (weeklyDigest) formData.set("weekly_digest", "on");
 
     startTransition(async () => {
       const result = await updateSettings(formData);
@@ -184,6 +190,34 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
               </div>
             )}
 
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">Notificaciones push</p>
+                <p className="text-xs text-foreground-muted">
+                  Alertas en el navegador para señales con score ≥ 9.
+                </p>
+              </div>
+              <Switch
+                checked={notifyPush}
+                onChange={setNotifyPush}
+                aria-label="Notificaciones push"
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">Resumen semanal por email</p>
+                <p className="text-xs text-foreground-muted">
+                  Un digest cada lunes con tus métricas y mejores señales.
+                </p>
+              </div>
+              <Switch
+                checked={weeklyDigest}
+                onChange={setWeeklyDigest}
+                aria-label="Resumen semanal por email"
+              />
+            </div>
+
             <div>
               <Label htmlFor="min_intent_score">Score mínimo para alertas</Label>
               <Input
@@ -215,6 +249,10 @@ export function SettingsForm({ profile, email, userId, avatarUrl }: SettingsForm
           </Button>
         </section>
       </form>
+
+      <DraftToneSection
+        initialTone={(profile.draft_tone ?? "conversational") as DraftTone}
+      />
 
       <section className="dash-card p-6">
         <SectionHeader
