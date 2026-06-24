@@ -30,9 +30,9 @@ export const PLATFORM_META: Record<Platform, PlatformMeta> = {
     blockers: [],
     optionsToEvaluate: [],
     implementationNotes:
-      "Requiere TWITTER_BEARER_TOKEN de developer.x.com. API Basic tiene costo mensual.",
-    requiredEnvVars: ["TWITTER_BEARER_TOKEN"],
-    dataSource: "X API v2 — tweets/search/recent",
+      "Requiere GETXAPI_API_KEY de getxapi.com. Búsqueda vía /twitter/tweet/advanced_search (~$0.001 por llamada).",
+    requiredEnvVars: ["GETXAPI_API_KEY"],
+    dataSource: "GetXAPI — twitter/tweet/advanced_search",
   },
   ih: {
     platform: "ih",
