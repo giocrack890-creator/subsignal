@@ -26,10 +26,27 @@ export function OnboardingWizard({
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(initialStep);
   const [savedProductId, setSavedProductId] = useState<string | null>(productId);
+  const [productMeta, setProductMeta] = useState<{
+    name: string;
+    description: string;
+    targetCustomer: string;
+    painPoints: string;
+    websiteUrl?: string;
+  } | null>(null);
   const [, startTransition] = useTransition();
 
-  function handleProductSaved(id: string) {
+  function handleProductSaved(
+    id: string,
+    meta?: {
+      name: string;
+      description: string;
+      targetCustomer: string;
+      painPoints: string;
+      websiteUrl?: string;
+    }
+  ) {
     setSavedProductId(id);
+    if (meta) setProductMeta(meta);
     setStep(2);
   }
 
@@ -48,7 +65,7 @@ export function OnboardingWizard({
           <Sparkles className="h-6 w-6 text-primary" strokeWidth={1.75} aria-hidden="true" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          {step === 1 ? "Bienvenido a SubSignal" : "Casi listo"}
+          {step === 1 ? "Bienvenido" : "Casi listo"}
         </h1>
         <p className="mt-2 text-sm text-foreground-secondary">
           {userName ? `Hola, ${userName.split(" ")[0]}. ` : ""}
@@ -99,6 +116,14 @@ export function OnboardingWizard({
               <KeywordForm
                 productId={savedProductId}
                 plan={plan}
+                productName={productMeta?.name ?? product?.name}
+                productDescription={productMeta?.description ?? product?.description ?? undefined}
+                targetCustomer={productMeta?.targetCustomer ?? product?.target_customer ?? undefined}
+                painPoints={
+                  productMeta?.painPoints ??
+                  product?.pain_points?.join(", ")
+                }
+                websiteUrl={productMeta?.websiteUrl}
                 onSuccess={handleKeywordCreated}
                 submitLabel="Empezar a monitorear"
                 ctaVariant="accent"

@@ -9,11 +9,17 @@ import {
   KeywordPreview,
   PlatformSelector,
 } from "@/components/keywords/platform-selector";
+import { KeywordSuggestions } from "@/components/keywords/keyword-suggestions";
 import type { Plan } from "@/types";
 
 interface KeywordFormProps {
   productId: string;
   plan: Plan;
+  productName?: string;
+  productDescription?: string;
+  targetCustomer?: string;
+  painPoints?: string;
+  websiteUrl?: string;
   onSuccess?: () => void;
   submitLabel?: string;
   ctaVariant?: "primary" | "accent";
@@ -23,6 +29,11 @@ interface KeywordFormProps {
 export function KeywordForm({
   productId,
   plan,
+  productName,
+  productDescription,
+  targetCustomer,
+  painPoints,
+  websiteUrl,
   onSuccess,
   submitLabel = "Agregar keyword",
   ctaVariant = "primary",
@@ -61,6 +72,15 @@ export function KeywordForm({
           placeholder="customer feedback tool"
           required
           minLength={2}
+        />
+        <KeywordSuggestions
+          productName={productName}
+          description={productDescription}
+          targetCustomer={targetCustomer}
+          painPoints={painPoints}
+          websiteUrl={websiteUrl}
+          onSelect={setTerm}
+          className="mt-3"
         />
       </div>
 

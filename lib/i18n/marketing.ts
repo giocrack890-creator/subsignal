@@ -52,7 +52,7 @@ export interface MarketingStrings {
 const ES: MarketingStrings = {
   hero: {
     tagline: "Encontrá la conversación y sabé qué responder",
-    titleLine1: "SubSignal encuentra clientes",
+    titleLine1: "Encontrá clientes",
     titleLine2: "y te dice qué responder",
     features: [
       { label: "Monitoreo Reddit 24/7" },
@@ -75,7 +75,7 @@ const ES: MarketingStrings = {
     subtitle: "Lo esencial antes de empezar a monitorear.",
     items: [
       {
-        q: "¿SubSignal publica respuestas automáticamente?",
+        q: "¿Publicamos respuestas automáticamente?",
         a: "No. Generamos borradores para que vos los edites y publiques. Nunca posteamos en tu nombre.",
       },
       {
@@ -122,7 +122,7 @@ const ES: MarketingStrings = {
 const EN: MarketingStrings = {
   hero: {
     tagline: "Find the thread and know what to say",
-    titleLine1: "SubSignal finds buyers",
+    titleLine1: "Find buyers",
     titleLine2: "and tells you what to reply",
     features: [
       { label: "24/7 Reddit monitoring" },
@@ -145,7 +145,7 @@ const EN: MarketingStrings = {
     subtitle: "The essentials before you start monitoring.",
     items: [
       {
-        q: "Does SubSignal post replies automatically?",
+        q: "Does the app post replies automatically?",
         a: "No. We generate drafts for you to edit and publish. We never post on your behalf.",
       },
       {

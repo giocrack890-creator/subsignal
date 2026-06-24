@@ -78,7 +78,7 @@ export const PRICING_FAQ = [
   },
   {
     q: "¿Qué pasa si supero el límite de mi plan?",
-    a: "SubSignal te avisa con un modal de upgrade. No se pierden tus datos: podés seguir viendo señales existentes mientras decidís si escalás.",
+    a: "Te avisamos con un modal de upgrade. No se pierden tus datos: podés seguir viendo señales existentes mientras decidís si escalás.",
   },
   {
     q: "¿Puedo bajar de plan?",

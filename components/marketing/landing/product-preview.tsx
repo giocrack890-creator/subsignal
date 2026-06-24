@@ -56,7 +56,7 @@ export function LandingProductPreview() {
               <span className="h-2.5 w-2.5 rounded-full bg-warning/60" />
               <span className="h-2.5 w-2.5 rounded-full bg-primary/60" />
               <span className="ml-3 text-xs text-foreground-muted">
-                app.subsignal.io/dashboard
+                tu-app/dashboard
               </span>
             </div>
 

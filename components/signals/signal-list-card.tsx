@@ -8,6 +8,7 @@ import { useSignalPanelOptional } from "@/components/dashboard/signal-panel-cont
 import { Tooltip } from "@/components/ui/tooltip";
 import { PlatformBadge } from "@/components/ui/platform-badge";
 import { formatRelativeTime, cn } from "@/lib/utils";
+import { assessShillRisk, shillRiskLabel } from "@/lib/shill/heuristics";
 import type { Plan, Platform, Signal } from "@/types";
 
 export type SignalListView = "list" | "cards";
@@ -44,6 +45,17 @@ export function SignalListCard({
   const bodyText = signal.body ?? signal.intent_reason ?? "";
   const isList = view === "list";
   const isDismissed = signal.status === "dismissed";
+  const shillRisk = signal.author_meta?.shill_risk
+    ? {
+        risk: signal.author_meta.shill_risk,
+        reasons: signal.author_meta.shill_reasons ?? [],
+      }
+    : assessShillRisk({
+        author: signal.author,
+        title: signal.title,
+        body: signal.body,
+        platform: signal.platform,
+      });
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -148,6 +160,20 @@ export function SignalListCard({
               <span className="rounded-full bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[10px] font-medium text-[#34D399]">
                 Nueva
               </span>
+            )}
+            {shillRisk && (
+              <Tooltip content={shillRisk.reasons.join(" · ")}>
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    shillRisk.risk === "high"
+                      ? "bg-destructive/15 text-destructive"
+                      : "bg-warning/15 text-warning"
+                  )}
+                >
+                  {shillRiskLabel(shillRisk.risk)}
+                </span>
+              </Tooltip>
             )}
           </div>
 

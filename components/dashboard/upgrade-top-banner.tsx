@@ -5,7 +5,7 @@ import Link from "next/link";
 import { X, Zap } from "lucide-react";
 import type { Plan } from "@/types";
 
-export const UPGRADE_BANNER_DISMISSED_KEY = "subsignal_upgrade_banner_dismissed";
+export const UPGRADE_BANNER_DISMISSED_KEY = "intent_monitor_upgrade_banner_dismissed";
 
 interface UpgradeTopBannerProps {
   plan: Plan;

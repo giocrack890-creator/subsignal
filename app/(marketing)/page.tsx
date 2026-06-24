@@ -1,7 +1,9 @@
 import { LandingNavbar } from "@/components/marketing/landing/navbar";
 import { LandingHero } from "@/components/marketing/landing/hero";
+import { LandingWhyReddit } from "@/components/marketing/landing/why-reddit";
+import { LandingRedditChallenges } from "@/components/marketing/landing/reddit-challenges";
+import { LandingHowItWorks } from "@/components/marketing/landing/how-it-works";
 import { LandingProductPreview } from "@/components/marketing/landing/product-preview";
-import { ProcessFlow } from "@/components/marketing/ProcessFlow";
 import { LandingPlatforms } from "@/components/marketing/landing/platforms";
 import { LandingFeatures } from "@/components/marketing/landing/features";
 import { LandingPricing } from "@/components/marketing/landing/pricing";
@@ -16,8 +18,10 @@ export default function HomePage() {
       <LandingNavbar />
       <main id="main-content">
         <LandingHero />
+        <LandingWhyReddit />
+        <LandingRedditChallenges />
+        <LandingHowItWorks />
         <LandingProductPreview />
-        <ProcessFlow />
         <LandingPlatforms />
         <LandingFeatures />
         <LandingPricing />

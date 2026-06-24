@@ -1,4 +1,4 @@
-# Landing Page Overrides — SubSignal
+# Landing Page Overrides — Threadradar
 
 > Overrides `MASTER.md` for the marketing landing only.
 

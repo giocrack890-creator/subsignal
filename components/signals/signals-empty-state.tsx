@@ -98,7 +98,7 @@ export function SignalsEmptyState({
         Monitoreando en background
       </h3>
       <p className="mt-3 text-[13px] leading-[1.7] text-[#6B6B6B]">
-        SubSignal escanea Hacker News cada 15 minutos.
+        Escaneamos Hacker News cada 15 minutos.
         <br />
         Las señales aparecen acá en tiempo real.
       </p>

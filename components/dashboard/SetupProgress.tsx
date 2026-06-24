@@ -6,7 +6,7 @@ import { Check, ChevronDown } from "lucide-react";
 import type { SetupProgressState } from "@/lib/setup/progress";
 import { cn } from "@/lib/utils";
 
-const CELEBRATION_KEY = "subsignal_setup_celebrated";
+const CELEBRATION_KEY = "intent_monitor_setup_celebrated";
 
 interface SetupStep {
   id: string;
@@ -79,7 +79,7 @@ export function SetupProgress({ state }: SetupProgressProps) {
       >
         <Check className="h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2.5} />
         <p className="text-[12px] text-[#B4B4B4]">
-          Setup completo — SubSignal está monitoreando por vos.
+          Setup completo — el monitoreo está activo por vos.
         </p>
       </div>
     );

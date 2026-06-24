@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppLogo } from "@/components/brand/app-logo";
 
 const FOOTER_LINKS = [
   { href: "/#como-funciona", label: "Cómo funciona" },
@@ -14,10 +15,7 @@ const LEGAL_LINKS = [
   { href: "/refunds", label: "Reembolsos" },
 ];
 
-const SOCIAL = [
-  { label: "X (Twitter)", href: "https://x.com/subsignal", abbr: "X" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/subsignal", abbr: "in" },
-];
+const SOCIAL: { label: string; href: string; abbr: string }[] = [];
 
 export function LandingFooter() {
   return (
@@ -25,12 +23,7 @@ export function LandingFooter() {
       <div className="container-marketing mx-auto max-w-5xl px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <span className="flex items-center gap-2 font-semibold text-foreground">
-              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
-                SS
-              </span>
-              SubSignal
-            </span>
+            <AppLogo variant="icon" size="sm" />
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-foreground-secondary">
               Intent monitoring para founders. Encontrá clientes donde ya están preguntando.
             </p>
@@ -94,7 +87,7 @@ export function LandingFooter() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-xs text-foreground-muted sm:flex-row">
-          <span>© {new Date().getFullYear()} SubSignal</span>
+          <span>© {new Date().getFullYear()}</span>
           <span>Hecho para founders que venden con valor, no con spam.</span>
         </div>
       </div>

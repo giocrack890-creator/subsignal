@@ -147,7 +147,7 @@ const LIMIT_COPY: Record<
   platforms: {
     title: "Más plataformas",
     description: (plan) =>
-      `${plan.name} desbloquea monitoreo en todas las plataformas activas de SubSignal.`,
+      `${plan.name} desbloquea monitoreo en todas las plataformas activas.`,
   },
   conversion_tracking: {
     title: "Conversion tracking",

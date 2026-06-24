@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 function getVapidConfig() {
   const publicKey = process.env.NEXT_PUBLIC_VAPID_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
-  const email = process.env.VAPID_EMAIL ?? "hello@subsignal.io";
+  const email = process.env.VAPID_EMAIL ?? "hello@tudominio.com";
 
   if (!publicKey || !privateKey) {
     return null;

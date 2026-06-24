@@ -11,7 +11,7 @@ import { SignalsEmptyState } from "@/components/signals/signals-empty-state";
 import type { SignalsEmptyContext } from "@/lib/signals/page-stats";
 import type { Plan, Signal } from "@/types";
 
-const VIEW_STORAGE_KEY = "subsignal_signals_view";
+const VIEW_STORAGE_KEY = "intent_monitor_signals_view";
 
 interface SignalsFeedProps {
   signals: Signal[];

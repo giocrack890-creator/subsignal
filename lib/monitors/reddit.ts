@@ -3,9 +3,13 @@
 import { withRetry } from "@/lib/utils/retry";
 import { dedupePostsByExternalId } from "./dedupe";
 import { PLATFORM_META } from "./status";
+import {
+  getRedditAccessToken,
+  getRedditLookbackHours,
+  getRedditUserAgent,
+} from "./reddit-shared";
 import type { PlatformConfig, PlatformMonitor, RawPost } from "./types";
 
-const REDDIT_LOOKBACK_HOURS = 24;
 const DEFAULT_SUBREDDITS = [
   "startups",
   "SaaS",
@@ -32,74 +36,6 @@ interface RedditListing {
   data?: {
     children?: RedditListingChild[];
   };
-}
-
-interface RedditTokenCache {
-  accessToken: string;
-  expiresAtMs: number;
-}
-
-let tokenCache: RedditTokenCache | null = null;
-
-function getRedditUserAgent(): string {
-  const custom = process.env.REDDIT_USER_AGENT?.trim();
-  if (custom) return custom;
-  return "SubSignal/1.0 (intent monitoring; contact: hello@subsignal.app)";
-}
-
-function getRedditCredentials(): { clientId: string; clientSecret: string } | null {
-  const clientId = process.env.REDDIT_CLIENT_ID?.trim();
-  const clientSecret = process.env.REDDIT_CLIENT_SECRET?.trim();
-  if (!clientId || !clientSecret) return null;
-  return { clientId, clientSecret };
-}
-
-function assertRedditConfigured(): void {
-  if (!getRedditCredentials()) {
-    throw new Error(
-      "Reddit no configurado. Definí REDDIT_CLIENT_ID y REDDIT_CLIENT_SECRET en las env vars (app en reddit.com/prefs/apps, tipo script)."
-    );
-  }
-}
-
-async function getRedditAccessToken(): Promise<string> {
-  assertRedditConfigured();
-  const { clientId, clientSecret } = getRedditCredentials()!;
-
-  if (tokenCache && tokenCache.expiresAtMs > Date.now() + 60_000) {
-    return tokenCache.accessToken;
-  }
-
-  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
-  const response = await fetch("https://www.reddit.com/api/v1/access_token", {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      "User-Agent": getRedditUserAgent(),
-    },
-    body: "grant_type=client_credentials",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Reddit OAuth error: ${response.status} ${response.statusText}`);
-  }
-
-  const data = (await response.json()) as {
-    access_token?: string;
-    expires_in?: number;
-  };
-
-  if (!data.access_token) {
-    throw new Error("Reddit OAuth no devolvió access_token");
-  }
-
-  tokenCache = {
-    accessToken: data.access_token,
-    expiresAtMs: Date.now() + (data.expires_in ?? 3600) * 1000,
-  };
-
-  return data.access_token;
 }
 
 function listingToPosts(listing: RedditListing, sinceUnix: number): RawPost[] {
@@ -159,7 +95,8 @@ async function searchRedditPosts(
 
   const accessToken = await getRedditAccessToken();
   const maxResults = config?.maxResults ?? 20;
-  const sinceUnix = Math.floor(Date.now() / 1000) - REDDIT_LOOKBACK_HOURS * 3600;
+  const lookbackHours = getRedditLookbackHours();
+  const sinceUnix = Math.floor(Date.now() / 1000) - lookbackHours * 3600;
   const subreddits =
     config?.subreddits?.length && config.subreddits.length > 0
       ? config.subreddits

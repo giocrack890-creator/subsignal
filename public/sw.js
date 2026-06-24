@@ -1,6 +1,6 @@
 self.addEventListener("push", (event) => {
   const data = event.data?.json() ?? {};
-  const title = data.title ?? "SubSignal";
+  const title = data.title ?? "Nueva señal";
   const options = {
     body: data.body ?? "",
     icon: data.icon ?? "/window.svg",

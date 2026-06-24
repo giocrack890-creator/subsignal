@@ -5,9 +5,9 @@ export const metadata: Metadata = {
   description:
     "Monitorea Hacker News, puntúa conversaciones por intención de compra y genera borradores de respuesta genuinos con IA.",
   openGraph: {
-    title: "SubSignal — Intent monitoring para founders SaaS",
+    title: "Intent monitoring para founders SaaS",
     description:
-      "Dejá de buscar clientes manualmente en HN. SubSignal encuentra señales de alta intención y te ayuda a responder con valor.",
+      "Dejá de buscar clientes manualmente en HN. Encontrá señales de alta intención y respondé con valor.",
     type: "website",
   },
 };

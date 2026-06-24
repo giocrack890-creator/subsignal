@@ -29,7 +29,7 @@ function buildSlackBlocks(payload: NotificationPayload) {
       elements: [
         {
           type: "mrkdwn",
-          text: "Alertas de *SubSignal* · respondé mientras la intención está caliente",
+          text: "Alertas de intención · respondé mientras la intención está caliente",
         },
       ],
     },
@@ -82,8 +82,8 @@ export async function sendSlackNotification(
   const blocks = buildSlackBlocks(payload);
   const fallback =
     payload.signals.length === 1
-      ? `Nueva señal SubSignal: ${payload.signals[0].title ?? "Sin título"}`
-      : `${payload.signals.length} nuevas señales SubSignal`;
+      ? `Nueva señal: ${payload.signals[0].title ?? "Sin título"}`
+      : `${payload.signals.length} nuevas señales`;
 
   const response = await fetch(webhookUrl, {
     method: "POST",

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AppLogo } from "@/components/brand/app-logo";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/auth/urls";
@@ -37,21 +38,13 @@ export function AuthForm({ errorMessage }: AuthFormProps) {
 
   return (
     <div className="w-full">
-      <div className="mb-8 text-center">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-            SS
-          </span>
-          <span className="text-lg font-semibold text-foreground">SubSignal</span>
-        </Link>
+      <div className="mb-8 flex justify-center">
+        <AppLogo variant="icon" size="lg" href="/" />
       </div>
 
       <div className="border-glow-card rounded-2xl bg-background-card p-6 sm:p-8">
         <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
-          Entrá a SubSignal
+          Entrar
         </h1>
         <p className="mt-3 text-center text-[15px] leading-relaxed text-foreground-secondary">
           Un click con Google y empezás a monitorear señales de intención.

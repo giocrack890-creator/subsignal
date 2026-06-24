@@ -15,11 +15,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SubSignal — Intent monitoring para founders SaaS",
-    template: "%s | SubSignal",
+    default: "Intent monitoring para founders SaaS",
+    template: "%s",
   },
   description:
     "Monitorea Reddit, Hacker News y más. Encuentra conversaciones de alta intención y genera borradores de respuesta genuinos.",
+  icons: {
+    icon: "/branding/icon-mark.png",
+    apple: "/branding/icon-mark.png",
+  },
 };
 
 export default function RootLayout({

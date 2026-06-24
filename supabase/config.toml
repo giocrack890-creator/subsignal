@@ -1,7 +1,7 @@
-# SubSignal — Supabase local config
+# Threadradar — Supabase local config
 # Docs: https://supabase.com/docs/guides/cli/config
 
-project_id = "subsignal"
+project_id = "threadradar"
 
 [api]
 enabled = true

@@ -7,12 +7,20 @@ import { SectionHeading } from "@/components/marketing/landing/section-heading";
 
 const FAQ_ITEMS = [
   {
-    q: "¿SubSignal publica respuestas automáticamente?",
-    a: "No. Generamos borradores para que vos los edites y publiques. Nunca posteamos en tu nombre.",
+    q: "¿Publicamos respuestas automáticamente?",
+    a: "No. Generamos borradores para que vos los edites y publiques. Nunca posteamos en tu nombre — así evitás baneos y sonás auténtico.",
   },
   {
-    q: "¿Qué plataformas están disponibles hoy?",
-    a: "Hacker News está activo. Reddit, Twitter/X e Indie Hackers están en el roadmap y se irán habilitando por plan.",
+    q: "¿Puedo monitorear mi marca y competidores?",
+    a: "Sí. Agregá keywords con el nombre de tu producto, competidores o frases como 'alternative to X'. Recibís alertas cuando aparecen en Reddit o Hacker News.",
+  },
+  {
+    q: "¿Cómo detectan cuentas sospechosas o shills?",
+    a: "Analizamos patrones del autor y del contenido (cuentas nuevas, lenguaje promocional coordinado, etc.) y marcamos señales de riesgo para que priorices conversaciones reales.",
+  },
+  {
+    q: "¿Qué plataformas están disponibles?",
+    a: "Hacker News está activo en el plan Free. Reddit desde Starter. Twitter/X e Indie Hackers en planes superiores.",
   },
   {
     q: "¿Necesito tarjeta de crédito para empezar?",
@@ -20,7 +28,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "¿Cómo funciona el scoring de intención?",
-    a: "Claude analiza cada post contra tus keywords y contexto de producto. Asigna un puntaje del 1 al 10 según qué tan probable es que la persona esté buscando una solución como la tuya.",
+    a: "Claude analiza cada post contra tus keywords y contexto de producto. Asigna un puntaje del 1 al 10 según qué tan probable es que la persona busque una solución como la tuya.",
   },
   {
     q: "¿Puedo cancelar cuando quiera?",
@@ -41,7 +49,7 @@ export function LandingFaq() {
         <SectionHeading
           id="faq-heading"
           title="Preguntas frecuentes"
-          subtitle="Lo esencial antes de empezar a monitorear."
+          subtitle="Lo esencial antes de empezar a monitorear Reddit y Hacker News."
         />
 
         <div className="mx-auto mt-12 max-w-2xl divide-y divide-border rounded-2xl border border-border bg-background-card">
@@ -56,7 +64,9 @@ export function LandingFaq() {
                     aria-expanded={isOpen}
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                   >
-                    <span className="text-[15px] font-semibold text-foreground">{item.q}</span>
+                    <span className="text-[15px] font-semibold text-foreground">
+                      {item.q}
+                    </span>
                     <ChevronDown
                       className={`h-5 w-5 shrink-0 text-foreground-muted transition-transform duration-200 ${
                         isOpen ? "rotate-180" : ""

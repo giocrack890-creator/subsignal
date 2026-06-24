@@ -17,7 +17,7 @@ export default function NotFound() {
         </Link>
         <Link href="/login">
           <Button variant="accent" size="md">
-            Entrar a SubSignal
+            Entrar
           </Button>
         </Link>
       </div>

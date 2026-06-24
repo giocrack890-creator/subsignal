@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AppLogo } from "@/components/brand/app-logo";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -27,15 +28,7 @@ export function LandingNavbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-5 lg:px-8">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-        <Link
-          href={homeHref}
-          className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-            SS
-          </span>
-          <span className="text-lg font-semibold tracking-tight">SubSignal</span>
-        </Link>
+        <AppLogo variant="icon" size="md" href={homeHref} />
 
         <nav
           className="pill-dock hidden items-center gap-0.5 rounded-full px-1.5 py-1 lg:flex"

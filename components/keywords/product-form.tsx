@@ -10,7 +10,16 @@ import type { UserProduct } from "@/types";
 
 interface ProductFormProps {
   product?: UserProduct | null;
-  onSuccess?: (productId: string) => void;
+  onSuccess?: (
+    productId: string,
+    meta?: {
+      name: string;
+      description: string;
+      targetCustomer: string;
+      painPoints: string;
+      websiteUrl?: string;
+    }
+  ) => void;
   submitLabel?: string;
 }
 
@@ -20,10 +29,16 @@ export function ProductForm({
   submitLabel = "Guardar producto",
 }: ProductFormProps) {
   const [error, setError] = useState<string | null>(null);
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(formData: FormData) {
     setError(null);
+    const name = (formData.get("name") as string)?.trim() ?? "";
+    const description = (formData.get("description") as string)?.trim() ?? "";
+    const targetCustomer = (formData.get("target_customer") as string)?.trim() ?? "";
+    const painPoints = (formData.get("pain_points") as string)?.trim() ?? "";
+
     startTransition(async () => {
       const result = await saveProduct(formData);
       if (!result.success) {
@@ -31,7 +46,13 @@ export function ProductForm({
         return;
       }
       if (result.productId && onSuccess) {
-        onSuccess(result.productId);
+        onSuccess(result.productId, {
+          name,
+          description,
+          targetCustomer,
+          painPoints,
+          websiteUrl: websiteUrl.trim() || undefined,
+        });
       }
     });
   }
@@ -39,12 +60,27 @@ export function ProductForm({
   return (
     <form action={handleSubmit} className="space-y-5">
       <div>
+        <Label htmlFor="website_url">Sitio web (opcional)</Label>
+        <Input
+          id="website_url"
+          name="website_url"
+          type="url"
+          value={websiteUrl}
+          onChange={(e) => setWebsiteUrl(e.target.value)}
+          placeholder="https://tusitio.com"
+        />
+        <p className="mt-1.5 text-xs text-foreground-muted">
+          Lo usamos para sugerir keywords de marca y competidores.
+        </p>
+      </div>
+
+      <div>
         <Label htmlFor="name">Nombre del producto</Label>
         <Input
           id="name"
           name="name"
           defaultValue={product?.name ?? ""}
-          placeholder="SubSignal"
+          placeholder="Mi producto"
           required
           minLength={2}
         />

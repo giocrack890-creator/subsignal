@@ -11,14 +11,14 @@ const FAQ_ITEMS = [
       "Sí. Podés cancelar desde tu cuenta en cualquier momento. No hay períodos mínimos ni penalidades. Al cancelar, tu plan sigue activo hasta el final del período pagado.",
   },
   {
-    question: "¿Qué plataformas monitorea SubSignal?",
+    question: "¿Qué plataformas monitorea?",
     answer:
       "Actualmente Hacker News está activo. Reddit está disponible en planes Starter y Pro. Twitter/X e Indie Hackers están disponibles en el plan Pro y se están expandiendo. Avisamos por email cuando agregamos nuevas plataformas.",
   },
   {
     question: "¿Qué es un draft de respuesta?",
     answer:
-      "Cuando SubSignal encuentra una conversación donde tu cliente ideal pide exactamente lo que vos vendés, genera un borrador de respuesta genuino y útil listo para copiar. Vos lo revisás, lo ajustás si querés, y lo publicás desde tu cuenta. Nunca publicamos automáticamente — siempre sos vos.",
+      "Cuando encontramos una conversación donde tu cliente ideal pide exactamente lo que vos vendés, generamos un borrador de respuesta genuino y útil listo para copiar. Vos lo revisás, lo ajustás si querés, y lo publicás desde tu cuenta. Nunca publicamos automáticamente — siempre sos vos.",
   },
   {
     question: "¿Cómo cobran? ¿Puedo pagar con tarjeta?",

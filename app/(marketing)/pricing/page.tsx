@@ -4,7 +4,7 @@ import { LandingNavbar } from "@/components/marketing/landing/navbar";
 import { PricingPageContent } from "./pricing-content";
 
 export const metadata: Metadata = {
-  title: "Precios — SubSignal",
+  title: "Precios",
   description:
     "Planes Free, Starter y Pro. Empezá gratis con Hacker News. Upgrades cuando lo necesitás, sin contratos ni períodos de aviso.",
 };

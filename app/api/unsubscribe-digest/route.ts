@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     .eq("id", userId);
 
   return new NextResponse(
-    "<html><body style='font-family:sans-serif;padding:24px;'><h1>Suscripción cancelada</h1><p>Ya no recibirás el resumen semanal de SubSignal.</p></body></html>",
+    "<html><body style='font-family:sans-serif;padding:24px;'><h1>Suscripción cancelada</h1><p>Ya no recibirás el resumen semanal.</p></body></html>",
     { headers: { "Content-Type": "text/html; charset=utf-8" } }
   );
 }

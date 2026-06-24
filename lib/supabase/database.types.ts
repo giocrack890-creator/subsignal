@@ -190,6 +190,7 @@ export type Database = {
           reply_url: string | null;
           found_at: string;
           alerted_at: string | null;
+          author_meta: Record<string, unknown> | null;
         };
         Insert: {
           id?: string;
@@ -213,6 +214,7 @@ export type Database = {
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;
+          author_meta?: Record<string, unknown> | null;
         };
         Update: {
           id?: string;
@@ -236,6 +238,7 @@ export type Database = {
           reply_url?: string | null;
           found_at?: string;
           alerted_at?: string | null;
+          author_meta?: Record<string, unknown> | null;
         };
         Relationships: [
           {

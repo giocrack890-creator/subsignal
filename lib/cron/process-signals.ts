@@ -11,6 +11,8 @@ import { scorePost } from "@/lib/scoring";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { markSetupSignalReceived } from "@/lib/setup/progress";
 import { sendPushToUser } from "@/lib/push/send";
+import { fetchRedditAuthorProfile } from "@/lib/monitors/reddit-author";
+import { buildAuthorMeta } from "@/lib/shill/heuristics";
 import { truncate } from "@/lib/utils";
 import type { Platform, Plan } from "@/types";
 
@@ -135,6 +137,19 @@ async function processPostForKeyword(
     return;
   }
 
+  let authorProfile = null;
+  if (platform === "reddit" && post.author) {
+    authorProfile = await fetchRedditAuthorProfile(post.author);
+  }
+
+  const authorMeta = buildAuthorMeta({
+    platform,
+    author: post.author,
+    title: post.title,
+    body: post.body,
+    authorProfile,
+  });
+
   const supabase = createAdminClient();
   const { data: signal, error: insertError } = await supabase
     .from("signals")
@@ -147,8 +162,10 @@ async function processPostForKeyword(
       body: post.body,
       author: post.author,
       url: post.url,
+      subreddit: post.subreddit ?? null,
       intent_score: scoreResult.score,
       intent_reason: scoreResult.reason,
+      author_meta: authorMeta as Record<string, unknown> | null,
       status: "new",
     })
     .select("id")

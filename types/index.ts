@@ -74,6 +74,17 @@ export interface Signal {
   reply_url: string | null;
   found_at: string;
   alerted_at: string | null;
+  author_meta?: {
+    reddit?: {
+      karma: number;
+      link_karma: number;
+      comment_karma: number;
+      account_age_days: number;
+      has_verified_email: boolean;
+    };
+    shill_risk?: "low" | "medium" | "high";
+    shill_reasons?: string[];
+  } | null;
 }
 
 export interface Conversion {

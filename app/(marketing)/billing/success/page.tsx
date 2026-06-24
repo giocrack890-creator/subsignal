@@ -5,8 +5,8 @@ import { LandingNavbar } from "@/components/marketing/landing/navbar";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Pago exitoso — SubSignal",
-  description: "Tu suscripción a SubSignal fue procesada correctamente.",
+  title: "Pago exitoso",
+  description: "Tu suscripción fue procesada correctamente.",
 };
 
 export default function BillingSuccessPage() {
@@ -17,7 +17,7 @@ export default function BillingSuccessPage() {
         <div className="mx-auto max-w-lg text-center">
           <p className="text-sm font-medium text-primary">Pago confirmado</p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-            ¡Bienvenido a SubSignal!
+            ¡Bienvenido!
           </h1>
           <p className="mt-4 text-base leading-relaxed text-foreground-secondary">
             Tu plan se activa en segundos. Si no ves los cambios al instante,

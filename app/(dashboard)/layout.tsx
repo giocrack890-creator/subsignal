@@ -4,6 +4,7 @@ import { UpgradeProvider } from "@/components/billing/upgrade-provider";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { SignalPanelProvider } from "@/components/dashboard/signal-panel-context";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { AppLogo } from "@/components/brand/app-logo";
 import { OnboardingRedirect } from "@/components/onboarding/onboarding-redirect";
 import { getOnboardingStatus } from "@/lib/onboarding/status";
 import { createClient } from "@/lib/supabase/server";
@@ -62,14 +63,7 @@ export default async function DashboardLayout({
 
           <div className="flex min-w-0 flex-1 flex-col bg-nivel-2">
             <header className="flex items-center justify-between border-b border-border-sutil bg-nivel-1 px-4 py-3 lg:hidden">
-              <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-xs font-black text-primary-foreground">
-                  SS
-                </span>
-                <span className="font-bold tracking-tight text-foreground">
-                  SubSignal
-                </span>
-              </div>
+              <AppLogo variant="icon" size="sm" href="/dashboard" />
               <SignOutButton />
             </header>
             <main className="dash-main-content flex-1 overflow-x-hidden">{children}</main>

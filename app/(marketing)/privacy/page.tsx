@@ -5,9 +5,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad — SubSignal",
+  title: "Política de Privacidad",
   description:
-    "Cómo SubSignal recopila, usa y protege tu información. Datos de cuenta, señales, drafts, proveedores y tus derechos.",
+    "Cómo recopilamos, usamos y protegemos tu información. Datos de cuenta, señales, drafts, proveedores y tus derechos.",
 };
 
 export default function PrivacyPage() {
@@ -114,10 +114,10 @@ export default function PrivacyPage() {
           <p>
             Para ejercer estos derechos:{" "}
             <a
-              href="mailto:hello@subsignal.io"
+              href="mailto:hello@soporte.io"
               className="text-[#34D399] hover:underline"
             >
-              hello@subsignal.io
+              hello@soporte.io
             </a>
           </p>
         </LegalSection>
@@ -132,7 +132,7 @@ export default function PrivacyPage() {
 
         <LegalSection title="Menores">
           <p>
-            SubSignal no está dirigido a menores de 13 años. No recopilamos
+            La plataforma no está dirigida a menores de 13 años. No recopilamos
             datos de menores conscientemente.
           </p>
         </LegalSection>
@@ -147,10 +147,10 @@ export default function PrivacyPage() {
         <LegalSection title="Contacto">
           <p>
             <a
-              href="mailto:hello@subsignal.io"
+              href="mailto:hello@soporte.io"
               className="text-[#34D399] hover:underline"
             >
-              hello@subsignal.io
+              hello@soporte.io
             </a>
           </p>
         </LegalSection>

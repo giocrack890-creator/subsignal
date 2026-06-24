@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { UPGRADE_BANNER_DISMISSED_KEY } from "@/components/dashboard/upgrade-top-banner";
+import { AppLogo } from "@/components/brand/app-logo";
 import { CronStatusIndicator } from "@/components/dashboard/cron-status-indicator";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -94,25 +95,9 @@ export function DashboardSidebar({ displayName, email, plan }: DashboardSidebarP
   return (
     <aside className="dash-sidebar hidden w-[220px] shrink-0 flex-col lg:flex">
       <div className="border-b border-border-sutil px-4 py-4">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-xs font-black text-nivel-0">
-            SS
-          </span>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold tracking-tight text-white">
-                SubSignal
-              </span>
-              <span className="flex items-center gap-1">
-                <span
-                  className="h-[5px] w-[5px] rounded-full bg-accent opacity-80 animate-pulse"
-                  aria-hidden="true"
-                />
-                <span className="text-[10px] text-accent opacity-60">monitoring</span>
-              </span>
-            </div>
-          </div>
-        </div>
+        <Link href="/dashboard" className="block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+          <AppLogo variant="sidebar" showMonitoring />
+        </Link>
       </div>
 
       <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-2">

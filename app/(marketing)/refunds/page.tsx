@@ -6,9 +6,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Política de Reembolsos — SubSignal",
+  title: "Política de Reembolsos",
   description:
-    "Política de reembolsos de SubSignal. Cancelación, excepciones, período de prueba y cómo solicitar un reembolso.",
+    "Política de reembolsos. Cancelación, excepciones, período de prueba y cómo solicitar un reembolso.",
 };
 
 export default function RefundsPage() {
@@ -25,7 +25,7 @@ export default function RefundsPage() {
 
       <div className="space-y-6">
         <LegalHighlight>
-          Queremos que estés satisfecho con SubSignal. Si algo no funcionó como
+          Queremos que estés satisfecho con el servicio. Si algo no funcionó como
           esperabas, hablanos.
         </LegalHighlight>
 
@@ -54,7 +54,7 @@ export default function RefundsPage() {
 
         <LegalSection title="Período de prueba">
           <p>
-            El plan Free permite explorar SubSignal sin pagar. Te recomendamos
+            El plan Free permite explorar la plataforma sin pagar. Te recomendamos
             probarlo antes de suscribirte a un plan pago.
           </p>
         </LegalSection>
@@ -80,10 +80,10 @@ export default function RefundsPage() {
             <li>
               Email a{" "}
               <a
-                href="mailto:hello@subsignal.io"
+                href="mailto:hello@soporte.io"
                 className="text-[#34D399] hover:underline"
               >
-                hello@subsignal.io
+                hello@soporte.io
               </a>
             </li>
             <li>Asunto: &quot;Solicitud de reembolso&quot;</li>
@@ -98,10 +98,10 @@ export default function RefundsPage() {
         <LegalSection title="Contacto">
           <p>
             <a
-              href="mailto:hello@subsignal.io"
+              href="mailto:hello@soporte.io"
               className="text-[#34D399] hover:underline"
             >
-              hello@subsignal.io
+              hello@soporte.io
             </a>
           </p>
           <p>Respondemos todas las consultas en menos de 48 horas.</p>

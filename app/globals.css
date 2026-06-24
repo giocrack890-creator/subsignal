@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
-/* ─── SubSignal design tokens ─── */
+/* ─── Design tokens ─── */
 
 :root {
   --background: #0d0d0d;
@@ -70,6 +70,7 @@
   --color-chart: var(--chart);
   --color-platform-hn: var(--platform-hn);
   --color-platform-reddit: var(--platform-reddit);
+  --color-reddit: var(--platform-reddit);
   --color-platform-twitter: var(--platform-twitter);
   --color-platform-ih: var(--platform-ih);
   --radius-pill: var(--radius-pill);

@@ -1,4 +1,4 @@
--- SubSignal — schema para features del dashboard (1–15)
+-- Threadradar — schema para features del dashboard (1–15)
 -- Ejecutar en Supabase antes de desplegar las features.
 
 -- ─── profiles: setup progress + preferencias ─────────────────────────────────

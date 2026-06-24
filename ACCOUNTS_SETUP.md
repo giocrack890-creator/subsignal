@@ -1,4 +1,4 @@
-# Guía de configuración de cuentas — SubSignal
+# Guía de configuración de cuentas — Threadradar
 
 Instrucciones paso a paso para dejar operativo el monitoreo de cada plataforma, la IA y los servicios de soporte. Escrito para founders sin necesidad de ser desarrollador.
 
@@ -19,9 +19,9 @@ Instrucciones paso a paso para dejar operativo el monitoreo de cada plataforma, 
 
 **No.** Hacker News funciona desde el día uno sin crear ninguna cuenta de API.
 
-### ¿Qué usa SubSignal?
+### ¿Qué usa Threadradar?
 
-SubSignal consulta la **API pública de Algolia** que usa el propio Hacker News:
+Threadradar consulta la **API pública de Algolia** que usa el propio Hacker News:
 
 - Endpoint: `https://hn.algolia.com/api/v1/search_by_date`
 - Busca posts y comentarios de las últimas **24 horas** que coincidan con tus keywords.
@@ -44,7 +44,7 @@ SubSignal consulta la **API pública de Algolia** que usa el propio Hacker News:
 
 ### ¿Necesita credenciales?
 
-**Sí.** Sin ellas, SubSignal sigue funcionando en HN pero Reddit queda deshabilitado.
+**Sí.** Sin ellas, Threadradar sigue funcionando en HN pero Reddit queda deshabilitado.
 
 ### Importante (política 2025)
 
@@ -62,17 +62,17 @@ Reddit puede pedirte **aprobar el acceso a la API antes** de poder crear una app
 | 2 | Entrá a [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) (logueado). |
 | 3 | Clic en **“create another app…”** o **“create app”**. |
 | 4 | Tipo de app: **script** (no “web app”). |
-| 5 | **name:** `SubSignal` (o el nombre que quieras). |
+| 5 | **name:** `Threadradar` (o el nombre que quieras). |
 | 6 | **redirect uri:** `http://localhost:8080` (Reddit lo exige; en apps script casi no se usa). |
 | 7 | **Client ID:** es el string corto **debajo del nombre** de la app (no confundir con el secret). |
 | 8 | **Client secret:** aparece como **“secret”** en la misma pantalla. |
 | 9 | Pegá los valores en `.env.local` y en Vercel (ver tabla de variables abajo). |
-| 10 | **User agent:** Reddit lo exige con formato legible, por ejemplo: `SubSignal/1.0 (by /u/tu_usuario_reddit)` |
+| 10 | **User agent:** Reddit lo exige con formato legible, por ejemplo: `Threadradar/1.0 (by /u/tu_usuario_reddit)` |
 
 ### Límites del free tier y cómo no superarlos
 
 - Reddit limita la cantidad de requests por minuto para apps OAuth (típicamente ~60 req/min para apps pequeñas; puede variar).
-- SubSignal busca en **subreddits configurados** (máx. 10 por keyword) con ventana de **24 horas**.
+- Threadradar busca en **subreddits configurados** (máx. 10 por keyword) con ventana de **24 horas**.
 - **Recomendaciones:**
   - No agregues decenas de subreddits por keyword.
   - Dejá que el cron corra **una vez al día** (como está en Hobby/Vercel), no cada pocos minutos.
@@ -103,16 +103,16 @@ Con las 3 variables de Reddit configuradas, corré `npm run cron:local` y revis�
 
 ### Limitaciones del plan gratuito / Basic de Twitter API
 
-SubSignal usa el endpoint `GET /2/tweets/search/recent`. En la práctica:
+Threadradar usa el endpoint `GET /2/tweets/search/recent`. En la práctica:
 
 | Límite | Detalle |
 |--------|---------|
 | Lectura mensual | En planes de pago suele haber cupo de tweets leídos (ej. orden de cientos de miles/mes según tier; el free tier cambió varias veces — revisá el portal actual). |
 | Ventana de búsqueda | Solo los **últimos 7 días** (`search/recent`). |
 | Rate limit | Aprox. **1 request cada 15 segundos** por app en endpoints de búsqueda (puede variar por tier). |
-| Idioma | SubSignal filtra `lang:en` en las búsquedas. |
+| Idioma | Threadradar filtra `lang:en` en las búsquedas. |
 
-### Cómo maneja SubSignal estos límites
+### Cómo maneja Threadradar estos límites
 
 - Busca como máximo **~20 tweets** por keyword por corrida.
 - Usa ventana de **24 horas** (`start_time` en la query).
@@ -131,9 +131,9 @@ Con `TWITTER_BEARER_TOKEN` definido y una keyword con plataforma Twitter activa,
 
 **No.** Indie Hackers no publica una API documentada para terceros.
 
-### ¿Qué usa SubSignal?
+### ¿Qué usa Threadradar?
 
-SubSignal usa la **misma búsqueda pública de Algolia** que el sitio de Indie Hackers (clave *search-only* expuesta en su frontend). **No hace scraping HTML.**
+Threadradar usa la **misma búsqueda pública de Algolia** que el sitio de Indie Hackers (clave *search-only* expuesta en su frontend). **No hace scraping HTML.**
 
 - Índice: `Post`
 - Ventana: posts de las últimas **48 horas**
@@ -151,7 +151,7 @@ Agregá `ih` como plataforma en una keyword (cuando tu plan lo permita) y revis�
 
 ## Anthropic (Claude API)
 
-SubSignal usa Claude para:
+Threadradar usa Claude para:
 
 1. **Scoring de intención** (modelo rápido: Haiku)
 2. **Borradores de respuesta** (modelo de calidad: Sonnet) — solo planes de pago y señales con score ≥ 7

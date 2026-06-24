@@ -6,9 +6,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Términos de Servicio — SubSignal",
+  title: "Términos de Servicio",
   description:
-    "Términos de uso de SubSignal. Condiciones de cuenta, planes, uso aceptable, contenido generado por IA y limitación de responsabilidad.",
+    "Términos de uso. Condiciones de cuenta, planes, uso aceptable, contenido generado por IA y limitación de responsabilidad.",
 };
 
 export default function TermsPage() {
@@ -24,14 +24,14 @@ export default function TermsPage() {
       <div className="space-y-6">
         <LegalSection title="Aceptación de términos">
           <p>
-            Al usar SubSignal aceptás estos términos. Si no estás de acuerdo, no
+            Al usar este servicio aceptás estos términos. Si no estás de acuerdo, no
             uses el servicio.
           </p>
         </LegalSection>
 
         <LegalSection title="Descripción del servicio">
           <p>
-            SubSignal es una plataforma de monitoreo de conversaciones que
+            Esta plataforma es un servicio de monitoreo de conversaciones que
             encuentra menciones de alta intención en plataformas públicas
             (Hacker News, Reddit, Twitter/X, Indie Hackers) y genera borradores
             de respuesta usando inteligencia artificial.
@@ -72,7 +72,7 @@ export default function TermsPage() {
           <p>El usuario NO puede:</p>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              Usar SubSignal para spam o comunicaciones no solicitadas
+              Usar el servicio para spam o comunicaciones no solicitadas
             </li>
             <li>Publicar respuestas automáticas sin revisión humana</li>
             <li>Intentar acceder a datos de otros usuarios</li>
@@ -85,7 +85,7 @@ export default function TermsPage() {
         <LegalSection title="Contenido generado por IA">
           <p>
             Los drafts de respuesta son generados por IA y son sugerencias.
-            SubSignal no garantiza su precisión, idoneidad o resultados. El
+            El contenido generado por IA no garantiza su precisión, idoneidad o resultados. El
             usuario es 100% responsable del contenido que publique en
             plataformas externas.
           </p>
@@ -97,13 +97,13 @@ export default function TermsPage() {
             <Link href="/privacy" className="text-[#34D399] hover:underline">
               Política de Privacidad
             </Link>
-            , disponible en subsignal.io/privacy.
+            , disponible en /privacy.
           </p>
         </LegalSection>
 
         <LegalSection title="Propiedad intelectual">
           <p>
-            SubSignal y su contenido son propiedad de sus creadores. No te
+            El servicio y su contenido son propiedad de sus creadores. No te
             transferimos ningún derecho de propiedad intelectual al usar el
             servicio.
           </p>
@@ -111,7 +111,7 @@ export default function TermsPage() {
 
         <LegalSection title="Limitación de responsabilidad">
           <p>
-            SubSignal se provee &quot;tal cual&quot;. No garantizamos resultados
+            El servicio se provee &quot;tal cual&quot;. No garantizamos resultados
             de negocio. Nuestra responsabilidad máxima es el monto pagado en los
             últimos 3 meses.
           </p>
@@ -129,10 +129,10 @@ export default function TermsPage() {
           <p>
             Para preguntas sobre estos términos:{" "}
             <a
-              href="mailto:hello@subsignal.io"
+              href="mailto:hello@soporte.io"
               className="text-[#34D399] hover:underline"
             >
-              hello@subsignal.io
+              hello@soporte.io
             </a>
           </p>
         </LegalSection>

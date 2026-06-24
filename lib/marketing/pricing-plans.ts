@@ -27,7 +27,7 @@ export const MARKETING_PLANS: MarketingPlan[] = [
     id: "free",
     name: "Free",
     price: "$0",
-    description: "Para explorar SubSignal",
+    description: "Para explorar la plataforma",
     cta: { label: "Empezar gratis", href: "/signup", variant: "ghost" },
     features: [
       { text: "2 keywords activas", included: true, tone: "muted" },

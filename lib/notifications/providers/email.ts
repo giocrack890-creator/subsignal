@@ -19,7 +19,7 @@ export const resendEmailProvider: EmailProvider = {
       throw new Error("Falta RESEND_API_KEY");
     }
     if (!from) {
-      throw new Error("Falta EMAIL_FROM (ej: SubSignal <alertas@tudominio.com>)");
+      throw new Error("Falta EMAIL_FROM (ej: Alertas <alertas@tudominio.com>)");
     }
 
     const response = await fetch("https://api.resend.com/emails", {

@@ -7,7 +7,7 @@ export default function DashboardNotFound() {
       <p className="text-sm font-medium text-primary">404</p>
       <h1 className="mt-2 text-2xl font-bold text-foreground">Página no encontrada</h1>
       <p className="mt-2 max-w-md text-sm text-foreground-secondary">
-        La ruta que buscás no existe en SubSignal.
+        La ruta que buscás no existe.
       </p>
       <Link href="/dashboard" className="mt-6 cursor-pointer">
         <Button variant="accent" size="md">
