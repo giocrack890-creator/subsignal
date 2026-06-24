@@ -5,6 +5,7 @@ import { buildScoringUserPrompt, SCORING_SYSTEM_PROMPT } from "@/lib/claude/prom
 import type { RawPost } from "@/lib/monitors/types";
 import { withRetry } from "@/lib/utils/retry";
 import type { IntentScoreResult, IntentType, Platform, UserProduct } from "@/types";
+import { scorePostHeuristic } from "./heuristic";
 
 const VALID_INTENT_TYPES: IntentType[] = [
   "seeking_solution",
@@ -50,26 +51,46 @@ function parseScoreResponse(text: string): IntentScoreResult {
 
 export async function scorePost(input: ScorePostInput): Promise<IntentScoreResult> {
   const { post, product, keyword, platform } = input;
-  const client = getAnthropicClient();
 
-  return withRetry(async () => {
-    const message = await client.messages.create({
-      model: SCORING_MODEL,
-      max_tokens: 256,
-      system: SCORING_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: buildScoringUserPrompt(post, product, keyword, platform),
-        },
-      ],
-    });
+  try {
+    const client = getAnthropicClient();
 
-    const block = message.content.find((b) => b.type === "text");
-    if (!block || block.type !== "text") {
-      throw new Error("Respuesta vacía de Claude");
+    return await withRetry(async () => {
+      const message = await client.messages.create({
+        model: SCORING_MODEL,
+        max_tokens: 256,
+        system: SCORING_SYSTEM_PROMPT,
+        messages: [
+          {
+            role: "user",
+            content: buildScoringUserPrompt(post, product, keyword, platform),
+          },
+        ],
+      });
+
+      const block = message.content.find((b) => b.type === "text");
+      if (!block || block.type !== "text") {
+        throw new Error("Respuesta vacía de Claude");
+      }
+
+      return parseScoreResponse(block.text);
+    }, { label: `Claude scoring post ${post.externalId}` });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    const useHeuristic =
+      msg.includes("ANTHROPIC_API_KEY") ||
+      msg.includes("authentication_error") ||
+      msg.includes("invalid x-api-key") ||
+      msg.includes("401");
+
+    if (useHeuristic) {
+      console.warn(
+        `[scoring] Claude no disponible para ${post.externalId}, usando heurística:`,
+        msg
+      );
+      return scorePostHeuristic({ post, keyword, platform });
     }
 
-    return parseScoreResponse(block.text);
-  }, { label: `Claude scoring post ${post.externalId}` });
+    throw error;
+  }
 }

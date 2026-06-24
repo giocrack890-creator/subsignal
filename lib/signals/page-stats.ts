@@ -16,6 +16,7 @@ export interface SignalsEmptyContext {
   activeKeywords: number;
   monitoringActive: boolean;
   platformsLabel: string;
+  lastCronAt: string | null;
 }
 
 export async function fetchSignalsPageStats(
@@ -105,11 +106,12 @@ export async function fetchSignalsEmptyContext(
   const platformsLabel =
     plan === "free"
       ? "HN activo · Reddit, X e IH en planes de pago"
-      : "HN y Reddit activos";
+      : "HN, Reddit, X e IH según tu keyword";
 
   return {
     activeKeywords: activeKeywords ?? 0,
     monitoringActive,
     platformsLabel,
+    lastCronAt: cronLog?.ran_at ?? null,
   };
 }

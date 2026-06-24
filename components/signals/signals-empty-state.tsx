@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { RadarIcon } from "@/components/dashboard/radar-icon";
+import { ScanNowButton } from "@/components/dashboard/scan-now-button";
 import type { SignalsEmptyContext } from "@/lib/signals/page-stats";
 import { cn } from "@/lib/utils";
 
@@ -87,6 +88,8 @@ export function SignalsEmptyState({
   }
 
   const hasKeywords = context.activeKeywords > 0;
+  const cronNeverRan = !context.lastCronAt;
+  const cronStale = !context.monitoringActive && !cronNeverRan;
 
   return (
     <div className={cn("mx-auto mt-16 max-w-md px-4 text-center", className)}>
@@ -95,12 +98,21 @@ export function SignalsEmptyState({
       </div>
 
       <h3 className="mt-8 text-[20px] font-semibold tracking-[-0.02em] text-white">
-        Monitoreando en background
+        {cronNeverRan ? "El escaneo aún no corrió" : "Monitoreando en background"}
       </h3>
       <p className="mt-3 text-[13px] leading-[1.7] text-[#6B6B6B]">
-        Escaneamos Hacker News cada 15 minutos.
-        <br />
-        Las señales aparecen acá en tiempo real.
+        {cronNeverRan ? (
+          <>
+            Tus keywords están guardadas, pero el cron todavía no ejecutó una
+            búsqueda. En producción corre cada 15 minutos automáticamente.
+          </>
+        ) : (
+          <>
+            Escaneamos tus plataformas cada 15 minutos.
+            <br />
+            Solo ves señales con score ≥ tu umbral en Settings.
+          </>
+        )}
       </p>
 
       <ul className="mt-8 space-y-2.5 text-left">
@@ -121,20 +133,31 @@ export function SignalsEmptyState({
           )}
         </CheckRow>
 
-        <CheckRow state={context.monitoringActive ? "ok" : "warn"}>
+        <CheckRow state={context.monitoringActive ? "ok" : cronNeverRan ? "warn" : "pending"}>
           {context.monitoringActive
-            ? "Monitoreo activo"
-            : "El monitor puede estar iniciando"}
+            ? "Último escaneo hace menos de 2 horas"
+            : cronNeverRan
+              ? "Sin escaneos registrados todavía"
+              : "Último escaneo hace más de 2 horas"}
         </CheckRow>
 
         <CheckRow state="ok">{context.platformsLabel}</CheckRow>
       </ul>
 
-      {minutesUntilNext != null && (
+      {context.monitoringActive && minutesUntilNext != null && (
         <p className="mt-5 font-mono text-[11px] text-[#4B4B4B]">
           Próxima búsqueda en ~{minutesUntilNext} minutos
         </p>
       )}
+
+      {cronStale && (
+        <p className="mt-5 text-[12px] leading-relaxed text-amber-400/90">
+          Si esto persiste, verificá que el cron esté activo en Vercel y que{" "}
+          <code className="text-[11px]">ANTHROPIC_API_KEY</code> sea válida.
+        </p>
+      )}
+
+      <ScanNowButton hasKeywords={hasKeywords} />
     </div>
   );
 }
