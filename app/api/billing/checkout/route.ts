@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   createCreemCheckoutSession,
+  formatCreemErrorForLog,
+  getCreemCheckoutErrorCode,
   getCreemStarterProductId,
   isCreemConfigured,
   parseCreemCheckoutPlan,
@@ -48,7 +50,12 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(checkoutUrl);
   } catch (error) {
-    console.error("[billing/checkout] Error creando checkout Creem:", error);
-    return NextResponse.redirect(new URL("/pricing?error=checkout", request.url));
+    const errorCode = getCreemCheckoutErrorCode(error);
+    console.error(
+      "[billing/checkout] Error creando checkout Creem:",
+      formatCreemErrorForLog(error),
+      `testMode=${process.env.CREEM_TEST_MODE ?? "auto"} NODE_ENV=${process.env.NODE_ENV}`
+    );
+    return NextResponse.redirect(new URL(`/pricing?error=${errorCode}`, request.url));
   }
 }

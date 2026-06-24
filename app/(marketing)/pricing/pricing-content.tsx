@@ -84,6 +84,10 @@ const CHECKOUT_ERROR_MESSAGES: Record<string, string> = {
     "Los pagos no están disponibles en este momento. Volvé a intentar en unos minutos o contactanos si el problema continúa.",
   checkout:
     "No pudimos iniciar el checkout. Intentá de nuevo en unos minutos o contactanos si el problema persiste.",
+  checkout_auth:
+    "Error de autenticación con Creem. Verificá que CREEM_API_KEY coincida con el entorno: en producción usá CREEM_TEST_MODE=false y la API key live.",
+  checkout_product:
+    "No encontramos el producto en Creem. Verificá que CREEM_PRODUCT_STARTER y CREEM_PRODUCT_PRO sean los IDs correctos para tu entorno (test vs live).",
 };
 
 function PricingCheckoutAlert() {

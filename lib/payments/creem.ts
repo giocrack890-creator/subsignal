@@ -4,7 +4,11 @@ import type { Plan } from "@/types";
 export type CreemCheckoutPlan = Extract<Plan, "starter" | "pro">;
 
 function isCreemTestMode(): boolean {
-  return process.env.CREEM_TEST_MODE !== "false";
+  const flag = process.env.CREEM_TEST_MODE?.trim().toLowerCase();
+  if (flag === "true") return true;
+  if (flag === "false") return false;
+  // En Vercel producción usar API live salvo que se fuerce test.
+  return process.env.NODE_ENV !== "production";
 }
 
 export function getCreemStarterProductId(): string | undefined {
@@ -48,6 +52,29 @@ export function planFromCreemProductId(productId: string): CreemCheckoutPlan | n
   if (productId === getCreemStarterProductId()) return "starter";
   if (productId === process.env.CREEM_PRODUCT_PRO) return "pro";
   return null;
+}
+
+export function getCreemCheckoutErrorCode(error: unknown): string {
+  if (error && typeof error === "object" && "statusCode" in error) {
+    const statusCode = (error as { statusCode: number }).statusCode;
+    if (statusCode === 401) return "checkout_auth";
+    if (statusCode === 404) return "checkout_product";
+  }
+  return "checkout";
+}
+
+export function formatCreemErrorForLog(error: unknown): string {
+  if (error && typeof error === "object") {
+    const creemError = error as { message?: string; statusCode?: number; body?: string };
+    const parts = [
+      creemError.message,
+      creemError.statusCode ? `status=${creemError.statusCode}` : null,
+      creemError.body ? `body=${creemError.body}` : null,
+    ].filter(Boolean);
+    if (parts.length > 0) return parts.join(" | ");
+  }
+  if (error instanceof Error) return error.message;
+  return String(error);
 }
 
 export function parseCreemCheckoutPlan(value: string | null): CreemCheckoutPlan | null {
