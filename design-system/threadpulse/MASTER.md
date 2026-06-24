@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Threadradar
+**Project:** ThreadPulse
 **Generated:** 2026-06-20 16:46:44
 **Category:** SaaS (General)
 

@@ -6,9 +6,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Términos de Servicio",
+  title: "Términos de Servicio — ThreadPulse",
   description:
-    "Términos de uso. Condiciones de cuenta, planes, uso aceptable, contenido generado por IA y limitación de responsabilidad.",
+    "Términos de uso de ThreadPulse. Condiciones de cuenta, planes, uso aceptable, contenido generado por IA y limitación de responsabilidad.",
 };
 
 export default function TermsPage() {

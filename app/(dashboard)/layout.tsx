@@ -6,6 +6,7 @@ import { SignalPanelProvider } from "@/components/dashboard/signal-panel-context
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { AppLogo } from "@/components/brand/app-logo";
 import { OnboardingRedirect } from "@/components/onboarding/onboarding-redirect";
+import { OnboardingSurveyGate } from "@/components/onboarding/onboarding-survey-modal";
 import { getOnboardingStatus } from "@/lib/onboarding/status";
 import { createClient } from "@/lib/supabase/server";
 import type { Plan } from "@/types";
@@ -36,7 +37,7 @@ export default async function DashboardLayout({
   const [profileResult, onboardingStatus] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, email, plan")
+      .select("full_name, email, plan, onboarding_survey_completed")
       .eq("id", user.id)
       .single(),
     getOnboardingStatus(supabase, user.id),
@@ -44,6 +45,7 @@ export default async function DashboardLayout({
 
   const profile = profileResult.data;
   const plan = (profile?.plan ?? "free") as Plan;
+  const showOnboardingSurvey = !profile?.onboarding_survey_completed;
   const displayName =
     profile?.full_name ?? profile?.email ?? user.email ?? "Usuario";
 
@@ -54,6 +56,7 @@ export default async function DashboardLayout({
           className={`dashboard-sf ${inter.variable} flex min-h-screen bg-nivel-0 font-[family-name:var(--font-dashboard)]`}
         >
           <OnboardingRedirect isComplete={onboardingStatus.isComplete} />
+          <OnboardingSurveyGate showSurvey={showOnboardingSurvey} />
 
           <DashboardSidebar
             displayName={displayName}

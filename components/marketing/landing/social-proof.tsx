@@ -14,7 +14,7 @@ export function LandingSocialProof() {
       <div className="container-marketing px-6">
         <SectionHeading
           id="social-heading"
-          title="SubSignal está en beta"
+          title="ThreadPulse está en beta"
         />
 
         <FadeIn className="mx-auto mt-10 max-w-[600px]">

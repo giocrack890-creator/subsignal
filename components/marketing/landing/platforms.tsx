@@ -278,27 +278,27 @@ function RedditWaitlistModal({
 /* ─── Comparison table ─── */
 
 const COMPARISON_ROWS = [
-  { feature: "Hacker News", subsignal: "yes" as const, rival: "no" as const },
+  { feature: "Hacker News", threadpulse: "yes" as const, rival: "no" as const },
   {
     feature: "Reddit",
-    subsignal: "dev" as const,
+    threadpulse: "dev" as const,
     rival: "reddit-only" as const,
   },
-  { feature: "Product Hunt", subsignal: "soon" as const, rival: "no" as const },
-  { feature: "Twitter / X", subsignal: "soon" as const, rival: "no" as const },
+  { feature: "Product Hunt", threadpulse: "soon" as const, rival: "no" as const },
+  { feature: "Twitter / X", threadpulse: "soon" as const, rival: "no" as const },
   {
     feature: "Borradores con IA",
-    subsignal: "yes" as const,
+    threadpulse: "yes" as const,
     rival: "no" as const,
   },
   {
     feature: "Scoring de intención",
-    subsignal: "yes" as const,
+    threadpulse: "yes" as const,
     rival: "no" as const,
   },
   {
     feature: "Multi-plataforma",
-    subsignal: "yes" as const,
+    threadpulse: "yes" as const,
     rival: "no" as const,
   },
 ] as const;
@@ -372,15 +372,15 @@ export function LandingPlatforms() {
           >
             Tu cliente habla en más de un lugar.
             <br />
-            SubSignal escucha todos.
+            ThreadPulse escucha todos.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#B4B4B4]">
-            Mientras la competencia monitorea solo Reddit, SubSignal cubre las 5
+            Mientras la competencia monitorea solo Reddit, ThreadPulse cubre las 5
             plataformas donde los founders buscan soluciones.
           </p>
           <div className="mt-6 border-t border-[#1E1E1E] pt-4">
             <p className="text-sm text-[#6B6B6B]">
-              SignalHunt: 1 plataforma · SubSignal: 5 plataformas (y sumando)
+              SignalHunt: 1 plataforma · ThreadPulse: 5 plataformas (y sumando)
             </p>
           </div>
         </FadeIn>
@@ -530,7 +530,7 @@ export function LandingPlatforms() {
                     Feature
                   </th>
                   <th className="px-4 py-3 text-center font-semibold text-[#34D399]">
-                    SubSignal
+                    ThreadPulse
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[#6B6B6B]">
                     Competidor A
@@ -549,7 +549,7 @@ export function LandingPlatforms() {
                   >
                     <td className="px-4 py-3 text-[#B4B4B4]">{row.feature}</td>
                     <td className="px-4 py-3 text-center">
-                      <CellValue value={row.subsignal} />
+                      <CellValue value={row.threadpulse} />
                     </td>
                     <td className="px-4 py-3 text-center">
                       <CellValue value={row.rival} />

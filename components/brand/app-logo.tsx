@@ -11,7 +11,7 @@ const ICON_SIZES = {
 
 type LogoSize = keyof typeof ICON_SIZES;
 
-export type AppLogoVariant = "icon" | "sidebar";
+export type AppLogoVariant = "icon" | "sidebar" | "wordmark";
 
 interface AppLogoProps {
   variant?: AppLogoVariant;
@@ -19,6 +19,20 @@ interface AppLogoProps {
   showMonitoring?: boolean;
   className?: string;
   href?: string;
+}
+
+function TpMark({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-xs font-bold text-black",
+        className
+      )}
+      aria-hidden="true"
+    >
+      TP
+    </span>
+  );
 }
 
 export function AppIcon({
@@ -65,13 +79,23 @@ export function AppLogo({
   const content =
     variant === "sidebar" ? (
       <span className={cn("flex items-center gap-2.5", className)}>
-        <AppIcon size="sm" />
-        {showMonitoring && <MonitoringBadge />}
+        <TpMark />
+        <span className="flex min-w-0 flex-col leading-tight">
+          <span className="truncate text-sm font-semibold text-foreground">
+            ThreadPulse
+          </span>
+          {showMonitoring && <MonitoringBadge />}
+        </span>
+      </span>
+    ) : variant === "wordmark" ? (
+      <span className={cn("inline-flex items-center gap-2", className)}>
+        <TpMark />
+        <span className="text-sm font-semibold text-foreground">ThreadPulse</span>
       </span>
     ) : (
       <span className={cn("inline-flex", className)}>
         <AppIcon size={size} />
-        <span className="sr-only">Inicio</span>
+        <span className="sr-only">ThreadPulse</span>
       </span>
     );
 

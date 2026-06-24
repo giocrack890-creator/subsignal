@@ -1,4 +1,4 @@
--- Threadradar — schema inicial
+-- ThreadPulse — schema inicial
 -- Perfiles, productos, keywords, señales, conversiones y cache de posts procesados
 
 -- ─── Perfiles de usuario ────────────────────────────────────────────────────

@@ -30,6 +30,8 @@ export type Database = {
           setup_completed: boolean;
           draft_tone: string;
           weekly_digest: boolean;
+          onboarding_survey_completed: boolean;
+          trial_ends_at: string | null;
           created_at: string;
         };
         Insert: {
@@ -52,6 +54,8 @@ export type Database = {
           setup_completed?: boolean;
           draft_tone?: string;
           weekly_digest?: boolean;
+          onboarding_survey_completed?: boolean;
+          trial_ends_at?: string | null;
           created_at?: string;
         };
         Update: {
@@ -74,6 +78,8 @@ export type Database = {
           setup_completed?: boolean;
           draft_tone?: string;
           weekly_digest?: boolean;
+          onboarding_survey_completed?: boolean;
+          trial_ends_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -377,6 +383,44 @@ export type Database = {
             foreignKeyName: "push_subscriptions_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      onboarding_survey: {
+        Row: {
+          id: string;
+          user_id: string;
+          source: string;
+          building: string;
+          previous_tool: string;
+          role: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          source: string;
+          building: string;
+          previous_tool: string;
+          role: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          source?: string;
+          building?: string;
+          previous_tool?: string;
+          role?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_survey_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
           },

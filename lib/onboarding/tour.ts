@@ -1,4 +1,4 @@
-export const TOUR_STORAGE_PREFIX = "intent_monitor_tour_completed";
+export const TOUR_STORAGE_PREFIX = "threadpulse_tour_completed";
 
 export function getTourStorageKey(userId: string): string {
   return `${TOUR_STORAGE_PREFIX}_${userId}`;

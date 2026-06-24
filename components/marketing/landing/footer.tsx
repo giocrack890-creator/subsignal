@@ -23,9 +23,9 @@ export function LandingFooter() {
       <div className="container-marketing mx-auto max-w-5xl px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <AppLogo variant="icon" size="sm" />
+            <AppLogo variant="wordmark" size="sm" />
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-foreground-secondary">
-              Intent monitoring para founders. Encontrá clientes donde ya están preguntando.
+              ThreadPulse — intent monitoring para founders. Encontrá clientes donde ya están preguntando.
             </p>
           </div>
 
@@ -87,7 +87,7 @@ export function LandingFooter() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-xs text-foreground-muted sm:flex-row">
-          <span>© {new Date().getFullYear()}</span>
+          <span>© {new Date().getFullYear()} ThreadPulse</span>
           <span>Hecho para founders que venden con valor, no con spam.</span>
         </div>
       </div>

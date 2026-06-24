@@ -1,4 +1,4 @@
-# Landing Page Overrides — Threadradar
+# Landing Page Overrides — ThreadPulse
 
 > Overrides `MASTER.md` for the marketing landing only.
 

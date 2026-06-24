@@ -39,7 +39,7 @@ export function AuthForm({ errorMessage }: AuthFormProps) {
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-center">
-        <AppLogo variant="icon" size="lg" href="/" />
+        <AppLogo variant="wordmark" size="lg" href="/" />
       </div>
 
       <div className="border-glow-card rounded-2xl bg-background-card p-6 sm:p-8">

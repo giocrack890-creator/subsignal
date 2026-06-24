@@ -7,8 +7,8 @@ import { SectionHeading } from "@/components/marketing/landing/section-heading";
 
 const FAQ_ITEMS = [
   {
-    q: "¿Publicamos respuestas automáticamente?",
-    a: "No. Generamos borradores para que vos los edites y publiques. Nunca posteamos en tu nombre — así evitás baneos y sonás auténtico.",
+    q: "¿ThreadPulse publica respuestas automáticamente?",
+    a: "No. ThreadPulse genera borradores para que vos los edites y publiques. Nunca posteamos en tu nombre — así evitás baneos y sonás auténtico.",
   },
   {
     q: "¿Puedo monitorear mi marca y competidores?",

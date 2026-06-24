@@ -164,7 +164,7 @@ export async function createCreemCheckoutSession(input: {
 
   const checkout = await creem.checkouts.create({
     productId: getCreemProductId(input.plan),
-    requestId: `intent_monitor_${input.userId}_${input.plan}`,
+    requestId: `threadpulse_${input.userId}_${input.plan}`,
     successUrl: `${appUrl}/billing/success`,
     customer: input.email ? { email: input.email } : undefined,
     metadata: {

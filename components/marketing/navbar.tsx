@@ -12,7 +12,7 @@ const NAV_LINKS = [
 export function MarketingNavbar() {
   return (
     <header className="relative z-20 flex items-center justify-between px-6 py-5 lg:px-10">
-      <AppLogo variant="icon" size="md" href="/" />
+      <AppLogo variant="wordmark" size="md" href="/" />
 
       {/* Nav pill central (Ape Terminal style) */}
       <nav className="pill-dock hidden items-center gap-0.5 rounded-full px-1.5 py-1 lg:flex">

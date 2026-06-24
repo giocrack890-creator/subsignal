@@ -1,7 +1,7 @@
-# Threadradar — Supabase local config
+# ThreadPulse — Supabase local config
 # Docs: https://supabase.com/docs/guides/cli/config
 
-project_id = "threadradar"
+project_id = "threadpulse"
 
 [api]
 enabled = true

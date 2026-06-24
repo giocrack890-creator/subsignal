@@ -6,7 +6,7 @@ import { Check, ChevronDown } from "lucide-react";
 import type { SetupProgressState } from "@/lib/setup/progress";
 import { cn } from "@/lib/utils";
 
-const CELEBRATION_KEY = "intent_monitor_setup_celebrated";
+const CELEBRATION_KEY = "threadpulse_setup_celebrated";
 
 interface SetupStep {
   id: string;

@@ -28,7 +28,7 @@ export function LandingNavbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-5 lg:px-8">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-        <AppLogo variant="icon" size="md" href={homeHref} />
+        <AppLogo variant="wordmark" size="md" href={homeHref} />
 
         <nav
           className="pill-dock hidden items-center gap-0.5 rounded-full px-1.5 py-1 lg:flex"

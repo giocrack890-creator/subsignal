@@ -42,7 +42,7 @@ export function FirstTimeTooltip({
   className,
 }: FirstTimeTooltipProps) {
   const tooltipId = useId();
-  const storageKey = `intent_monitor_tooltip_${id}`;
+  const storageKey = `threadpulse_tooltip_${id}`;
   const [visible, setVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 

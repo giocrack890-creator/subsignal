@@ -13,16 +13,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_NAME = "ThreadPulse";
+const DEFAULT_TITLE = `${SITE_NAME} — Intent monitoring para founders SaaS`;
+const DEFAULT_DESCRIPTION =
+  "ThreadPulse monitorea Reddit, Hacker News y más. Encuentra conversaciones de alta intención y genera borradores de respuesta genuinos.";
+
 export const metadata: Metadata = {
   title: {
-    default: "Intent monitoring para founders SaaS",
-    template: "%s",
+    default: DEFAULT_TITLE,
+    template: `%s — ${SITE_NAME}`,
   },
-  description:
-    "Monitorea Reddit, Hacker News y más. Encuentra conversaciones de alta intención y genera borradores de respuesta genuinos.",
+  description: DEFAULT_DESCRIPTION,
   icons: {
     icon: "/branding/icon-mark.png",
     apple: "/branding/icon-mark.png",
+  },
+  openGraph: {
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    type: "website",
+    siteName: SITE_NAME,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
   },
 };
 

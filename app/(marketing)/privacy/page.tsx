@@ -5,9 +5,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad",
+  title: "Política de Privacidad — ThreadPulse",
   description:
-    "Cómo recopilamos, usamos y protegemos tu información. Datos de cuenta, señales, drafts, proveedores y tus derechos.",
+    "Cómo ThreadPulse recopila, usa y protege tu información. Datos de cuenta, señales, drafts, proveedores y tus derechos.",
 };
 
 export default function PrivacyPage() {

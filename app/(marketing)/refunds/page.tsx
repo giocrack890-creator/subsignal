@@ -6,9 +6,9 @@ import {
 } from "@/components/marketing/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Política de Reembolsos",
+  title: "Política de Reembolsos — ThreadPulse",
   description:
-    "Política de reembolsos. Cancelación, excepciones, período de prueba y cómo solicitar un reembolso.",
+    "Política de reembolsos de ThreadPulse. Cancelación, excepciones, período de prueba y cómo solicitar un reembolso.",
 };
 
 export default function RefundsPage() {

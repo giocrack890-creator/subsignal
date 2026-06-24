@@ -29,10 +29,10 @@ function buildSubject(payload: NotificationPayload): string {
     const signal = signals[0];
     const label = PLATFORM_LABELS[signal.platform as Platform] ?? signal.platform;
     const title = truncateTitle(signal.title ?? "Nueva señal");
-    return `🎯 [Score: ${signal.score}/10] Nueva señal en ${label}: ${title}`;
+    return `🎯 [ThreadPulse] [Score: ${signal.score}/10] Nueva señal en ${label}: ${title}`;
   }
 
-  return `🎯 ${signals.length} nuevas señales de alta intención`;
+  return `🎯 [ThreadPulse] ${signals.length} nuevas señales de alta intención`;
 }
 
 function renderSignalHtml(signal: NotificationPayload["signals"][number]): string {
@@ -106,7 +106,7 @@ export function buildEmailDigest(payload: NotificationPayload): EmailDigest {
             <tr>
               <td style="padding:24px 24px 8px;">
                 <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#34D399;text-transform:uppercase;letter-spacing:0.08em;">
-                  Alertas
+                  ThreadPulse · Alertas
                 </p>
                 <h1 style="margin:0;font-size:22px;font-weight:700;color:#FFFFFF;line-height:1.3;">
                   ${

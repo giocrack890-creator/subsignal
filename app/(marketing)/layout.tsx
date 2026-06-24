@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 
+const SITE_NAME = "ThreadPulse";
+const TITLE = `${SITE_NAME} — Intent monitoring para founders SaaS`;
+const DESCRIPTION =
+  "ThreadPulse encuentra señales de alta intención en Reddit y Hacker News y te ayuda a responder con valor.";
+
 export const metadata: Metadata = {
-  title: "Intent monitoring para founders SaaS",
-  description:
-    "Monitorea Hacker News, puntúa conversaciones por intención de compra y genera borradores de respuesta genuinos con IA.",
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
-    title: "Intent monitoring para founders SaaS",
-    description:
-      "Dejá de buscar clientes manualmente en HN. Encontrá señales de alta intención y respondé con valor.",
+    title: TITLE,
+    description: DESCRIPTION,
     type: "website",
+    siteName: SITE_NAME,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
   },
 };
 

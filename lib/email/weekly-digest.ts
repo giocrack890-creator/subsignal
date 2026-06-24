@@ -57,7 +57,7 @@ function buildDigestHtml(
 
   return `
   <div style="font-family:Arial,sans-serif;background:#0A0A0A;color:#fff;padding:24px;">
-    <h1 style="color:#34D399;">Resumen semanal</h1>
+    <h1 style="color:#34D399;">ThreadPulse — Resumen semanal</h1>
     <p style="color:#B4B4B4;">Tu resumen semanal — ${periodLabel}</p>
     <div style="display:flex;gap:12px;margin:20px 0;">
       <div style="flex:1;background:#111714;border:1px solid #232323;border-radius:10px;padding:14px;">
@@ -81,7 +81,7 @@ function buildDigestHtml(
       <a href="${appUrl}/settings" style="color:#34D399;">Cambiar preferencias de email</a> ·
       <a href="${unsubscribeUrl}" style="color:#34D399;">Cancelar suscripción al digest</a>
     </p>
-    <p style="font-size:12px;color:#6B6B6B;">© 2026 — ${email}</p>
+    <p style="font-size:12px;color:#6B6B6B;">© 2026 ThreadPulse · ${email}</p>
   </div>`;
 }
 
@@ -159,7 +159,7 @@ export async function sendWeeklyDigests(): Promise<{
     try {
       await resendEmailProvider.send({
         to: user.email,
-        subject: `📊 Tu semana — ${totalSignals} señales encontradas`,
+        subject: `📊 [ThreadPulse] Tu semana — ${totalSignals} señales encontradas`,
         html: buildDigestHtml(
           user.email,
           {

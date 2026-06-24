@@ -29,7 +29,7 @@ function buildSlackBlocks(payload: NotificationPayload) {
       elements: [
         {
           type: "mrkdwn",
-          text: "Alertas de intención · respondé mientras la intención está caliente",
+          text: "Alertas de intención · ThreadPulse",
         },
       ],
     },

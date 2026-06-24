@@ -10,7 +10,7 @@ let tokenCache: RedditTokenCache | null = null;
 export function getRedditUserAgent(): string {
   const custom = process.env.REDDIT_USER_AGENT?.trim();
   if (custom) return custom;
-  return "IntentMonitor/1.0 (intent monitoring)";
+  return "ThreadPulse/1.0 (intent monitoring)";
 }
 
 export function getRedditCredentials(): {
